@@ -109,7 +109,7 @@ const panelConfigs = [
       { content: "Make weird stuff that works!" },
     ],
     footer: {
-      href: "#outro",
+      href: "#blogs",
       content: "hell yeah! 😎",
     },
   },
@@ -357,8 +357,8 @@ const LandingPage = () => {
           <span className="logo-type">DAVENARCHIVES</span>
         </div>
         <nav className="site-nav">
-          <a href="#projects">projects</a>
           <a href="#blogs">blogs</a>
+          <a href="#projects">projects</a>
           <label className="search">
             <svg
               width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -379,7 +379,7 @@ const LandingPage = () => {
           </h1>
           <p className="tagline">
             <span className="tagline-line">
-              Turn syntax errors into happy accidents — boom!
+              Turn syntax errors into happy accidents —
             </span>
             <span className="tagline-line tagline-line--accent">
               <span className="highlight highlight--yellow hover-gif-trigger" data-gif="play">
