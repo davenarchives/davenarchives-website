@@ -120,18 +120,23 @@ import catSleepGif from "../assets/catsleeping.gif";
         hoverGifImage.addEventListener("load", measureGif, { once: true });
       }
 
-      const verticalOffset = 36;
+      const verticalOffset = 52;
 
-      const positionAboveText = (event) => {
+      const positionAboveText = (event, { lockY = false } = {}) => {
         if (!gifWidth || !gifHeight) measureGif();
         const target = event?.currentTarget || lastTrigger;
         const rect = target?.getBoundingClientRect();
         const clientX =
           event?.clientX ??
           (rect ? rect.left + rect.width / 2 : window.innerWidth / 2);
-        const clientY = event?.clientY ?? (rect ? rect.top : window.innerHeight / 2);
+        const clientY = lockY
+          ? null
+          : event?.clientY ?? (rect ? rect.top : window.innerHeight / 2);
         const x = clientX - gifWidth / 2;
-        const y = clientY - gifHeight + verticalOffset;
+        const y =
+          (clientY ?? (rect ? rect.top : window.innerHeight / 2)) -
+          gifHeight +
+          verticalOffset;
         hoverGif.style.transform = `translate(${Math.round(x)}px, ${Math.round(
           Math.max(y, 12)
         )}px)`;
@@ -141,7 +146,13 @@ import catSleepGif from "../assets/catsleeping.gif";
         if (!hoverGif.classList.contains("visible")) return;
         if (pendingFrame) cancelAnimationFrame(pendingFrame);
         pendingFrame = requestAnimationFrame(() => {
-          positionAboveText(event);
+          positionAboveText(
+            {
+              clientX: event.clientX,
+              currentTarget: lastTrigger,
+            },
+            { lockY: true }
+          );
           pendingFrame = 0;
         });
       };
