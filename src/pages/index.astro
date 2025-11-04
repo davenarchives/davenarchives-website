@@ -1,0 +1,478 @@
+---
+import tvFrame from "../assets/retrotelevision.png";
+import catPlayGif from "../assets/cattyping.gif";
+import catSleepGif from "../assets/catsleeping.gif";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>davenarchives</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Montserrat:wght@400;500;600;700;800&family=Palanquin+Dark:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="page">
+      <header class="site-header">
+        <div class="logo">
+          <svg
+            class="logo-mark"
+            viewBox="0 0 48 48"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path
+              d="M6 17h36l-18-9-18 9zm6 3v15h6V20h-6zm10 0v15h4V20h-4zm8 0v15h6V20h-6zM8 38v-3h32v3H8z"
+              fill="#f8b318"
+            />
+          </svg>
+          <span class="logo-type">DAVENARCHIVES</span>
+        </div>
+        <nav class="site-nav">
+          <a href="#projects">projects</a>
+          <a href="#blogs">blogs</a>
+          <label class="search">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                d="M15.5 15.5L21 21"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+              <circle
+                cx="11"
+                cy="11"
+                r="6"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+            </svg>
+            <input type="search" placeholder="Search" />
+          </label>
+        </nav>
+      </header>
+      <main class="hero">
+        <section class="hero-copy">
+          <h1>
+            <span class="line">THE ART OF</span>
+            <span class="line line--accent">VIBE CODING.</span>
+          </h1>
+          <p class="tagline">
+            <span class="tagline-line">Turn syntax errors into happy accidents –</span>
+            <span class="tagline-line tagline-line--accent">
+              <span class="highlight highlight--yellow hover-gif-trigger" data-gif="play">vibe harder</span>,
+              <span class="highlight highlight--pink hover-gif-trigger" data-gif="sleep">code faster.</span>
+            </span>
+          </p>
+          <a class="cta" href="#start">LEARN MORE</a>
+        </section>
+        <section class="hero-visual" aria-label="Retro television">
+          <img class="tv" src={tvFrame.src} alt="" role="presentation" />
+        </section>
+      </main>
+      <div
+        class="hover-gif"
+        id="hover-gif"
+        data-gif-play={catPlayGif.src}
+        data-gif-sleep={catSleepGif.src}
+        aria-hidden="true"
+      >
+        <img src={catPlayGif.src} alt="Cat typing enthusiastically" />
+      </div>
+    </div>
+  </body>
+  <script type="module">
+    const triggers = document.querySelectorAll(".hover-gif-trigger");
+    const hoverGif = document.querySelector("#hover-gif");
+    const hoverGifImage = hoverGif?.querySelector("img");
+
+    const gifSources = {
+      play: hoverGif?.dataset.gifPlay || (hoverGifImage?.src ?? ""),
+      sleep: hoverGif?.dataset.gifSleep || (hoverGifImage?.src ?? ""),
+    };
+
+    if (triggers.length && hoverGif && hoverGifImage) {
+      let gifWidth = 0;
+      let gifHeight = 0;
+      let lastTrigger = null;
+      let pendingFrame = 0;
+
+      const measureGif = () => {
+        gifWidth = hoverGifImage.offsetWidth || hoverGifImage.naturalWidth || 0;
+        gifHeight = hoverGifImage.offsetHeight || hoverGifImage.naturalHeight || 0;
+      };
+
+      if (hoverGifImage.complete) {
+        measureGif();
+      } else {
+        hoverGifImage.addEventListener("load", measureGif, { once: true });
+      }
+
+      const verticalOffset = 36;
+
+      const positionAboveText = (event) => {
+        if (!gifWidth || !gifHeight) measureGif();
+        const target = event?.currentTarget || lastTrigger;
+        const rect = target?.getBoundingClientRect();
+        const clientX =
+          event?.clientX ??
+          (rect ? rect.left + rect.width / 2 : window.innerWidth / 2);
+        const clientY = event?.clientY ?? (rect ? rect.top : window.innerHeight / 2);
+        const x = clientX - gifWidth / 2;
+        const y = clientY - gifHeight + verticalOffset;
+        hoverGif.style.transform = `translate(${Math.round(x)}px, ${Math.round(
+          Math.max(y, 12)
+        )}px)`;
+      };
+
+      const handleMouseMove = (event) => {
+        if (!hoverGif.classList.contains("visible")) return;
+        if (pendingFrame) cancelAnimationFrame(pendingFrame);
+        pendingFrame = requestAnimationFrame(() => {
+          positionAboveText(event);
+          pendingFrame = 0;
+        });
+      };
+
+      const handleViewportChange = () => {
+        if (!lastTrigger) return;
+        positionAboveText({ currentTarget: lastTrigger });
+      };
+
+      const handleEnter = (event) => {
+        const target = event.currentTarget;
+        const gifType = target.getAttribute("data-gif");
+        const nextSrc = gifType ? gifSources[gifType] : gifSources.play;
+        if (nextSrc && hoverGifImage.src !== nextSrc) {
+          hoverGifImage.src = nextSrc;
+          measureGif();
+        }
+        lastTrigger = target;
+        hoverGif.classList.add("visible");
+        positionAboveText(event);
+        window.addEventListener("mousemove", handleMouseMove);
+        window.addEventListener("resize", handleViewportChange);
+        window.addEventListener("scroll", handleViewportChange, { passive: true });
+      };
+
+      const handleLeave = () => {
+        hoverGif.classList.remove("visible");
+        if (pendingFrame) {
+          cancelAnimationFrame(pendingFrame);
+          pendingFrame = 0;
+        }
+        lastTrigger = null;
+        window.removeEventListener("mousemove", handleMouseMove);
+        window.removeEventListener("resize", handleViewportChange);
+        window.removeEventListener("scroll", handleViewportChange);
+      };
+
+      triggers.forEach((trigger) => {
+        trigger.addEventListener("mouseenter", handleEnter);
+        trigger.addEventListener("mouseleave", handleLeave);
+        trigger.addEventListener("focus", handleEnter);
+        trigger.addEventListener("blur", handleLeave);
+      });
+    }
+  </script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --navy: #0c1b3a;
+      --off-white: #f4f6fa;
+      --yellow: #f8b318;
+      --accent-yellow: #f39212;
+      --pink: #f25497;
+      --green: #1fd46b;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      background: var(--navy);
+      color: var(--off-white);
+      min-height: 100%;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 1200px;
+      padding: 3.5rem 4.5rem 5rem;
+    }
+
+    .site-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 5rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .logo-type {
+      font-size: 1.25rem;
+    }
+
+    .logo-mark {
+      width: 42px;
+      height: 42px;
+      display: block;
+    }
+
+    .site-nav {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      font-weight: 600;
+      font-size: 1.05rem;
+    }
+
+    .site-nav a {
+      color: var(--off-white);
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .site-nav a:hover {
+      opacity: 0.75;
+    }
+
+    .search {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      border: 2px solid var(--accent-yellow);
+      border-radius: 4px;
+      padding: 0.35rem 0.8rem;
+      color: var(--off-white);
+      min-width: 200px;
+      font-size: 0.95rem;
+    }
+
+    .search input {
+      background: transparent;
+      border: 0;
+      color: inherit;
+      font: inherit;
+      width: 100%;
+      outline: none;
+    }
+
+    .search input::placeholder {
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(20rem, 30rem) minmax(0, 1fr);
+      align-items: center;
+      gap: clamp(3rem, 8vw, 6rem);
+    }
+
+    .hero-copy {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+      gap: 1.4rem;
+      justify-self: start;
+      max-width: 28.5rem;
+      width: 100%;
+    }
+
+    .hero-copy h1 {
+      margin: 0;
+      font-size: clamp(3.2rem, 4.4vw, 4.8rem);
+      text-transform: uppercase;
+      line-height: 1.05;
+      letter-spacing: 0.012em;
+      font-family: "Lilita One", cursive;
+      font-weight: 400;
+      width: 100%;
+      text-align: left;
+    }
+
+    .hero-copy h1 .line {
+      display: block;
+    }
+
+    .hero-copy h1 .line--accent {
+      color: var(--accent-yellow);
+    }
+
+    .hero-copy .tagline {
+      margin: 0;
+      font-size: 1.2rem;
+      line-height: 1.4;
+      color: #9aa6bf;
+      max-width: 26.5rem;
+      text-align: left;
+      font-family: "Palanquin Dark", sans-serif;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      display: grid;
+      row-gap: 0.25rem;
+      width: 100%;
+    }
+
+    .hero-copy .tagline .tagline-line {
+      display: block;
+    }
+
+    .hero-copy .tagline .tagline-line--accent {
+      justify-self: start;
+      text-align: left;
+      width: 100%;
+    }
+
+    .highlight {
+      font-weight: 700;
+    }
+
+    .highlight--yellow {
+      color: var(--accent-yellow);
+    }
+
+    .highlight--pink {
+      color: var(--pink);
+    }
+
+    .hover-gif {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      transform: translate(-9999px, -9999px);
+      transition: opacity 0.2s ease;
+      opacity: 0;
+      z-index: 30;
+    }
+
+    .hover-gif.visible {
+      opacity: 1;
+    }
+
+    .hover-gif img {
+      width: 140px;
+      height: auto;
+      filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.35));
+    }
+
+    .cta {
+      display: inline-block;
+      background: var(--green);
+      align-self: flex-start;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 0.48rem 1.55rem;
+      border-radius: 4px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      font-size: 0.92rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      margin-top: 0.9rem;
+    }
+
+    .cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(31, 212, 107, 0.3);
+    }
+
+    .hero-visual {
+      position: relative;
+      width: 100%;
+      max-width: 470px;
+      margin-left: auto;
+    }
+
+    .hero-visual img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .hero-visual .tv {
+      position: relative;
+      z-index: 2;
+    }
+
+    @media (max-width: 960px) {
+      .page {
+        padding: 2.5rem;
+      }
+
+      .site-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+
+      .hero-visual {
+        margin: 0;
+        justify-self: center;
+      }
+
+      .cta {
+        align-self: center;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .page {
+        padding: 2rem 1.5rem 3.5rem;
+      }
+
+      .site-nav {
+        flex-wrap: wrap;
+        gap: 1.25rem;
+      }
+
+      .search {
+        width: 100%;
+      }
+
+      .hero-copy h1 {
+        font-size: clamp(2.4rem, 8vw, 3.2rem);
+      }
+
+      .hero-copy .tagline {
+        font-size: 1.15rem;
+      }
+
+    }
+  </style>
+</html>
