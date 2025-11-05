@@ -1,11 +1,32 @@
 ---
-const { catPlaySrc, catSleepSrc } = Astro.props;
+type HoverGifProps = {
+  catPlaySrc: string;
+  catSleepSrc: string;
+  centerGifSrc?: string;
+  vibeGifSrc?: string;
+  tomorrowGifSrc?: string;
+};
+
+const {
+  catPlaySrc,
+  catSleepSrc,
+  centerGifSrc,
+  vibeGifSrc,
+  tomorrowGifSrc,
+} =
+  Astro.props as HoverGifProps;
+const centerGifSource = centerGifSrc ?? catSleepSrc ?? catPlaySrc;
+const vibeGifSource = vibeGifSrc ?? catPlaySrc;
+const tomorrowGifSource = tomorrowGifSrc ?? catSleepSrc ?? catPlaySrc;
 ---
 <div
   class="hover-gif"
   id="hover-gif"
   data-gif-play={catPlaySrc}
   data-gif-sleep={catSleepSrc}
+  data-gif-center={centerGifSource}
+  data-gif-vibe={vibeGifSource}
+  data-gif-tomorrow={tomorrowGifSource}
   aria-hidden="true"
 >
   <img src={catPlaySrc} alt="Cat typing enthusiastically" />

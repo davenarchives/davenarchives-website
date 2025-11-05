@@ -8,6 +8,9 @@ import tvFrame from "../assets/retrotelevision.png";
 import retroCatBoom from "../assets/retrocatboom.png";
 import catPlayGif from "../assets/cattyping.gif";
 import catSleepGif from "../assets/catsleeping.gif";
+import centerDivGif from "../assets/centerdiv.gif";
+import vibeGif from "../assets/vibe.gif";
+import tomorrowGif from "../assets/tomorrow.gif";
 import "../styles/landing.css";
 
 const panelConfigs = [
@@ -18,7 +21,7 @@ const panelConfigs = [
     body: [
       { content: "You've watched 999 hours of JavaScript tutorials..." },
       {
-        content: `but still can't <span class="tutorial-banner__accent">CENTER A DIV.</span>`,
+        content: `but still can't <span class="tutorial-banner__accent hover-gif-trigger" data-gif="center">CENTER A DIV.</span>`,
         modifier: "tutorial-banner__body--tight",
       },
     ],
@@ -34,7 +37,7 @@ const panelConfigs = [
     body: [
       { content: "Embrace the chaos." },
       {
-        content: `Welcome to <span>VIBE CODING.</span>`,
+        content: `Welcome to <span class="hover-gif-trigger" data-gif="vibe">VIBE CODING.</span>`,
         modifier: "solution-banner__body--accent",
       },
     ],
@@ -49,7 +52,7 @@ const panelConfigs = [
     eyebrow: "STOP WATCHING",
     body: [
       {
-        content: `Tutorials you'll forget <span class="stop-banner__accent">TOMORROW.</span>`,
+        content: `Tutorials you'll forget <span class="stop-banner__accent hover-gif-trigger" data-gif="tomorrow" data-gif-width="290" data-gif-offset="26">TOMORROW.</span>`,
       },
     ],
     footer: {
@@ -99,6 +102,12 @@ const catPlaySrc =
   typeof catPlayGif === "string" ? catPlayGif : catPlayGif?.src ?? catPlayGif;
 const catSleepSrc =
   typeof catSleepGif === "string" ? catSleepGif : catSleepGif?.src ?? catSleepGif;
+const centerGifSrc =
+  typeof centerDivGif === "string" ? centerDivGif : centerDivGif?.src ?? centerDivGif;
+const vibeGifSrc =
+  typeof vibeGif === "string" ? vibeGif : vibeGif?.src ?? vibeGif;
+const tomorrowGifSrc =
+  typeof tomorrowGif === "string" ? tomorrowGif : tomorrowGif?.src ?? tomorrowGif;
 ---
 <div id="landing-page" class="page">
   <Header />
@@ -106,7 +115,13 @@ const catSleepSrc =
   {panelConfigs.map((panel) => (
     <CalloutSection config={panel} />
   ))}
-  <HoverGif catPlaySrc={catPlaySrc} catSleepSrc={catSleepSrc} />
+  <HoverGif
+    catPlaySrc={catPlaySrc}
+    catSleepSrc={catSleepSrc}
+    centerGifSrc={centerGifSrc}
+    vibeGifSrc={vibeGifSrc}
+    tomorrowGifSrc={tomorrowGifSrc}
+  />
   <Footer />
 </div>
 <script is:inline>
@@ -156,12 +171,19 @@ const catSleepSrc =
       const gifSources = {
         play: hoverGif.dataset.gifPlay || hoverGifImage.src,
         sleep: hoverGif.dataset.gifSleep || hoverGifImage.src,
+        center: hoverGif.dataset.gifCenter || hoverGifImage.src,
+        vibe: hoverGif.dataset.gifVibe || hoverGifImage.src,
+        tomorrow: hoverGif.dataset.gifTomorrow || hoverGifImage.src,
       };
 
       let gifWidth = 0;
       let gifHeight = 0;
       let lastTrigger = null;
       let pendingFrame = 0;
+      const defaultOffset = 12;
+      const defaultWidth = 240;
+      let currentOffset = defaultOffset;
+      hoverGif.style.setProperty("--hover-gif-width", `${defaultWidth}px`);
 
       const measureGif = () => {
         gifWidth =
@@ -172,6 +194,15 @@ const catSleepSrc =
           hoverGifImage.offsetHeight ||
           hoverGifImage.naturalHeight ||
           gifHeight;
+      };
+
+      const applyWidth = (widthValue) => {
+        const resolvedWidth =
+          typeof widthValue === "number" && Number.isFinite(widthValue)
+            ? widthValue
+            : defaultWidth;
+        hoverGif.style.setProperty("--hover-gif-width", `${resolvedWidth}px`);
+        measureGif();
       };
 
       if (hoverGifImage.complete) {
@@ -197,8 +228,11 @@ const catSleepSrc =
             rect?.top ??
             window.innerHeight / 2;
         const x = clientX - gifWidth / 2;
-        const fallbackY = rect ? rect.top - gifHeight + 50 : hoverGif.offsetTop;
-        const y = clientY !== null ? clientY - gifHeight + 50 : fallbackY;
+        const verticalOffset = currentOffset;
+        const baseTop =
+          rect?.top ??
+          (clientY !== null ? clientY : window.innerHeight / 2);
+        const y = baseTop - gifHeight + verticalOffset;
         hoverGif.style.transform = `translate3d(${x}px, ${y}px, 0)`;
       };
 
@@ -209,7 +243,16 @@ const catSleepSrc =
         const gifKey = trigger.dataset.gif;
         const nextSrc = gifKey ? gifSources[gifKey] : null;
         if (nextSrc && hoverGifImage.src !== nextSrc) {
+          const handleLoad = () => {
+            measureGif();
+            if (hoverGif.classList.contains("visible")) {
+              positionAboveHighlight(null);
+            }
+          };
+          hoverGifImage.addEventListener("load", handleLoad, { once: true });
           hoverGifImage.src = nextSrc;
+        } else {
+          measureGif();
         }
       };
 
@@ -217,6 +260,16 @@ const catSleepSrc =
         const trigger = event.currentTarget;
         if (!(trigger instanceof HTMLElement)) return;
         lastTrigger = trigger;
+        const widthAttr = trigger.dataset.gifWidth;
+        const offsetAttr = trigger.dataset.gifOffset;
+        const parsedWidth =
+          typeof widthAttr === "string" ? parseFloat(widthAttr) : NaN;
+        const parsedOffset =
+          typeof offsetAttr === "string" ? parseFloat(offsetAttr) : NaN;
+        currentOffset = Number.isFinite(parsedOffset)
+          ? parsedOffset
+          : defaultOffset;
+        applyWidth(Number.isFinite(parsedWidth) ? parsedWidth : null);
         updateGif(event);
         positionAboveHighlight(event);
         hoverGif.classList.add("visible");
@@ -225,6 +278,7 @@ const catSleepSrc =
 
       const hideGif = () => {
         lastTrigger = null;
+        currentOffset = defaultOffset;
         hoverGif.classList.remove("visible");
         hoverGif.setAttribute("aria-hidden", "true");
       };
@@ -294,3 +348,8 @@ const catSleepSrc =
     }
   })();
 </script>
+
+
+
+
+
