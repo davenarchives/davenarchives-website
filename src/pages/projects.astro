@@ -1,0 +1,40 @@
+---
+import Header from "../components/Header.astro";
+import "../styles/landing.css";
+import "../styles/projects.css";
+
+const placeholders = Array.from({ length: 8 });
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>projects | davenarchives</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Montserrat:wght@400;500;600;700;800&family=Palanquin+Dark:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="page projects-page">
+      <Header active="projects" />
+      <main class="projects-content">
+        <header class="projects-header">
+          <h1>PROJECTS</h1>
+          <p>my personal projects</p>
+        </header>
+        <section class="projects-grid" aria-label="Project list">
+          {placeholders.map((_, index) => (
+            <article
+              class="project-card"
+              aria-label={`Project placeholder ${index + 1}`}
+            ></article>
+          ))}
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
