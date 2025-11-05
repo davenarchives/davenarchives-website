@@ -5,6 +5,9 @@ type HoverGifProps = {
   centerGifSrc?: string;
   vibeGifSrc?: string;
   tomorrowGifSrc?: string;
+  barelyWorksGifSrc?: string;
+  breakingThemGifSrc?: string;
+  haveFunGifSrc?: string;
 };
 
 const {
@@ -13,11 +16,17 @@ const {
   centerGifSrc,
   vibeGifSrc,
   tomorrowGifSrc,
+  barelyWorksGifSrc,
+  breakingThemGifSrc,
+  haveFunGifSrc,
 } =
   Astro.props as HoverGifProps;
 const centerGifSource = centerGifSrc ?? catSleepSrc ?? catPlaySrc;
 const vibeGifSource = vibeGifSrc ?? catPlaySrc;
 const tomorrowGifSource = tomorrowGifSrc ?? catSleepSrc ?? catPlaySrc;
+const barelyWorksGifSource = barelyWorksGifSrc ?? centerGifSrc ?? catPlaySrc;
+const breakingThemGifSource = breakingThemGifSrc ?? catSleepSrc ?? catPlaySrc;
+const haveFunGifSource = haveFunGifSrc ?? vibeGifSrc ?? catPlaySrc;
 ---
 <div
   class="hover-gif"
@@ -27,7 +36,11 @@ const tomorrowGifSource = tomorrowGifSrc ?? catSleepSrc ?? catPlaySrc;
   data-gif-center={centerGifSource}
   data-gif-vibe={vibeGifSource}
   data-gif-tomorrow={tomorrowGifSource}
+  data-gif-barely={barelyWorksGifSource}
+  data-gif-breaking={breakingThemGifSource}
+  data-gif-havefun={haveFunGifSource}
   aria-hidden="true"
 >
   <img src={catPlaySrc} alt="Cat typing enthusiastically" />
 </div>
+

@@ -11,6 +11,9 @@ import catSleepGif from "../assets/catsleeping.gif";
 import centerDivGif from "../assets/centerdiv.gif";
 import vibeGif from "../assets/vibe.gif";
 import tomorrowGif from "../assets/tomorrow.gif";
+import barelyWorksGif from "../assets/barelyworks.gif";
+import breakingThemGif from "../assets/breakingthem.gif";
+import haveFunGif from "../assets/havefun.gif";
 import "../styles/landing.css";
 
 const panelConfigs = [
@@ -66,10 +69,10 @@ const panelConfigs = [
     eyebrow: "START BUILDING",
     body: [
       {
-        content: `Stuff that <span class="build-banner__accent">BARELY WORKS</span> &mdash; and fix it live.`,
+        content: `Stuff that <span class="build-banner__accent hover-gif-trigger" data-gif="barely" data-gif-width="260" data-gif-offset="24">BARELY WORKS</span> &mdash; and fix it live.`,
       },
       {
-        content: `Learn coding fundamentals by <span class="build-banner__accent">BREAKING THEM.</span>`,
+        content: `Learn coding fundamentals by <span class="build-banner__accent hover-gif-trigger" data-gif="breaking" data-gif-width="250" data-gif-offset="44">BREAKING THEM.</span>`,
         modifier: "build-banner__body--accent",
       },
     ],
@@ -84,7 +87,7 @@ const panelConfigs = [
     eyebrow: "HAVE FUN",
     body: [
       {
-        content: `Stop learning. <span class="fun-banner__accent">START DOING.</span>`,
+        content: `Stop learning. <span class="fun-banner__accent hover-gif-trigger" data-gif="havefun" data-gif-width="280" data-gif-offset="34">START DOING.</span>`,
       },
       { content: "Make weird stuff that works!" },
     ],
@@ -108,6 +111,16 @@ const vibeGifSrc =
   typeof vibeGif === "string" ? vibeGif : vibeGif?.src ?? vibeGif;
 const tomorrowGifSrc =
   typeof tomorrowGif === "string" ? tomorrowGif : tomorrowGif?.src ?? tomorrowGif;
+const barelyWorksGifSrc =
+  typeof barelyWorksGif === "string"
+    ? barelyWorksGif
+    : barelyWorksGif?.src ?? barelyWorksGif;
+const breakingThemGifSrc =
+  typeof breakingThemGif === "string"
+    ? breakingThemGif
+    : breakingThemGif?.src ?? breakingThemGif;
+const haveFunGifSrc =
+  typeof haveFunGif === "string" ? haveFunGif : haveFunGif?.src ?? haveFunGif;
 ---
 <div id="landing-page" class="page">
   <Header />
@@ -121,6 +134,9 @@ const tomorrowGifSrc =
     centerGifSrc={centerGifSrc}
     vibeGifSrc={vibeGifSrc}
     tomorrowGifSrc={tomorrowGifSrc}
+    barelyWorksGifSrc={barelyWorksGifSrc}
+    breakingThemGifSrc={breakingThemGifSrc}
+    haveFunGifSrc={haveFunGifSrc}
   />
   <Footer />
 </div>
@@ -174,6 +190,9 @@ const tomorrowGifSrc =
         center: hoverGif.dataset.gifCenter || hoverGifImage.src,
         vibe: hoverGif.dataset.gifVibe || hoverGifImage.src,
         tomorrow: hoverGif.dataset.gifTomorrow || hoverGifImage.src,
+        barely: hoverGif.dataset.gifBarely || hoverGifImage.src,
+        breaking: hoverGif.dataset.gifBreaking || hoverGifImage.src,
+        havefun: hoverGif.dataset.gifHavefun || hoverGifImage.src,
       };
 
       let gifWidth = 0;
@@ -348,6 +367,11 @@ const tomorrowGifSrc =
     }
   })();
 </script>
+
+
+
+
+
 
 
 
