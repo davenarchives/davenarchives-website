@@ -1,0 +1,28 @@
+---
+const { tvFrameSrc } = Astro.props;
+---
+<main class="hero">
+  <section class="hero-copy">
+    <h1>
+      <span class="line">THE ART OF</span>
+      <span class="line line--accent">VIBE CODING.</span>
+    </h1>
+    <p class="tagline">
+      <span class="tagline-line">
+        Turn syntax errors into happy accidents -
+      </span>
+      <span class="tagline-line tagline-line--accent">
+        <span class="highlight highlight--yellow hover-gif-trigger" data-gif="play">
+          vibe harder
+        </span>, 
+        <span class="highlight highlight--pink hover-gif-trigger" data-gif="sleep">
+          code faster.
+        </span>
+      </span>
+    </p>
+    <a class="cta" href="#start">LEARN MORE</a>
+  </section>
+  <section class="hero-visual" aria-label="Retro television">
+    <img class="tv" src={tvFrameSrc} alt="" role="presentation" />
+  </section>
+</main>

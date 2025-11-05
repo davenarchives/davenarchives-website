@@ -34,6 +34,15 @@
       max-width: 1200px;
       padding: 3.5rem 4.5rem 5rem;
     }
+    .site-footer {
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(244, 246, 250, 0.18);
+      text-align: center;
+      font-size: 0.95rem;
+      color: rgba(244, 246, 250, 0.7);
+      letter-spacing: 0.02em;
+    }
 
     .site-header {
       display: flex;

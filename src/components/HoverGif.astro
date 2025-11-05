@@ -1,0 +1,12 @@
+---
+const { catPlaySrc, catSleepSrc } = Astro.props;
+---
+<div
+  class="hover-gif"
+  id="hover-gif"
+  data-gif-play={catPlaySrc}
+  data-gif-sleep={catSleepSrc}
+  aria-hidden="true"
+>
+  <img src={catPlaySrc} alt="Cat typing enthusiastically" />
+</div>

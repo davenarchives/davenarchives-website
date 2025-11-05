@@ -1,0 +1,32 @@
+---
+const { config } = Astro.props;
+const { id, variant, eyebrow, body, footer } = config;
+const sectionClassName = `callout-section ${variant}-section reveal-on-scroll`;
+const bannerClassName = `callout-banner ${variant}-banner`;
+const eyebrowClassName = `callout-banner__eyebrow ${variant}-banner__eyebrow`;
+const footerClassName = `callout-banner__footer ${variant}-banner__footer`;
+const footerLinkClassName = `callout-banner__footer-link ${variant}-banner__footer-link`;
+---
+<section id={id} class={sectionClassName}>
+  <div class={bannerClassName}>
+    <p class={eyebrowClassName} data-reveal-order="1">
+      {eyebrow}
+    </p>
+    {body.map((line, index) => (
+      <p
+        class={[
+          "callout-banner__body",
+          `${variant}-banner__body`,
+          line.modifier ?? "",
+        ].filter(Boolean).join(" ")}
+        data-reveal-order={index + 2}
+        set:html={line.content}
+      />
+    ))}
+    <p class={footerClassName} data-reveal-order={body.length + 2}>
+      <a class={footerLinkClassName} href={footer.href}>
+        {footer.content}
+      </a>
+    </p>
+  </div>
+</section>
