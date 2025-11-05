@@ -1,5 +1,12 @@
 ---
-const { tvFrameSrc } = Astro.props;
+type HeroProps = {
+  tvFrameSrc: string;
+  retroCatSrc: string;
+};
+
+const { tvFrameSrc, retroCatSrc } = Astro.props as HeroProps;
+const defaultAlt = "Illustration of a retro television set";
+const retroCatAlt = "Pixel cat popping out of a retro screen";
 ---
 <main class="hero">
   <section class="hero-copy">
@@ -23,6 +30,18 @@ const { tvFrameSrc } = Astro.props;
     <a class="cta" href="#start">LEARN MORE</a>
   </section>
   <section class="hero-visual" aria-label="Retro television">
-    <img class="tv" src={tvFrameSrc} alt="" role="presentation" />
+    <img
+      class="tv"
+      src={tvFrameSrc}
+      data-default-src={tvFrameSrc}
+      data-default-alt={defaultAlt}
+      data-alt-src={retroCatSrc}
+      data-alt-alt={retroCatAlt}
+      alt={defaultAlt}
+      role="button"
+      tabindex="0"
+      aria-pressed="false"
+      aria-label="Toggle retro television animation"
+    />
   </section>
 </main>

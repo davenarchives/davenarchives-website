@@ -477,6 +477,14 @@
     .hero-visual .tv {
       position: relative;
       z-index: 2;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      outline: none;
+    }
+
+    .hero-visual .tv:focus-visible {
+      box-shadow: 0 0 0 4px rgba(31, 212, 107, 0.45);
+      transform: translateY(-4px);
     }
 
     .callout-section {

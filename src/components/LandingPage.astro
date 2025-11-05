@@ -5,6 +5,7 @@ import CalloutSection from "./CalloutSection.astro";
 import HoverGif from "./HoverGif.astro";
 import Footer from "./Footer.astro";
 import tvFrame from "../assets/retrotelevision.png";
+import retroCatBoom from "../assets/retrocatboom.png";
 import catPlayGif from "../assets/cattyping.gif";
 import catSleepGif from "../assets/catsleeping.gif";
 import "../styles/landing.css";
@@ -92,6 +93,8 @@ const panelConfigs = [
 ];
 
 const tvFrameSrc = typeof tvFrame === "string" ? tvFrame : tvFrame?.src ?? tvFrame;
+const retroCatSrc =
+  typeof retroCatBoom === "string" ? retroCatBoom : retroCatBoom?.src ?? retroCatBoom;
 const catPlaySrc =
   typeof catPlayGif === "string" ? catPlayGif : catPlayGif?.src ?? catPlayGif;
 const catSleepSrc =
@@ -99,7 +102,7 @@ const catSleepSrc =
 ---
 <div id="landing-page" class="page">
   <Header />
-  <Hero tvFrameSrc={tvFrameSrc} />
+  <Hero tvFrameSrc={tvFrameSrc} retroCatSrc={retroCatSrc} />
   {panelConfigs.map((panel) => (
     <CalloutSection config={panel} />
   ))}
@@ -110,6 +113,40 @@ const catSleepSrc =
   (() => {
     const page = document.getElementById("landing-page");
     if (!page) return;
+
+    const tvImage = page.querySelector(".hero-visual .tv");
+    if (tvImage instanceof HTMLImageElement) {
+      const defaultSrc = tvImage.dataset.defaultSrc || tvImage.currentSrc || tvImage.src;
+      const defaultAlt = tvImage.dataset.defaultAlt || tvImage.alt;
+      const altSrc = tvImage.dataset.altSrc;
+      const altAlt = tvImage.dataset.altAlt || defaultAlt;
+
+      if (altSrc) {
+        let isAlt = false;
+        const applyState = (showAlternate) => {
+          tvImage.src = showAlternate ? altSrc : defaultSrc;
+          tvImage.alt = showAlternate ? altAlt : defaultAlt;
+          tvImage.setAttribute("aria-pressed", showAlternate ? "true" : "false");
+        };
+
+        const toggleImage = () => {
+          isAlt = !isAlt;
+          applyState(isAlt);
+        };
+
+        tvImage.addEventListener("click", (event) => {
+          event.preventDefault();
+          toggleImage();
+        });
+
+        tvImage.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            toggleImage();
+          }
+        });
+      }
+    }
 
     const triggers = Array.from(page.querySelectorAll(".hover-gif-trigger"));
     const hoverGif = page.querySelector("#hover-gif");
