@@ -197,8 +197,8 @@
     }
 
     .tutorial-banner__body--tight {
-      margin-top: -0.45rem;
-      margin-bottom: -0.15rem;
+      margin-top: 0;
+      margin-bottom: 0;
     }
 
     .tutorial-banner__accent {
@@ -209,7 +209,7 @@
     }
 
     .tutorial-banner__footer {
-      margin-top: -0.1rem;
+      margin-top: 0;
     }
 
     .tutorial-banner__footer-link {
@@ -499,9 +499,11 @@
 
     .callout-banner {
       width: min(760px, 100%);
-      display: grid;
-      gap: clamp(1.6rem, 3.2vw, 2.1rem);
-      justify-items: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      --banner-gap: clamp(2rem, 4vw, 3rem);
+      --body-line-gap: 0;
     }
 
     .callout-banner__eyebrow {
@@ -525,8 +527,16 @@
       line-height: 1.55;
     }
 
+    .callout-banner > * + * {
+      margin-top: var(--banner-gap);
+    }
+
+    .callout-banner__body + .callout-banner__body {
+      margin-top: var(--body-line-gap);
+    }
+
     .callout-banner__footer {
-      margin: 0;
+      margin: var(--banner-gap) 0 0;
       font-size: clamp(1.12rem, 2vw, 1.38rem);
       color: #ffffff;
       font-weight: 700;
@@ -572,7 +582,7 @@
       }
 
       .callout-banner {
-        gap: clamp(1.6rem, 6vw, 2.1rem);
+        --banner-gap: clamp(1.8rem, 6vw, 2.6rem);
       }
     }
 
@@ -603,7 +613,7 @@
       }
 
       .callout-banner {
-        gap: clamp(1.5rem, 6vw, 1.9rem);
+        --banner-gap: clamp(1.5rem, 6vw, 2.2rem);
       }
 
       .callout-banner__eyebrow {
@@ -621,8 +631,8 @@
       }
 
       .tutorial-banner__body--tight {
-        margin-top: -0.3rem;
-        margin-bottom: -0.06rem;
+        margin-top: 0;
+        margin-bottom: 0;
       }
 
       .solution-banner__body--accent {
