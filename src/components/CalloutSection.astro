@@ -1,5 +1,27 @@
 ---
-const { config } = Astro.props;
+type CalloutBodyLine = {
+  content: string;
+  modifier?: string;
+};
+
+type CalloutFooter = {
+  href: string;
+  content: string;
+};
+
+type CalloutConfig = {
+  id: string;
+  variant: string;
+  eyebrow: string;
+  body: CalloutBodyLine[];
+  footer: CalloutFooter;
+};
+
+type Props = {
+  config: CalloutConfig;
+};
+
+const { config } = Astro.props as Props;
 const { id, variant, eyebrow, body, footer } = config;
 const sectionClassName = `callout-section ${variant}-section reveal-on-scroll`;
 const bannerClassName = `callout-banner ${variant}-banner`;
@@ -12,17 +34,21 @@ const footerLinkClassName = `callout-banner__footer-link ${variant}-banner__foot
     <p class={eyebrowClassName} data-reveal-order="1">
       {eyebrow}
     </p>
-    {body.map((line, index) => (
-      <p
-        class={[
-          "callout-banner__body",
-          `${variant}-banner__body`,
-          line.modifier ?? "",
-        ].filter(Boolean).join(" ")}
-        data-reveal-order={index + 2}
-        set:html={line.content}
-      />
-    ))}
+    {body.map((line: CalloutBodyLine, index: number) => {
+      const bodyClasses = [
+        "callout-banner__body",
+        `${variant}-banner__body`,
+        line.modifier ?? "",
+      ].filter(Boolean).join(" ");
+
+      return (
+        <p
+          class={bodyClasses}
+          data-reveal-order={index + 2}
+          set:html={line.content}
+        ></p>
+      );
+    })}
     <p class={footerClassName} data-reveal-order={body.length + 2}>
       <a class={footerLinkClassName} href={footer.href}>
         {footer.content}

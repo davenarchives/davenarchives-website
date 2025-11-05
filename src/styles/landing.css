@@ -425,7 +425,7 @@
       position: fixed;
       inset: 0;
       pointer-events: none;
-      transform: translate(-9999px, -9999px);
+      transform: translate3d(-9999px, -9999px, 0);
       transition: opacity 0.2s ease;
       opacity: 0;
       z-index: 30;

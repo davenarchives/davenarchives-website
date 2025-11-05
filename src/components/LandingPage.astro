@@ -143,7 +143,7 @@ const catSleepSrc =
         hoverGifImage.addEventListener("load", measureGif, { once: true });
       }
 
-      const positionAboveText = (event, { lockY = false } = {}) => {
+      const positionAboveHighlight = (event, { lockY = false } = {}) => {
         if (!gifWidth || !gifHeight) measureGif();
         const currentTarget =
           event && event.currentTarget instanceof HTMLElement
@@ -160,8 +160,9 @@ const catSleepSrc =
             rect?.top ??
             window.innerHeight / 2;
         const x = clientX - gifWidth / 2;
-        const y = clientY !== null ? clientY - gifHeight - 16 : hoverGif.offsetTop;
-        hoverGif.style.transform = `translate(${x}px, ${y}px)`;
+        const fallbackY = rect ? rect.top - gifHeight + 50 : hoverGif.offsetTop;
+        const y = clientY !== null ? clientY - gifHeight + 50 : fallbackY;
+        hoverGif.style.transform = `translate3d(${x}px, ${y}px, 0)`;
       };
 
       const updateGif = (event) => {
@@ -180,7 +181,7 @@ const catSleepSrc =
         if (!(trigger instanceof HTMLElement)) return;
         lastTrigger = trigger;
         updateGif(event);
-        positionAboveText(event);
+        positionAboveHighlight(event);
         hoverGif.classList.add("visible");
         hoverGif.setAttribute("aria-hidden", "false");
       };
@@ -195,13 +196,13 @@ const catSleepSrc =
         if (!hoverGif.classList.contains("visible")) return;
         pendingFrame = pendingFrame || requestAnimationFrame(() => {
           pendingFrame = 0;
-          positionAboveText(event, { lockY: true });
+          positionAboveHighlight(event, { lockY: true });
         });
       };
 
       const handleViewportChange = () => {
         if (!hoverGif.classList.contains("visible")) return;
-        positionAboveText(null);
+        positionAboveHighlight(null);
       };
 
       triggers.forEach((trigger) => {
