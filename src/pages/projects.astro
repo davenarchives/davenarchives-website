@@ -8,6 +8,9 @@ import pdFlashgenImage from "../assets/project-card/pdflashgen.png";
 import happyBirdImage from "../assets/project-card/happybird.png";
 import ticTacToeImage from "../assets/project-card/tictactoe.png";
 import chattRoomImage from "../assets/project-card/chatroom.png";
+import draftedImage from "../assets/project-card/drafted.png";
+import liveAgeClockImage from "../assets/project-card/liveageclock.png";
+import imgBackgroundRemoverImage from "../assets/project-card/imgbgremover.png";
 import devCheatSheetsImage from "../assets/project-card/devcheatsheets.png";
 import "../styles/landing.css";
 import "../styles/projects.css";
@@ -85,6 +88,33 @@ const featuredProjects: FeaturedProject[] = [
     image: devCheatSheetsImage,
     tags: ["html", "css", "javascript"],
   },
+  {
+    id: "drafted",
+    type: "featured",
+    title: "DRAFTED",
+    description:
+      "Anonymous message-sharing web app embedded with Spotify music link.",
+    image: draftedImage,
+    tags: ["php", "mysql", "html", "css", "javascript"],
+  },
+  {
+    id: "live-age-clock",
+    type: "featured",
+    title: "LIVE AGE CLOCK",
+    description:
+      "A web tool that calculates and continuously displays a person's age based on their birthdate.",
+    image: liveAgeClockImage,
+    tags: ["html", "css", "javascript"],
+  },
+  {
+    id: "img-background-remover",
+    type: "featured",
+    title: "IMG BG REMOVER",
+    description:
+      "A single-page web application that removes image backgrounds using the remove.bg REST API.",
+    image: imgBackgroundRemoverImage,
+    tags: ["html", "css", "javascript"],
+  },
 ];
 
 const placeholderProjects: PlaceholderProject[] = Array.from(
@@ -123,7 +153,7 @@ const projects: Project[] = [...featuredProjects, ...placeholderProjects];
       <main class="projects-content">
         <header class="projects-header">
           <h1>PROJECTS</h1>
-          <p>my personal projects</p>
+          <p>projects I developed or worked on with others</p>
         </header>
         <section class="projects-grid" aria-label="Project list">
           {projects.map((project, index) => {
