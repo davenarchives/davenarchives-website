@@ -62,13 +62,13 @@
 - Mounts `/static` for generated decks and placeholder assets.
 - Exposes `POST /generate` expecting `{ "topic": "<string>" }`.
 - Returns:
-  ```
-  {
-    "ok": true,
-    "download_url": "/static/generated/the-future-of-ai.pptx",
-    "filename": "the-future-of-ai.pptx"
-  }
-  ```
+```json
+{
+  "ok": true,
+  "download_url": "/static/generated/the-future-of-ai.pptx",
+  "filename": "the-future-of-ai.pptx"
+}
+```
 - Responds with 400 on validation errors and 500 for unhandled exceptions (bubbles up friendly messages to the SPA).
 
 **Supporting modules**
@@ -82,12 +82,12 @@
 ## Configuration
 
 ### Frontend `.env`
-```
+```env
 VITE_API_BASE=http://127.0.0.1:8000
 ```
 
 ### Backend `.env`
-```
+```env
 GEMINI_API_KEY=your-google-generative-ai-key
 UNSPLASH_ACCESS_KEY=your-unsplash-access-key
 GEMINI_MODEL=models/gemini-2.5-flash
@@ -101,7 +101,7 @@ ALLOWED_ORIGINS=http://localhost:5173,https://your-domain.example
 ## Local Development
 
 ### 1. API
-```
+```bash
 cd presentation_generator
 python -m venv .venv
 .venv\Scripts\activate    # Windows
@@ -113,7 +113,7 @@ uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 - Update `ALLOWED_ORIGINS` if you expose the API on a different host.
 
 ### 2. SPA
-```
+```bash
 cd frontend
 npm install
 npm run dev
