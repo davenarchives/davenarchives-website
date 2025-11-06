@@ -1,6 +1,15 @@
 ---
-import ProjectsPageLayout from "../components/ProjectsPageLayout.astro";
-import { getProjectsPage } from "../data/projects";
+import ProjectsPageLayout from "../../../components/ProjectsPageLayout.astro";
+import {
+  getProjectsPage,
+  pageNumbers,
+} from "../../../data/projects";
+
+export function getStaticPaths() {
+  return pageNumbers.map((pageNumber) => ({
+    params: { page: pageNumber.toString() },
+  }));
+}
 
 const baseProjectsPath = "/projects";
 const buildPageHref = (pageNumber: number) =>
@@ -8,13 +17,15 @@ const buildPageHref = (pageNumber: number) =>
     ? baseProjectsPath
     : `${baseProjectsPath}/page/${pageNumber}`;
 
-const currentPageParam = Astro.url.searchParams.get("page");
-const requestedPage = currentPageParam
-  ? Number.parseInt(currentPageParam, 10)
-  : 1;
+const requestedPageParam = Astro.params.page ?? "1";
+const requestedPage = Number.parseInt(requestedPageParam, 10);
 const pageData = getProjectsPage(requestedPage);
 
-if (requestedPage > 1) {
+if (!Number.isFinite(requestedPage) || requestedPage < 1) {
+  return Astro.redirect(buildPageHref(pageData.currentPage));
+}
+
+if (pageData.currentPage !== requestedPage) {
   return Astro.redirect(buildPageHref(pageData.currentPage));
 }
 

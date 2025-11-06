@@ -1,0 +1,191 @@
+---
+import Header from "./Header.astro";
+import Footer from "./Footer.astro";
+import BackToTop from "./BackToTop.astro";
+import type { ProjectsPageData } from "../data/projects";
+import { projectsPerPage } from "../data/projects";
+import "../styles/landing.css";
+import "../styles/projects.css";
+
+export interface PaginationLink {
+  pageNumber: number;
+  href: string;
+  isActive: boolean;
+}
+
+export interface Props {
+  pageData: ProjectsPageData;
+  paginationLinks: PaginationLink[];
+  firstHref: string;
+  prevHref: string;
+  nextHref: string;
+  lastHref: string;
+  isFirstPage: boolean;
+  isLastPage: boolean;
+}
+
+const {
+  pageData,
+  paginationLinks,
+  firstHref,
+  prevHref,
+  nextHref,
+  lastHref,
+  isFirstPage,
+  isLastPage,
+} = Astro.props;
+
+const { currentPage, projects } = pageData;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>projects | davenarchives</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Montserrat:wght@400;500;600;700;800&family=Palanquin+Dark:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <div class="page projects-page">
+      <Header active="projects" />
+      <main class="projects-content">
+        <header class="projects-header">
+          <h1>PROJECTS</h1>
+          <p>projects I developed or worked on with others</p>
+        </header>
+        <section class="projects-grid" aria-label="Project list">
+          {projects.map((project, index) => {
+            if (project.type === "featured") {
+              const imageMeta = project.image;
+
+              return (
+                <article
+                  class="project-card project-card--featured"
+                  aria-labelledby={`${project.id}-title`}
+                >
+                  <div class="project-card__media" role="presentation">
+                    <img
+                      src={imageMeta.src}
+                      alt={`${project.title} project preview`}
+                      loading="lazy"
+                      width={imageMeta.width ?? 1024}
+                      height={imageMeta.height ?? 768}
+                    />
+                  </div>
+                  <div class="project-card__body">
+                    <h2 id={`${project.id}-title`}>{project.title}</h2>
+                    <p>{project.description}</p>
+                    <ul class="project-card__tags" aria-label="Technology tags">
+                      {project.tags.map((tag) => (
+                        <li>
+                          <span>#{tag}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </article>
+              );
+            }
+
+            const placeholderPosition =
+              index + 1 + (currentPage - 1) * projectsPerPage;
+
+            return (
+              <article
+                class="project-card project-card--placeholder"
+                aria-label={`Project placeholder ${placeholderPosition}`}
+              >
+                <div class="project-card__placeholder">
+                  <span>coming soon</span>
+                </div>
+              </article>
+            );
+          })}
+        </section>
+        <nav class="projects-pagination" aria-label="Projects pages">
+          <ul>
+            <li>
+              <a
+                class={`projects-pagination__link projects-pagination__link--icon${
+                  isFirstPage ? " projects-pagination__link--disabled" : ""
+                }`}
+                href={firstHref}
+                aria-label="First page"
+                aria-disabled={isFirstPage ? "true" : undefined}
+                tabindex={isFirstPage ? "-1" : undefined}
+              >
+                &laquo;&laquo;
+              </a>
+            </li>
+            <li>
+              <a
+                class={`projects-pagination__link projects-pagination__link--icon${
+                  isFirstPage ? " projects-pagination__link--disabled" : ""
+                }`}
+                href={prevHref}
+                aria-label="Previous page"
+                aria-disabled={isFirstPage ? "true" : undefined}
+                tabindex={isFirstPage ? "-1" : undefined}
+              >
+                &laquo;
+              </a>
+            </li>
+            {paginationLinks.map((link) => (
+              <li>
+                <a
+                  class={`projects-pagination__link${
+                    link.isActive ? " projects-pagination__link--active" : ""
+                  }`}
+                  href={link.href}
+                  aria-current={link.isActive ? "page" : undefined}
+                >
+                  {link.pageNumber}
+                </a>
+              </li>
+            ))}
+            <li>
+              <a
+                class={`projects-pagination__link projects-pagination__link--icon${
+                  isLastPage ? " projects-pagination__link--disabled" : ""
+                }`}
+                href={nextHref}
+                aria-label="Next page"
+                aria-disabled={isLastPage ? "true" : undefined}
+                tabindex={isLastPage ? "-1" : undefined}
+              >
+                &raquo;
+              </a>
+            </li>
+            <li>
+              <a
+                class={`projects-pagination__link projects-pagination__link--icon${
+                  isLastPage ? " projects-pagination__link--disabled" : ""
+                }`}
+                href={lastHref}
+                aria-label="Last page"
+                aria-disabled={isLastPage ? "true" : undefined}
+                tabindex={isLastPage ? "-1" : undefined}
+              >
+                &raquo;&raquo;
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </main>
+      <Footer />
+      <BackToTop />
+    </div>
+  </body>
+</html>
