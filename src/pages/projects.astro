@@ -5,6 +5,8 @@ import Footer from "../components/Footer.astro";
 import pptxGeneratorImage from "../assets/project-card/pptxgenerator.png";
 import pdFlashgenImage from "../assets/project-card/pdflashgen.png";
 import happyBirdImage from "../assets/project-card/happybird.png";
+import ticTacToeImage from "../assets/project-card/tictactoe.png";
+import chattRoomImage from "../assets/project-card/chatroom.png";
 import "../styles/landing.css";
 import "../styles/projects.css";
 
@@ -24,7 +26,7 @@ type PlaceholderProject = {
 
 type Project = FeaturedProject | PlaceholderProject;
 
-const placeholderCount = 5;
+const placeholderCount = 3;
 
 const featuredProjects: FeaturedProject[] = [
   {
@@ -34,7 +36,7 @@ const featuredProjects: FeaturedProject[] = [
     description:
       "Full-stack React + FastAPI app that turns any topic into an AI-generated PPTX deck with Gemini.",
     image: pptxGeneratorImage,
-    tags: ["react", "fastapi", "geminiapi", "python", "pptx"],
+    tags: ["react", "fastapi", "gemini", "python", "pptx"],
   },
   {
     id: "pdflashgen",
@@ -53,6 +55,24 @@ const featuredProjects: FeaturedProject[] = [
       "Happy Bird is a static web remake of Flappy Bird that runs entirely in vanilla HTML/CSS/JS.",
     image: happyBirdImage,
     tags: ["html", "css", "javascript"],
+  },
+  {
+    id: "tictactoe",
+    type: "featured",
+    title: "TIC TAC TOE",
+    description:
+      "A full-stack application that matches players in a live lobby with multi-round modes to choose from.",
+    image: ticTacToeImage,
+    tags: ["nodejs", "express", "socket.io", "html", "css", "javascript"],
+  },
+  {
+    id: "chattroom",
+    type: "featured",
+    title: "CHATTROOM",
+    description:
+      "Real-time group chat app using React + Firebase with Google sign-in, and profanity filtering.",
+    image: chattRoomImage,
+    tags: ["react", "firebase", "jest"],
   },
 ];
 
