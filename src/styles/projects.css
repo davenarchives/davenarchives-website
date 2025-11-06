@@ -390,11 +390,20 @@
       color: #f15a24;
     }
 
+    .project-writeup__subtitle-card {
+      background: #121a23;
+      border-radius: 0;
+      border-left: 6px solid #f15a24;
+      padding: clamp(1.1rem, 3vw, 1.5rem) clamp(1.3rem, 3.5vw, 1.9rem);
+      width: 100%;
+      max-width: none;
+    }
+
     .project-writeup__subtitle {
       margin: 0;
       font-size: clamp(1rem, 2vw, 1.2rem);
-      color: rgba(244, 246, 250, 0.7);
-      max-width: 60ch;
+      color: rgba(244, 246, 250, 0.78);
+      max-width: none;
     }
 
     .project-article {
