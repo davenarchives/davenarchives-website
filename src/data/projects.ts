@@ -16,6 +16,7 @@ export type FeaturedProject = {
   description: string;
   image: ImageMetadata;
   tags: string[];
+  href?: string;
 };
 
 export type PlaceholderProject = {
@@ -36,6 +37,7 @@ export const featuredProjects: FeaturedProject[] = [
       "Full-stack React + FastAPI app that turns any topic into an AI-generated PPTX deck with Gemini.",
     image: pptxGeneratorImage,
     tags: ["react", "fastapi", "gemini", "python", "unsplash"],
+    href: "/projects/pptx-generator",
   },
   {
     id: "pdflashgen",

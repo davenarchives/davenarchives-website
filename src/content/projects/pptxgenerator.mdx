@@ -1,0 +1,173 @@
+# PPTX Presentation Generator
+
+> A React + FastAPI toolchain that turns any topic into a polished seven-slide deck powered by AI copy and curated imagery.
+
+## Project Snapshot
+| Category | Details |
+| --- | --- |
+| Stack | React 19, Vite 7, FastAPI, Python 3.11, python-pptx |
+| AI | Google Gemini (text) + Unsplash (imagery) with graceful fallbacks |
+| Deliverables | Downloadable `.pptx` file, cached assets under `/static/generated` |
+| Status | Production ready, actively maintained |
+
+---
+
+## Why It Matters
+- **Minutes to Slides:** Automates narrative structure, visual research, and deck assembly for rapid iteration.
+- **Deterministic Output:** When AI services fail, the generator substitutes readable copy and placeholder art to keep the deck usable.
+- **Deployment Friendly:** Stateless FastAPI app plus static React build means easy hosting (Vercel, Render, Fly.io, and more).
+- **Extensible:** Modular pipeline (content -> layout -> media) lets you swap AI providers, slide templates, or output formats.
+
+---
+
+## System Overview
+- **Client (React SPA)** posts the topic to `POST /generate` on the FastAPI service.
+- **Slide content** is produced by `content.generate_slide_content()` using Gemini, with a deterministic library standing in whenever Gemini is unavailable.
+- **Deck assembly** happens inside `ppt_builder.create_ppt()`, which applies `python-pptx` layouts and calls `images.get_image()` to source Unsplash imagery or render a placeholder.
+- **Response** returns a `download_url`, allowing the frontend to fetch and save the finished `.pptx`.
+
+### Feature Highlights
+- Reactive UI shows progress, completion states, and download readiness.
+- Topic validation and sanitised filenames on both client and server.
+- Layout engine enforces accessible typography and consistent slide structure.
+- Image selection prefers Unsplash search; a deterministic PNG fallback keeps slides visual.
+
+---
+
+## Frontend (React + Vite)
+
+**Key directories**
+- `frontend/src/App.jsx` - form workflow, optimistic UI, download orchestration.
+- `frontend/src/api.js` - Axios client, base URL resolution via `VITE_API_BASE`, FileSaver integration.
+- `frontend/src/App.css` - gradient panels, responsive breakpoints, focus-visible styles.
+
+**Flow**
+1. User submits a topic (minimum 3 characters).
+2. UI swaps to a progress banner while the request is in flight.
+3. On success, the generated deck card animates in with a download call to action.
+4. Fetch streams the `.pptx` file and FileSaver writes it locally.
+
+**Useful scripts**
+- `npm run dev` - Vite development server (`http://localhost:5173`).
+- `npm run build` - Production bundle in `frontend/dist`.
+- `npm run lint` - ESLint with React hooks plugin.
+- `npm run preview` - Serves the production build locally.
+
+---
+
+## Backend (FastAPI)
+
+**Entry point: `presentation_generator/app/main.py`**
+- Configures CORS using `ALLOWED_ORIGINS` (defaults cover localhost and Vercel preview).
+- Mounts `/static` for generated decks and placeholder assets.
+- Exposes `POST /generate` expecting `{ "topic": "<string>" }`.
+- Returns:
+  ```
+  {
+    "ok": true,
+    "download_url": "/static/generated/the-future-of-ai.pptx",
+    "filename": "the-future-of-ai.pptx"
+  }
+  ```
+- Responds with 400 on validation errors and 500 for unhandled exceptions (bubbles up friendly messages to the SPA).
+
+**Supporting modules**
+- `content.py` - Gemini prompt orchestration, JSON parsing safeguards, fallback copy library.
+- `ppt_builder.py` - Slide definitions (title, key points, quote, call-to-action) using `python-pptx`.
+- `images.py` - Unsplash search plus deterministic placeholder generator (Pillow) to avoid empty frames.
+- `utils.py` - Filename sanitiser, logging helpers.
+
+---
+
+## Configuration
+
+### Frontend `.env`
+```
+VITE_API_BASE=http://127.0.0.1:8000
+```
+
+### Backend `.env`
+```
+GEMINI_API_KEY=your-google-generative-ai-key
+UNSPLASH_ACCESS_KEY=your-unsplash-access-key
+GEMINI_MODEL=models/gemini-2.5-flash
+ALLOWED_ORIGINS=http://localhost:5173,https://your-domain.example
+```
+
+> **Heads-up:** Without keys the service still runs, but falls back to deterministic copy and placeholder art. Perfect for demos, better with real keys.
+
+---
+
+## Local Development
+
+### 1. API
+```
+cd presentation_generator
+python -m venv .venv
+.venv\Scripts\activate    # Windows
+# source .venv/bin/activate  # macOS/Linux
+pip install -r requirements.txt
+uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+```
+- Generated decks land in `app/static/generated/`.
+- Update `ALLOWED_ORIGINS` if you expose the API on a different host.
+
+### 2. SPA
+```
+cd frontend
+npm install
+npm run dev
+```
+- Access the UI at `http://localhost:5173`.
+- Adjust `VITE_API_BASE` if the backend URL changes.
+
+---
+
+## Deployment Notes
+- **Frontend:** `npm run build` then upload `frontend/dist/` to Vercel, Netlify, or static hosting.
+- **Backend:** Use `uvicorn` or `gunicorn` behind a process manager (for example `uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4`).
+- **Storage:** Persist `app/static/generated/` if you need long-lived downloads; otherwise schedule cleanup.
+- **Security:** Enforce HTTPS, restrict `ALLOWED_ORIGINS`, and keep API keys in a secrets manager.
+
+---
+
+## API Contract
+
+### `POST /generate`
+| Field | Type | Notes |
+| --- | --- | --- |
+| `topic` | string | Required, trimmed, 3-140 characters |
+
+**Responses**
+- `200 OK` - returns `download_url`, `filename`, and `ok: true`.
+- `400 Bad Request` - validation failure (empty or too-long topic).
+- `500 Internal Server Error` - surfaced error message (Gemini outage, Unsplash quota, and so on).
+
+### Downloading decks
+- The SPA uses the returned `download_url` and prepends the API base.
+- Downloads are streamed to keep memory low even for large decks.
+
+---
+
+## Extending the Project
+- Swap Gemini with OpenAI or Claude by updating `content.py` while keeping the same JSON contract.
+- Add speaker notes or alternate slide templates in `ppt_builder.py`.
+- Hook the generator into Slack or Discord bots by reusing the `/generate` endpoint.
+- Convert the deck output to PDF using `unoconv` or Microsoft Graph for enterprise scenarios.
+
+---
+
+## Quality and Observability
+- Logging distinguishes user errors (validation) from infrastructure issues (AI or network failures).
+- Health checks can be added via a simple `GET /health` route if you need uptime monitoring.
+- Consider adding Sentry or OpenTelemetry once deployed to production.
+
+---
+
+## Troubleshooting Quick Hits
+- **CORS errors:** Verify your frontend origin is present in `ALLOWED_ORIGINS`.
+- **Empty slides:** Confirm `GEMINI_API_KEY` is valid; fallback copy should still render, so check logs for template mismatches.
+- **Image failures:** Unsplash quotas reset hourly. Placeholder art should still appear; inspect `app/static/generated/images/`.
+- **File naming issues:** Ensure both `filenameFromTopic` (frontend) and `sanitize_filename` (backend) stay in sync when changing slug rules.
+
+Happy deck building!
