@@ -1,0 +1,93 @@
+# Happy Bird
+
+Arcade-style browser game inspired by Flappy Bird. Guide Happy Bird through an endless field of pipes, chase your high score, and enjoy a bit of comic relief via random video clips when you crash.
+
+## Features
+- Canvas-driven renderer with bespoke art style, dynamic background, and HUD overlays.
+- Responsive controls: tap/click, `Space`, or `ArrowUp` to flap; `P` to pause; `R` to restart once the skip window opens.
+- Progressive difficulty that ramps pipe speed with each point while keeping gaps fair.
+- Persistent best-score tracking via `localStorage`.
+- Polished audio experience with pooled sound effects for wing flaps, scoring, hits, and death.
+- Randomized "relapse" video player that appears on game over and unlocks skip after a short delay.
+- Automatic pause when the tab loses focus plus retina-friendly canvas resizing.
+
+## Tech Stack
+- HTML5 with semantic metadata and responsive layout.
+- CSS3 for layout, theming, and adaptive presentation.
+- Vanilla JavaScript (ES Modules) powering game logic, physics, rendering, audio, and state management.
+- Canvas 2D API for animation and collision feedback.
+- `<audio>` / `<video>` media elements for sound effects and game-over clips.
+
+## Getting Started
+1. **Clone or copy** this repository locally.
+2. **Serve the files** with any static web server (ES modules require HTTP, not `file://`):
+   ```bash
+   # from the project root
+   npx serve .
+   # or
+   python -m http.server 5173
+   ```
+3. **Open** the reported URL (e.g., `http://localhost:5173`) in a modern browser.
+4. **Start playing** by tapping/clicking the canvas or pressing `Space`.
+
+### Development Tips
+- Game configuration lives in `scripts/config.js`. Tweak gravity, pipe gap, spawn cadence, or death-video list there.
+- Assets:
+  - Audio clips: `game-audio/`
+  - Character art: `images/`
+  - Game-over videos: `relapse/`
+- The main entry point (`scripts/game.js`) wires together state, rendering, input handling, and the game loop. Supporting modules live under `scripts/game/`.
+
+## Project Structure
+```text
+.
+|-- index.html         # Landing page with canvas + video elements
+|-- styles/            # Global styling and responsive layout
+|-- scripts/
+|   |-- main.js        # Bootstraps the game on DOMContentLoaded
+|   |-- config.js      # Gameplay constants and asset lists
+|   |-- video.js       # Death-video controller with skip lock
+|   `-- game/          # Core game modules (state, renderer, pipes, bird, audio)
+|-- game-audio/        # Sound effects (wing, point, hit, die)
+|-- images/            # Visual assets such as the Happy Bird icon
+`-- relapse/           # Pool of MP4 clips played after a crash
+```
+
+## Controls
+- `Space`, `ArrowUp`, tap, or click: flap
+- `P`: toggle pause
+- `R`: reset after the skip delay once game over is reached
+
+## Configuration Highlights (`scripts/config.js`)
+- `WORLD.gravity`, `WORLD.jumpV`: tune feel of the bird's flight.
+- `WORLD.pipeGap`, `WORLD.pipeSpawnMsRange`: manage challenge and pacing.
+- `DEATH_VIDEOS`: update the playlist of clips shown on game over.
+- `DEATH_VIDEO_SKIP_DELAY_MS`: adjust how long players must watch before skipping.
+- `DIFFICULTY_CAP` and `WORLD.speedRampPerScore`: govern speed scaling over time.
+
+## License
+Licensed under the MIT License. See the inline text below and adapt the copyright holder.
+
+```
+MIT License
+
+Copyright (c) 2025 YOUR NAME
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```

@@ -2,8 +2,8 @@
 import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
 import BackToTop from "../../components/BackToTop.astro";
-import PDFlashGenContent from "../../content/projects/pdflashgen.mdx";
-import heroImage from "../../assets/project-card/pdflashgen.png";
+import HappyBirdContent from "../../content/projects/happybird.mdx";
+import heroImage from "../../assets/project-card/happybird.png";
 import "../../styles/landing.css";
 import "../../styles/projects.css";
 
@@ -19,7 +19,7 @@ const heroImageHeight =
     ? imageMeta.height
     : undefined;
 
-const techTags = ["nextjs", "react", "fastapi", "python", "gemini", "pypdf2"];
+const techTags = ["html5", "css3", "javascript", "canvas", "web-audio"];
 
 type ResourceLink = {
   icon: string;
@@ -31,7 +31,7 @@ const resourceLinks: ResourceLink[] = [
   {
     icon: "fa-solid fa-globe",
     label: "Project website",
-    href: "https://pdflashgen.vercel.app",
+    href: "https://happybird.vercel.app",
   },
 ];
 
@@ -42,12 +42,8 @@ type RepoLink = {
 
 const repoLinks: RepoLink[] = [
   {
-    label: "frontend",
-    href: "https://github.com/davenarchives/flashcard-generator-frontend",
-  },
-  {
-    label: "backend",
-    href: "https://github.com/davenarchives/flashcard-generator-backend",
+    label: "source code",
+    href: "https://github.com/davenarchives/flappy-bird",
   },
 ];
 
@@ -55,58 +51,32 @@ const tableOfContents = [
   {
     title: "Project Overview",
     items: [
-      { label: "Overview", href: "#overview" },
-      { label: "Workflow at a Glance", href: "#workflow-at-a-glance" },
-      { label: "Key Features", href: "#key-features" },
-      { label: "Architecture", href: "#architecture" },
-      { label: "Notable Modules", href: "#notable-modules" },
+      { label: "Happy Bird", href: "#happy-bird" },
+      { label: "Features", href: "#features" },
       { label: "Tech Stack", href: "#tech-stack" },
-      { label: "Frontend", href: "#frontend" },
-      { label: "Backend", href: "#backend" },
-      { label: "Tooling", href: "#tooling" },
-      { label: "System Requirements", href: "#system-requirements" },
+    ],
+  },
+  {
+    title: "Getting Started",
+    items: [
+      { label: "Getting Started", href: "#getting-started" },
+      { label: "Development Tips", href: "#development-tips" },
       { label: "Project Structure", href: "#project-structure" },
     ],
   },
   {
-    title: "Setup",
+    title: "Gameplay",
     items: [
-      { label: "Setup & Installation", href: "#setup--installation" },
-      { label: "Backend (FastAPI)", href: "#backend-fastapi" },
-      { label: "Frontend (Next.js)", href: "#frontend-nextjs" },
-      { label: "Running Locally", href: "#running-the-project-locally" },
-      { label: "Start the Backend", href: "#start-the-backend" },
-      { label: "Start the Frontend", href: "#start-the-frontend" },
+      { label: "Controls", href: "#controls" },
       {
-        label: "Environment Configuration",
-        href: "#environment-configuration",
+        label: "Configuration Highlights",
+        href: "#configuration-highlights-scriptsconfigjs",
       },
-    ],
-  },
-  {
-    title: "Technical Reference",
-    items: [
-      { label: "API Reference", href: "#api-reference" },
-      { label: "GET /", href: "#get-root" },
-      { label: "POST /summarize", href: "#post-summarize" },
-      { label: "Frontend Behavior", href: "#frontend-behavior" },
-      { label: "Data Model", href: "#data-model" },
-      { label: "Scripts & Tooling", href: "#scripts--tooling" },
-      {
-        label: "Frontend Scripts",
-        href: "#frontend-flashcard-ui-packagejson",
-      },
-      { label: "Backend Scripts", href: "#backend-1" },
     ],
   },
   {
     title: "Operations",
-    items: [
-      { label: "Testing & Quality", href: "#testing--quality" },
-      { label: "Deployment Notes", href: "#deployment-notes" },
-      { label: "Troubleshooting", href: "#troubleshooting" },
-      { label: "License", href: "#license" },
-    ],
+    items: [{ label: "License", href: "#license" }],
   },
 ];
 ---
@@ -115,7 +85,7 @@ const tableOfContents = [
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>PDFLASHGEN | davenarchives</title>
+    <title>Happy Bird | davenarchives</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -136,14 +106,14 @@ const tableOfContents = [
       <main class="project-detail-layout">
         <section
           class="project-showcase"
-          aria-label="Highlighted preview of the PDFLASHGEN project"
+          aria-label="Highlighted preview of the Happy Bird project"
         >
           <div class="project-showcase__frame">
             <img
               src={heroImageSrc}
               width={heroImageWidth}
               height={heroImageHeight}
-              alt="Preview of the PDFLASHGEN application"
+              alt="Gameplay screenshot of the Happy Bird arcade game"
               loading="lazy"
             />
           </div>
@@ -205,25 +175,28 @@ const tableOfContents = [
         <div class="project-detail__grid">
           <section class="project-writeup">
             <header class="project-writeup__header">
-              <h1 class="project-writeup__title" style="color: #e71c24;">
-                PDFLASHGEN
+              <h1
+                id="happy-bird"
+                class="project-writeup__title"
+                style="color: #e6d300;"
+              >
+                Happy Bird
               </h1>
               <div
                 class="project-writeup__subtitle-card"
-                style="border-left-color: #e71c24;"
+                style="border-left-color: #e6d300;"
               >
                 <p class="project-writeup__subtitle">
-                  Gemini-assisted study tool that converts uploaded lecture
-                  notes into interactive flashcards across a Next.js and FastAPI
-                  stack.
+                  Flappy Bird-inspired browser arcade built with a custom canvas
+                  engine, dynamic difficulty ramp, and comedic game-over clips.
                 </p>
               </div>
             </header>
             <article
               class="project-article project-article--detail"
-              aria-label="PDFLASHGEN project documentation"
+              aria-label="Happy Bird project documentation"
             >
-              <PDFlashGenContent />
+              <HappyBirdContent />
             </article>
           </section>
           <aside class="project-sidebar" aria-label="On this page">

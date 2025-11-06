@@ -57,6 +57,7 @@ export const featuredProjects: FeaturedProject[] = [
       "Happy Bird is a static web remake of Flappy Bird that runs entirely in vanilla HTML/CSS/JS.",
     image: happyBirdImage,
     tags: ["html", "css", "javascript"],
+    href: "/projects/happybird",
   },
   {
     id: "tictactoe",
