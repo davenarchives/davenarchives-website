@@ -30,11 +30,13 @@ type ResourceLink = {
 const resourceLinks: ResourceLink[] = [
   {
     icon: "fa-solid fa-globe",
-    label: "Live demo coming soon",
+    label: "Project website",
+    href: "https://pptxpresentify.vercel.app",
   },
   {
     icon: "fa-brands fa-github",
-    label: "Source available soon",
+    label: "GitHub repository",
+    href: "https://github.com/davenarchives/pptx-generator-ui",
   },
 ];
 
@@ -134,10 +136,23 @@ const tableOfContents = [
             </ul>
             <div class="project-resource-links" aria-label="Project resources">
               {resourceLinks.map((link) => (
-                <span class="project-resource-links__item" title={link.label}>
-                  <i class={link.icon} aria-hidden="true"></i>
-                  <span class="sr-only">{link.label}</span>
-                </span>
+                link.href ? (
+                  <a
+                    class="project-resource-links__item"
+                    title={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <i class={link.icon} aria-hidden="true"></i>
+                    <span class="sr-only">{link.label}</span>
+                  </a>
+                ) : (
+                  <span class="project-resource-links__item" title={link.label}>
+                    <i class={link.icon} aria-hidden="true"></i>
+                    <span class="sr-only">{link.label}</span>
+                  </span>
+                )
               ))}
             </div>
           </footer>

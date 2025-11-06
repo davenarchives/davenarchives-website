@@ -343,11 +343,14 @@
       align-items: center;
       justify-content: center;
       padding: 0.3rem;
+      text-decoration: none;
     }
 
-    .project-resource-links__item:hover {
+    .project-resource-links__item:hover,
+    .project-resource-links__item:focus-visible {
       color: #1fd46b;
       transform: translateY(-2px);
+      text-decoration: none;
     }
 
     .project-detail__grid {
