@@ -1,0 +1,66 @@
+---
+type ScrollBehaviorOption = "auto" | "smooth";
+
+type Props = {
+  threshold?: number;
+  behavior?: ScrollBehaviorOption;
+  ariaLabel?: string;
+};
+
+const {
+  threshold: thresholdProp,
+  behavior: behaviorProp = "smooth",
+  ariaLabel = "Back to top",
+} = Astro.props as Props;
+
+const thresholdValue =
+  typeof thresholdProp === "number" && Number.isFinite(thresholdProp)
+    ? thresholdProp
+    : 300;
+
+const normalizedBehavior: ScrollBehaviorOption =
+  behaviorProp === "auto" ? "auto" : "smooth";
+---
+
+<button
+  class="back-to-top"
+  type="button"
+  aria-label={ariaLabel}
+  data-threshold={thresholdValue}
+  data-behavior={normalizedBehavior}
+>
+  <i class="fa-solid fa-angle-up" aria-hidden="true"></i>
+</button>
+
+<script is:inline>
+  (() => {
+    const script = document.currentScript;
+    if (!script) return;
+
+    const button = script.previousElementSibling;
+    if (!(button instanceof HTMLButtonElement)) return;
+
+    const parseThreshold = (value) => {
+      const parsed = Number.parseFloat(value);
+      return Number.isFinite(parsed) ? parsed : 300;
+    };
+
+    const getBehavior = (value) =>
+      value === "auto" ? "auto" : "smooth";
+
+    const threshold = parseThreshold(button.dataset.threshold ?? "");
+    const behavior = getBehavior(button.dataset.behavior ?? "");
+
+    const toggleVisibility = () => {
+      const shouldShow = window.scrollY > threshold;
+      button.classList.toggle("back-to-top--visible", shouldShow);
+    };
+
+    button.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior });
+    });
+
+    window.addEventListener("scroll", toggleVisibility, { passive: true });
+    toggleVisibility();
+  })();
+</script>
