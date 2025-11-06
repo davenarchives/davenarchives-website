@@ -40,35 +40,49 @@ const resourceLinks: ResourceLink[] = [
 
 const tableOfContents = [
   {
-    title: "Overview",
+    title: "Project Overview",
     items: [
-      { label: "Project Snapshot", href: "#project-snapshot" },
-      { label: "Why It Matters", href: "#why-it-matters" },
-      { label: "System Overview", href: "#system-overview" },
+      { label: "Overview", href: "#overview" },
+      { label: "Core Features", href: "#core-features" },
+      { label: "System Architecture", href: "#system-architecture" },
+      { label: "Data Flow", href: "#data-flow" },
+      { label: "Project Structure", href: "#project-structure" },
+      { label: "Tech Stack", href: "#tech-stack" },
     ],
   },
   {
-    title: "Implementation",
+    title: "Setup",
     items: [
-      { label: "Frontend", href: "#frontend-react--vite" },
-      { label: "Backend", href: "#backend-fastapi" },
-      { label: "Configuration", href: "#configuration" },
-      { label: "Local Development", href: "#local-development" },
+      { label: "Prerequisites", href: "#prerequisites" },
+      { label: "Environment Variables", href: "#environment-variables" },
+      { label: "Setup & Installation", href: "#setup--installation" },
+      { label: "Backend Setup", href: "#backend" },
+      { label: "Frontend Setup", href: "#frontend" },
+      { label: "Running in Production", href: "#running-in-production" },
     ],
   },
   {
-    title: "Deployment",
+    title: "Technical Reference",
     items: [
-      { label: "Deployment Notes", href: "#deployment-notes" },
-      { label: "API Contract", href: "#api-contract" },
+      { label: "API Reference", href: "#api-reference" },
+      {
+        label: "Presentation Generation Details",
+        href: "#presentation-generation-details",
+      },
+      { label: "Quality & Tooling", href: "#quality--tooling" },
     ],
   },
   {
-    title: "Appendices",
+    title: "Operations",
     items: [
-      { label: "Extending the Project", href: "#extending-the-project" },
-      { label: "Quality & Observability", href: "#quality-and-observability" },
-      { label: "Troubleshooting", href: "#troubleshooting-quick-hits" },
+      { label: "Troubleshooting", href: "#troubleshooting" },
+      { label: "Maintenance Notes", href: "#maintenance-notes" },
+      {
+        label: "Future Enhancements",
+        href: "#future-enhancements-suggestions",
+      },
+      { label: "License", href: "#license" },
+      { label: "Support & Contribution", href: "#support--contribution" },
     ],
   },
 ];
@@ -132,7 +146,6 @@ const tableOfContents = [
         <div class="project-detail__grid">
           <section class="project-writeup">
             <header class="project-writeup__header">
-              <p class="project-writeup__eyebrow">case study</p>
               <h1 class="project-writeup__title">PPTX Generator</h1>
               <p class="project-writeup__subtitle">
                 Full-stack automation that builds AI-assisted presentation decks
