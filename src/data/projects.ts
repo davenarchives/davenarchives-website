@@ -47,6 +47,7 @@ export const featuredProjects: FeaturedProject[] = [
       "Transforms uploaded PDFs/TXTs lecture notes into Q and A flashcards with Gemini AI.",
     image: pdFlashgenImage,
     tags: ["nextjs", "react", "fastapi", "python", "gemini", "pypdf2"],
+    href: "/projects/pdflashgen",
   },
   {
     id: "happy-bird",

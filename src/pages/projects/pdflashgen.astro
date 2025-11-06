@@ -1,0 +1,256 @@
+---
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import BackToTop from "../../components/BackToTop.astro";
+import PDFlashGenContent from "../../content/projects/pdflashgen.mdx";
+import heroImage from "../../assets/project-card/pdflashgen.png";
+import "../../styles/landing.css";
+import "../../styles/projects.css";
+
+const imageMeta = heroImage;
+const heroImageSrc =
+  typeof imageMeta === "string" ? imageMeta : imageMeta?.src ?? imageMeta;
+const heroImageWidth =
+  typeof imageMeta === "object" && "width" in imageMeta
+    ? imageMeta.width
+    : undefined;
+const heroImageHeight =
+  typeof imageMeta === "object" && "height" in imageMeta
+    ? imageMeta.height
+    : undefined;
+
+const techTags = ["nextjs", "react", "fastapi", "python", "gemini", "pypdf2"];
+
+type ResourceLink = {
+  icon: string;
+  label: string;
+  href?: string;
+};
+
+const resourceLinks: ResourceLink[] = [
+  {
+    icon: "fa-solid fa-globe",
+    label: "Project website",
+    href: "https://pdflashgen.vercel.app",
+  },
+];
+
+type RepoLink = {
+  label: string;
+  href: string;
+};
+
+const repoLinks: RepoLink[] = [
+  {
+    label: "frontend",
+    href: "https://github.com/davenarchives/flashcard-generator-frontend",
+  },
+  {
+    label: "backend",
+    href: "https://github.com/davenarchives/flashcard-generator-backend",
+  },
+];
+
+const tableOfContents = [
+  {
+    title: "Project Overview",
+    items: [
+      { label: "Overview", href: "#1-overview" },
+      { label: "Workflow at a Glance", href: "#workflow-at-a-glance" },
+      { label: "Key Features", href: "#2-key-features" },
+      { label: "Architecture", href: "#3-architecture" },
+      { label: "Notable Modules", href: "#notable-modules" },
+      { label: "Tech Stack", href: "#4-tech-stack" },
+      { label: "Frontend", href: "#frontend" },
+      { label: "Backend", href: "#backend" },
+      { label: "Tooling", href: "#tooling" },
+      { label: "System Requirements", href: "#5-system-requirements" },
+      { label: "Project Structure", href: "#6-project-structure" },
+    ],
+  },
+  {
+    title: "Setup",
+    items: [
+      { label: "Setup & Installation", href: "#7-setup--installation" },
+      { label: "Backend (FastAPI)", href: "#71-backend-fastapi" },
+      { label: "Frontend (Next.js)", href: "#72-frontend-nextjs" },
+      { label: "Running Locally", href: "#8-running-the-project-locally" },
+      { label: "Start the Backend", href: "#81-start-the-backend" },
+      { label: "Start the Frontend", href: "#82-start-the-frontend" },
+      {
+        label: "Environment Configuration",
+        href: "#9-environment-configuration",
+      },
+    ],
+  },
+  {
+    title: "Technical Reference",
+    items: [
+      { label: "API Reference", href: "#10-api-reference" },
+      { label: "GET /", href: "#get-" },
+      { label: "POST /summarize", href: "#post-summarize" },
+      { label: "Frontend Behavior", href: "#11-frontend-behavior" },
+      { label: "Data Model", href: "#12-data-model" },
+      { label: "Scripts & Tooling", href: "#13-scripts--tooling" },
+      {
+        label: "Frontend Scripts",
+        href: "#frontend-flashcard-ui-packagejson",
+      },
+      { label: "Backend Scripts", href: "#backend-1" },
+    ],
+  },
+  {
+    title: "Operations",
+    items: [
+      { label: "Testing & Quality", href: "#14-testing--quality" },
+      { label: "Deployment Notes", href: "#15-deployment-notes" },
+      { label: "Troubleshooting", href: "#16-troubleshooting" },
+      { label: "License", href: "#17-license" },
+    ],
+  },
+];
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PDFLASHGEN | davenarchives</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Montserrat:wght@400;500;600;700;800&family=Palanquin+Dark:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <div class="page project-detail-page">
+      <Header active="projects" />
+      <main class="project-detail-layout">
+        <section
+          class="project-showcase"
+          aria-label="Highlighted preview of the PDFLASHGEN project"
+        >
+          <div class="project-showcase__frame">
+            <img
+              src={heroImageSrc}
+              width={heroImageWidth}
+              height={heroImageHeight}
+              alt="Preview of the PDFLASHGEN application"
+              loading="lazy"
+            />
+          </div>
+          <footer class="project-showcase__meta">
+            <ul class="project-tag-list" aria-label="Technology stack">
+              {techTags.map((tag) => (
+                <li>
+                  <span>#{tag}</span>
+                </li>
+              ))}
+            </ul>
+            <div class="project-resource-links" aria-label="Project resources">
+              {resourceLinks.map((link) => (
+                link.href ? (
+                  <a
+                    class="project-resource-links__item"
+                    title={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <i class={link.icon} aria-hidden="true"></i>
+                    <span class="sr-only">{link.label}</span>
+                  </a>
+                ) : (
+                  <span class="project-resource-links__item" title={link.label}>
+                    <i class={link.icon} aria-hidden="true"></i>
+                    <span class="sr-only">{link.label}</span>
+                  </span>
+                )
+              ))}
+              <details class="project-resource-links__dropdown">
+                <summary
+                  class="project-resource-links__item project-resource-links__item--dropdown"
+                  aria-label="GitHub repositories"
+                >
+                  <i class="fa-brands fa-github" aria-hidden="true"></i>
+                  <span class="sr-only">GitHub repositories</span>
+                </summary>
+                <ul class="project-resource-dropdown__list">
+                  {repoLinks.map((repo) => (
+                    <li>
+                      <a
+                        href={repo.href}
+                        title={repo.label}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {repo.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            </div>
+          </footer>
+        </section>
+
+        <div class="project-detail__grid">
+          <section class="project-writeup">
+            <header class="project-writeup__header">
+              <h1 class="project-writeup__title" style="color: #e71c24;">
+                PDFLASHGEN
+              </h1>
+              <div
+                class="project-writeup__subtitle-card"
+                style="border-left-color: #e71c24;"
+              >
+                <p class="project-writeup__subtitle">
+                  Gemini-assisted study tool that converts uploaded lecture
+                  notes into interactive flashcards across a Next.js and FastAPI
+                  stack.
+                </p>
+              </div>
+            </header>
+            <article
+              class="project-article project-article--detail"
+              aria-label="PDFLASHGEN project documentation"
+            >
+              <PDFlashGenContent />
+            </article>
+          </section>
+          <aside class="project-sidebar" aria-label="On this page">
+            <div class="project-sidebar__card">
+              <p class="project-sidebar__label">On this page</p>
+              <nav aria-label="Table of contents">
+                <ul class="project-toc">
+                  {tableOfContents.map((group) => (
+                    <li class="project-toc__group">
+                      <h2>{group.title}</h2>
+                      <ul>
+                        {group.items.map((item) => (
+                          <li>
+                            <a href={item.href}>{item.label}</a>
+                          </li>
+                        ))}
+                      </ul>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
+          </aside>
+        </div>
+      </main>
+      <Footer />
+      <BackToTop />
+    </div>
+  </body>
+</html>

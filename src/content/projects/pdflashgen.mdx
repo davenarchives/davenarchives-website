@@ -1,0 +1,232 @@
+# PDF Flashcard Generator 
+
+## 1. Overview
+Flashcard Generator is a full-stack study companion that turns lecture notes into interactive flashcards with help from Google's Gemini models. The FastAPI backend ingests PDF or text files, extracts readable content, and fans out concurrent Gemini requests to synthesize concise Q/A pairs. The Next.js frontend consumes the generated flashcards, persists them in the browser, and provides an accessible review workflow complete with progress tracking and PDF export.
+
+### Workflow at a Glance
+1. Learner uploads a PDF or TXT file via the web interface (drag-and-drop or file picker).
+2. The frontend forwards the document to the FastAPI `/summarize` endpoint as `multipart/form-data`.
+3. The backend extracts text (PyPDF2 for PDFs, UTF-8 decode for TXT) and chunks large payloads to respect the Gemini character limits.
+4. Chunked prompts are sent concurrently (capped to three outstanding requests) to the Gemini Flash model. Responses are merged, normalized, and returned as a single string.
+5. The frontend parses the AI response into structured `{ question, answer }` cards, deduplicates them, and stores a `FlashcardSet` in `localStorage`.
+6. Learners flip cards, mark them as learned, monitor progress, and optionally export decks as lightweight PDFs generated client-side.
+
+## 2. Key Features
+- **AI-powered flashcard generation** - Converts long-form lecture notes into standardized Q/A pairs using Gemini.
+- **Robust document ingestion** - Supports PDF and plain text uploads with drag-and-drop UX, keyboard access, and validation feedback.
+- **Chunked AI prompting** - Automatically splits large documents, maintains order, and limits concurrent Gemini calls to avoid throttling.
+- **Duplicate prevention** - Case-insensitive dedupe logic prevents repetitive cards when regenerating from similar material.
+- **Persistent study decks** - Stores multiple decks with import timestamps in `localStorage`; legacy single-deck data migrates automatically.
+- **Interactive study mode** - 3D flip animation, learned toggles, keyboard navigation, progress bar, and soft-empty states.
+- **PDF export** - Generates downloadable study packets without third-party PDF dependencies.
+- **Hosted backend compatibility** - Default API endpoint points to an Onrender deployment, with easy overrides for local development.
+
+## 3. Architecture
+| Layer | Technology | Responsibilities |
+|-------|------------|------------------|
+| **Frontend** | Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS 4 | Upload UX, flashcard parsing & rendering, state management, persistence, PDF export. |
+| **Backend** | FastAPI 0.118, Python 3.11+, PyPDF2, Google Generative AI SDK | File ingestion, text extraction, Gemini orchestration, error handling, REST API. |
+| **AI Provider** | Gemini 2.5 Flash | Generates question/answer flashcards from chunked lecture notes. |
+| **Storage** | Browser `localStorage` | Persists flashcard sets, learned state, and migration from earlier data model. |
+
+### Notable Modules
+- `flashcard-ui/src/app/page.tsx` - Orchestrates uploads, handles API responses, and manages which deck/card is active.
+- `flashcard-ui/src/hooks/useFlashcardSets.ts` - Centralized client state: selection, navigation, persistence, and learned toggles.
+- `flashcard-ui/src/lib/flashcards.ts` - Parsing, deduplication, storage migration, date formatting, and helper utilities.
+- `flashcard-ui/src/components/flashcards/*` - Presentation layer (Uploader, Imports list, Study panel, Flashcard item with 3D flip, PDF exporter).
+- `flashcard-app/main.py` - FastAPI application setup, CORS policy, Gemini prompt construction, text chunking, and `/summarize` endpoint.
+
+## 4. Tech Stack
+### Frontend
+- Next.js 15.5 (App Router) + React 19 + TypeScript 5
+- Tailwind CSS 4 with custom 3D transform styling (`globals.css`)
+- Axios for HTTP communication
+- Font Awesome 6 icon subsets for UI affordances
+
+### Backend
+- Python 3.11+ with FastAPI + Uvicorn
+- PyPDF2 for PDF text extraction
+- `google-generativeai` SDK for Gemini interactions
+- `python-dotenv` for configuration, `asyncio` for concurrency controls
+
+### Tooling
+- ESLint 9 + `eslint-config-next` for linting
+- PostCSS + Autoprefixer + Tailwind CLI build pipeline
+- `list_models_test.py` helper script for validating Gemini credentials
+
+## 5. System Requirements
+- **Node.js**: 18.18 or higher (Next.js 15 requirement)
+- **npm**: 9+ (bundled with Node 18+)
+- **Python**: 3.11 or higher
+- **pip**: 23+
+- **Google AI Studio** (Gemini) API key with access to `models/gemini-2.5-flash`
+- Optional: `uvicorn` CLI (`pip install uvicorn[standard]`)
+
+## 6. Project Structure
+```
+flashcard-app/
+|-- flashcard-app/              # FastAPI backend
+|   |-- main.py
+|   |-- requirements.txt
+|   |-- list_models_test.py
+|   \-- .env                    # GEMINI_API_KEY (user-provided)
+\-- flashcard-ui/               # Next.js frontend
+    |-- src/
+    |   |-- app/
+    |   |   |-- layout.tsx
+    |   |   |-- page.tsx
+    |   |   \-- globals.css
+    |   |-- components/flashcards/
+    |   |-- hooks/
+    |   \-- lib/
+    |-- public/
+    |-- LICENSE (MIT)
+    \-- README.md
+```
+
+## 7. Setup & Installation
+
+### 7.1 Backend (FastAPI)
+```bash
+# From flashcard-app/flashcard-app
+python -m venv .venv
+.venv\Scripts\activate        # Windows
+# source .venv/bin/activate   # macOS/Linux
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# Configure environment
+# Create a `.env` file in this directory and add GEMINI_API_KEY before starting the server.
+```
+
+> **Environment variable**: Add `GEMINI_API_KEY=your_gemini_key_here` to `.env`. Never commit real keys.
+
+### 7.2 Frontend (Next.js)
+```bash
+# From flashcard-app/flashcard-ui
+npm install
+```
+
+Tailwind CSS 4 uses the new PostCSS pipeline; no additional configuration is needed beyond the existing config files.
+
+## 8. Running the Project Locally
+
+### 8.1 Start the backend
+```bash
+cd flashcard-app/flashcard-app
+.venv\Scripts\activate  # or source .venv/bin/activate
+uvicorn main:app --reload --host 127.0.0.1 --port 8000
+```
+
+The FastAPI docs will be available at `http://127.0.0.1:8000/docs`.
+
+### 8.2 Start the frontend
+```bash
+cd flashcard-app/flashcard-ui
+npm run dev
+```
+
+Visit `http://localhost:3000`. The frontend expects the backend at `http://127.0.0.1:8000`. If you deploy elsewhere, update `API_ENDPOINT` in `src/app/page.tsx`.
+
+## 9. Environment Configuration
+| Variable | Location | Description |
+|----------|----------|-------------|
+| `GEMINI_API_KEY` | Backend `.env` or process env | Required for Gemini API calls. Obtain from Google AI Studio. |
+
+**Optional overrides**
+- `API_ENDPOINT` constant in `flashcard-ui/src/app/page.tsx` - point to a production backend (default: hosted Onrender URL).
+- Consider exposing the endpoint through an environment variable or runtime config if you plan to deploy multiple environments.
+
+## 10. API Reference
+
+### GET `/`
+- **Purpose**: Health check.
+- **Response**: `{"message": "AI Flashcard Generator backend is running!"}`
+
+### POST `/summarize`
+- **Purpose**: Generate flashcards from an uploaded document.
+- **Request**: `multipart/form-data` with a single field named `file` containing a `.pdf` or `.txt`.
+- **Response**:
+  - `200 OK`: `{"flashcards": "Q: ...\nA: ...\n\n..."}` - newline-delimited pairs.
+  - `{"error": "<message>"}` if extraction or AI generation fails.
+- **Behavior**:
+  - Empty or unreadable files return `"No readable text found in uploaded file."`
+  - Gemini errors are surfaced in the `error` field for easier troubleshooting.
+
+#### Example cURL
+```bash
+curl -X POST "http://127.0.0.1:8000/summarize" ^
+  -F "file=@lecture-notes.pdf" ^
+  | python -m json.tool
+```
+
+## 11. Frontend Behavior
+- **Flashcard parsing**: `parseFlashcards` handles both `Q:` / `A:` and `Question:` / `Answer:` formats, strips numbered list prefixes, and collapses extra whitespace.
+- **Deduplication**: `buildFlashcardsFromParsed` lowercases Q/A pairs to avoid duplicates and seeds each card with a unique ID.
+- **Persistence**: `useFlashcardSets` saves decks in `localStorage` under `flashcard-app:sets`, migrates any legacy single-deck storage, and keeps only the five most recent imports in the sidebar.
+- **Navigation**: The study panel exposes previous/next buttons, keyboard shortcut support on the card itself, and progress metrics (learned count + percentage).
+- **Export**: `FlashcardStudyPanel` generates a pure JavaScript PDF stream (Helvetica font, multi-page support) without external dependencies.
+- **Accessibility**: Buttons and interactive areas include ARIA labels, keyboard handlers, and hover/focus feedback.
+
+## 12. Data Model
+```ts
+type Flashcard = {
+  id: string;
+  question: string;
+  answer: string;
+  learned: boolean;
+};
+
+type FlashcardSet = {
+  id: string;
+  name: string;        // Source filename
+  importedAt: string;  // ISO timestamp
+  cards: Flashcard[];
+};
+```
+
+Cards marked as learned remain so across sessions because the state is persisted per set.
+
+## 13. Scripts & Tooling
+
+### Frontend (`flashcard-ui/package.json`)
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start Next.js development server with hot reload |
+| `npm run build` | Production build |
+| `npm run start` | Run the production build |
+| `npm run lint` | ESLint (Next.js rules + Tailwind plugin) |
+
+### Backend
+- `uvicorn main:app --reload` - start the API server during development.
+- `python list_models_test.py` - quick check that your Gemini API key can list available models.
+
+## 14. Testing & Quality
+- **Frontend**: Linting via `npm run lint`. Automated unit/UI tests are not yet included; consider adding Jest/Testing Library for component coverage and Playwright for end-to-end flows.
+- **Backend**: No automated tests today. Recommended next steps include pytest-based unit tests for `extract_text`, `chunk_text`, and prompt generation, plus integration tests that stub Gemini responses.
+- **Manual QA checklist**:
+  - Upload both PDF and TXT inputs.
+  - Confirm duplicate cards are removed.
+  - Verify learned state persists after refresh.
+  - Validate PDF export opens correctly.
+  - Confirm CORS headers allow the deployed frontend origin.
+
+## 15. Deployment Notes
+- **Backend**: Suitable for containers or PaaS (Render, Railway, Fly.io). Set `GEMINI_API_KEY` in environment variables. Consider enabling request timeouts and caching if scaling.
+- **Frontend**: Deployable on Vercel or any Node-compatible host. If you vary the backend URL per environment, promote `API_ENDPOINT` to a runtime environment variable (e.g., `process.env.NEXT_PUBLIC_API_URL`).
+- **Security**: Never expose the Gemini API key to the browser. The backend is responsible for all AI interactions.
+
+## 16. Troubleshooting
+- **401/403 from Gemini** - Ensure `GEMINI_API_KEY` is valid and has access to the `models/gemini-2.5-flash` model.
+- **Large PDF timeouts** - Increase `CHUNK_CHAR_LIMIT` or `MAX_CONCURRENT_REQUESTS` cautiously; defaults balance responsiveness and Gemini quotas.
+- **CORS errors** - Update the `allow_origins` list in `main.py` to include your deployed frontend domain.
+- **Frontend can't reach backend** - Update the `API_ENDPOINT` constant or surface it via environment variables when switching between local and hosted APIs.
+- **PDF export blank** - Browser must support `TextEncoder` (modern browsers do). Ensure at least one card exists before exporting.
+
+## 17. License
+This project is released under the **MIT License**. Refer to `flashcard-ui/LICENSE` for full terms. Copyright (c) 2025 Daven
+Austhine Sumagang.
+
+---
+
+For questions, feature ideas, or contributions, feel free to open issues or pull requests once version control is set up for the full project.
