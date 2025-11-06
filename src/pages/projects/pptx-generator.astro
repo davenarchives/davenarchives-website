@@ -33,10 +33,21 @@ const resourceLinks: ResourceLink[] = [
     label: "Project website",
     href: "https://pptxpresentify.vercel.app",
   },
+];
+
+type RepoLink = {
+  label: string;
+  href: string;
+};
+
+const repoLinks: RepoLink[] = [
   {
-    icon: "fa-brands fa-github",
-    label: "GitHub repository",
+    label: "frontend",
     href: "https://github.com/davenarchives/pptx-generator-ui",
+  },
+  {
+    label: "backend",
+    href: "https://github.com/davenarchives/pptx-generator-logic",
   },
 ];
 
@@ -154,6 +165,29 @@ const tableOfContents = [
                   </span>
                 )
               ))}
+              <details class="project-resource-links__dropdown">
+                <summary
+                  class="project-resource-links__item project-resource-links__item--dropdown"
+                  aria-label="GitHub repositories"
+                >
+                  <i class="fa-brands fa-github" aria-hidden="true"></i>
+                  <span class="sr-only">GitHub repositories</span>
+                </summary>
+                <ul class="project-resource-dropdown__list">
+                  {repoLinks.map((repo) => (
+                    <li>
+                      <a
+                        href={repo.href}
+                        title={repo.label}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {repo.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </details>
             </div>
           </footer>
         </section>
