@@ -82,7 +82,7 @@
     .site-nav a {
       color: var(--off-white);
       text-decoration: none;
-      transition: opacity 0.2s ease;
+      transition: color 0.2s ease, opacity 0.2s ease;
     }
 
     .site-nav a.is-active {
@@ -95,6 +95,31 @@
 
     .site-nav a:hover {
       opacity: 0.75;
+    }
+
+    .site-nav a[href="/projects"]:hover,
+    .site-nav a[href="/projects"]:focus-visible {
+      color: #1ed760;
+      opacity: 1;
+    }
+
+    .site-nav a[href="/projects"]:active {
+      color: var(--off-white);
+    }
+
+    .site-nav a[href="/projects"].is-active {
+      color: var(--off-white);
+    }
+
+    .site-nav a[href="/projects"].is-active:hover,
+    .site-nav a[href="/projects"].is-active:focus-visible {
+      color: #1ed760;
+    }
+
+    .site-nav a[href="#blogs"]:hover,
+    .site-nav a[href="#blogs"]:focus-visible {
+      color: #f04786;
+      opacity: 1;
     }
 
     .search {
