@@ -145,29 +145,16 @@ const tableOfContents = [
                   </span>
                 )
               ))}
-              <details class="project-resource-links__dropdown">
-                <summary
-                  class="project-resource-links__item project-resource-links__item--dropdown"
-                  aria-label="GitHub repositories"
-                >
-                  <i class="fa-brands fa-github" aria-hidden="true"></i>
-                  <span class="sr-only">GitHub repositories</span>
-                </summary>
-                <ul class="project-resource-dropdown__list">
-                  {repoLinks.map((repo) => (
-                    <li>
-                      <a
-                        href={repo.href}
-                        title={repo.label}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {repo.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </details>
+              <a
+                class="project-resource-links__item"
+                title="GitHub repository"
+                href="https://github.com/davenarchives/flappy-bird"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i class="fa-brands fa-github" aria-hidden="true"></i>
+                <span class="sr-only">GitHub repository</span>
+              </a>
             </div>
           </footer>
         </section>
