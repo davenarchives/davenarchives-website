@@ -1,0 +1,94 @@
+# Realtime Tic-Tac-Toe
+
+## Overview
+Realtime Tic-Tac-Toe is a lightweight Socket.IO-driven experience that keeps two players (and unlimited spectators) on the same board, scoreboard, and lobby timeline. The Node.js server runs an authoritative game loop that validates moves, rotates seats for multi-round series, and broadcasts deterministic updates, while the single-page HTML/CSS/JS client renders the lobby, voting screen, board, scoreboard, and celebration states with zero build tooling.
+
+## Features
+### Multiplayer Lobby & Matchmaking
+- Username-based join flow with validation, disabled controls during search, and a 10-second matchmaking countdown (`SEARCH_TIMEOUT_MS`).
+- Seat assignment for X and O happens server-side; extra users fall back to a spectator-friendly lobby that lists who is actively searching.
+- Automatic lobby reset if no opponent is found or if a seated player disconnects, with clear status copy for both players and spectators.
+
+### Game Mode Voting & Series Play
+- Four selectable modes (Blitz, Skirmish, Deathmatch, Random) surfaced through `.mode-card` buttons; Random rolls happen on the server to avoid disputes.
+- Vote tally mirrored across clients (`mode_votes`) and a lock-in broadcast (`mode_selected`) that announces the chosen best-of format.
+- Multi-round series rotate symbols every round to keep seats fair while tracking cumulative player1/player2 wins plus draws.
+
+### Authoritative Gameplay Loop
+- Server validates every `move` event, enforces turn order, computes wins/draws, and rejects stale clicks.
+- Auto round resets 1.5s after a result, emitting `next_round` plus a fresh `state` payload so UIs can rebuild the board and round indicator.
+- Series winner detection (`series_complete`) triggers celebrations, then `series_exit` returns both seats to the lobby so new players can join.
+
+### UX Polish & Accessibility
+- Responsive card layout with color-coded tags for X/O, semantic roles (`role="grid"`, `aria-live`) and keyboard-friendly buttons for every cell.
+- Lobby/game sections toggle visibility so spectators keep seeing matchmaking copy until a board is available.
+- Canvas-confetti celebration, Font Awesome icons, and modal messaging highlight key milestones while timers prevent flicker.
+
+## Project Structure
+```
+.
+|-- index.js             # Express + Socket.IO server, matchmaking, game loop, mode voting
+|-- index.html           # Single-page client UI + Socket.IO client logic
+|-- style.css            # Lobby, board, modal, scoreboard, and responsive styles
+|-- package.json         # Scripts and dependency declarations
+|-- package-lock.json
+|-- grid-background.png  # Board texture referenced by CSS
+|-- assets/
+|   |-- tic-tac-toe.png  # Favicon / branding mark
+|   |-- figma-design.png # Reference design
+|   |-- matchmaking.png  # Screenshot assets (lobby)
+|   |-- inmatch-game.png # Screenshot assets (gameplay)
+|   |-- spectator.png    # Screenshot assets (spectator view)
+|   |-- series-winner.png# Screenshot assets (post-game)
+|-- README.md            # Quickstart summary and imagery
+```
+
+## Tech Stack
+- **Node.js + Express 5.1** - minimal HTTP server that also serves static assets from the project root.
+- **Socket.IO 4.8** - bidirectional channel for matchmaking, mode votes, board updates, and lobby telemetry.
+- **Vanilla HTML/CSS/JS** - single-page frontend with zero build tooling; Font Awesome and Google Fonts are loaded from CDNs.
+- **canvas-confetti** - lightweight celebratory effect triggered when a series closes.
+- **Nodemon 3.1 (dev)** - optional hot reload during backend development.
+
+## Setup & Running
+1. Install dependencies: `npm install`.
+2. Start the server: `npm start` (or `npm run dev` for Nodemon).
+3. Open multiple tabs at `http://localhost:3000` to play, spectate, or observe lobby behavior.
+4. No environment variables are required; the server listens on `PORT` (defaults to `3000`).
+
+## Game Flow
+1. **Join & Search** - Users submit a name; controls lock while a countdown shows how long matchmaking will try.
+2. **Seat Assignment** - First two validated sockets become X and O. Extra users remain spectators but still see live lobby updates.
+3. **Mode Voting** - Once both seats are filled, the mode selection panel appears for seated players. Random votes are resolved server-side.
+4. **Rounds & Series** - The board activates, the scoreboard tracks wins/draws, and symbols rotate between rounds when the series spans multiple games.
+5. **Result Handling** - After each round, the server waits 1.5s before emitting `next_round`. When a series winner emerges, a modal plus confetti fires and an auto-return timer sends both players back to matchmaking.
+6. **Lobby Reset** - Manual exits (`series_exit`) or disconnects call `returnPlayersToLobby`, clearing board state while preserving spectator status text.
+
+## Socket Events
+| Direction | Event | Purpose |
+|-----------|-------|---------|
+| Server -> Client | `init` | Baseline state for new connections (board, votes, round counts, current players). |
+| Server -> Client | `joined`, `players`, `lobby_status`, `waiting`, `join_error` | Drive lobby UX, seat status, and validation feedback. |
+| Server -> Client | `mode_selection_start`, `mode_votes`, `mode_selected` | Orchestrate the voting UI and lock-in announcement. |
+| Server -> Client | `state`, `next_round`, `symbol_update` | Deliver authoritative board, turn, and symbol assignments. |
+| Server -> Client | `series_complete`, `series_reset` | Control modal celebrations and return players to matchmaking. |
+| Client -> Server | `join`, `vote_mode`, `move`, `reset`, `series_exit` | User intents: enter the queue, vote, place marks, request a board reset, or opt out of a series. |
+
+## Configuration & Customization
+- **Matchmaking timings** (client-side `index.html`): tweak `SEARCH_TIMEOUT_MS`, `AUTO_RESET_DELAY_MS`, and `SERIES_EXIT_DELAY_MS` to change countdown length, inter-round delay, and how long the winner modal remains visible.
+- **Game modes** (`index.js` `MODES` map) define label, description, and number of rounds; extend this object to add new formats.
+- **UI copy** lives in `index.html` (lobby messages) and can be localized easily because helper functions centralize status updates.
+- **Assets & branding**: swap images inside `assets/` or update gradients/textures in `style.css` without touching the server code.
+
+## Styling & Assets
+- CSS relies on Grid/Flexbox for the responsive card layout plus class-based theming (`tag-x`, `tag-o`) for fast palette tweaks.
+- `grid-background.png` gives the board texture, while the screenshot PNGs document product states for marketing or store listings.
+- The favicon (`assets/tic-tac-toe.png`) is referenced from the `<head>` tag; replace it and restart the server to update branding.
+
+## Testing & Development Notes
+- Server keeps all game state in memory (players, board, votes, scores). Restarting `index.js` wipes active matches, which is useful during debugging.
+- Use multiple browser tabs or devices to validate spectator flows, vote locking, and symbol rotation in best-of series.
+- Socket logs in `index.js` (prefixed with `[v0]`) help trace move rejections or symbol assignments while tuning matchmaking.
+
+## License
+Released under the **ISC License** as declared in `package.json`. Feel free to reuse, modify, or distribute with the standard ISC notice.

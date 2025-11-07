@@ -2,8 +2,8 @@
 import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
 import BackToTop from "../../components/BackToTop.astro";
-import HappyBirdContent from "../../content/projects/happybird.mdx";
-import heroImage from "../../assets/project-card/happybird.png";
+import ChattroomContent from "../../content/projects/chatroom.mdx";
+import heroImage from "../../assets/project-card/chatroom.png";
 import "../../styles/landing.css";
 import "../../styles/projects.css";
 
@@ -19,7 +19,7 @@ const heroImageHeight =
     ? imageMeta.height
     : undefined;
 
-const techTags = ["html", "css", "javascript"];
+const techTags = ["react", "firebase", "jest"];
 
 type ResourceLink = {
   icon: string;
@@ -31,7 +31,7 @@ const resourceLinks: ResourceLink[] = [
   {
     icon: "fa-solid fa-globe",
     label: "Project website",
-    href: "https://happybird.vercel.app",
+    href: "https://chattroom.vercel.app",
   },
 ];
 
@@ -43,7 +43,7 @@ type RepoLink = {
 const repoLinks: RepoLink[] = [
   {
     label: "source code",
-    href: "https://github.com/davenarchives/flappy-bird",
+    href: "https://github.com/davenarchives/chat-app",
   },
 ];
 
@@ -51,32 +51,29 @@ const tableOfContents = [
   {
     title: "Project Overview",
     items: [
-      { label: "Happy Bird", href: "#happy-bird" },
+      { label: "Overview", href: "#overview" },
       { label: "Features", href: "#features" },
+      { label: "Project Structure", href: "#project-structure" },
       { label: "Tech Stack", href: "#tech-stack" },
+      { label: "Data Model", href: "#data-model" },
     ],
   },
   {
-    title: "Getting Started",
+    title: "Execution",
     items: [
       { label: "Getting Started", href: "#getting-started" },
-      { label: "Development Tips", href: "#development-tips" },
-      { label: "Project Structure", href: "#project-structure" },
+      { label: "Firebase Configuration", href: "#firebase-configuration" },
+      { label: "Available Scripts", href: "#available-scripts" },
     ],
   },
   {
-    title: "Gameplay",
+    title: "Quality & Ops",
     items: [
-      { label: "Controls", href: "#controls" },
-      {
-        label: "Configuration Highlights",
-        href: "#configuration-highlights-scriptsconfigjs",
-      },
+      { label: "Testing Strategy", href: "#testing-strategy" },
+      { label: "Deployment", href: "#deployment" },
+      { label: "Maintenance Notes", href: "#maintenance-notes" },
+      { label: "License", href: "#license" },
     ],
-  },
-  {
-    title: "Operations",
-    items: [{ label: "License", href: "#license" }],
   },
 ];
 ---
@@ -85,7 +82,7 @@ const tableOfContents = [
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Happy Bird | davenarchives</title>
+    <title>Chattroom | davenarchives</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -106,14 +103,14 @@ const tableOfContents = [
       <main class="project-detail-layout">
         <section
           class="project-showcase"
-          aria-label="Highlighted preview of the Happy Bird project"
+          aria-label="Highlighted preview of the Chattroom project"
         >
           <div class="project-showcase__frame">
             <img
               src={heroImageSrc}
               width={heroImageWidth}
               height={heroImageHeight}
-              alt="Gameplay screenshot of the Happy Bird arcade game"
+              alt="Screenshot of the Chattroom real-time chat interface"
               loading="lazy"
             />
           </div>
@@ -145,16 +142,29 @@ const tableOfContents = [
                   </span>
                 )
               ))}
-              <a
-                class="project-resource-links__item"
-                title="GitHub repository"
-                href="https://github.com/davenarchives/flappy-bird"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <i class="fa-brands fa-github" aria-hidden="true"></i>
-                <span class="sr-only">GitHub repository</span>
-              </a>
+              <details class="project-resource-links__dropdown">
+                <summary
+                  class="project-resource-links__item project-resource-links__item--dropdown"
+                  aria-label="GitHub repository"
+                >
+                  <i class="fa-brands fa-github" aria-hidden="true"></i>
+                  <span class="sr-only">GitHub repository</span>
+                </summary>
+                <ul class="project-resource-dropdown__list">
+                  {repoLinks.map((repo) => (
+                    <li>
+                      <a
+                        href={repo.href}
+                        title={repo.label}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {repo.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </details>
             </div>
           </footer>
         </section>
@@ -162,28 +172,25 @@ const tableOfContents = [
         <div class="project-detail__grid">
           <section class="project-writeup">
             <header class="project-writeup__header">
-              <h1
-                id="happy-bird"
-                class="project-writeup__title"
-                style="color: #e6d300;"
-              >
-                Happy Bird
+              <h1 class="project-writeup__title" style="color: #57d6ff;">
+                CHATTROOM
               </h1>
               <div
                 class="project-writeup__subtitle-card"
-                style="border-left-color: #e6d300;"
+                style="border-left-color: #57d6ff;"
               >
                 <p class="project-writeup__subtitle">
-                  Flappy Bird-inspired browser arcade built with a custom canvas
-                  engine, dynamic difficulty ramp, and comedic game-over clips.
+                  React + Firebase group chat with Google sign-in, Firestore
+                  listeners, and optimistic message sending for snappy
+                  conversations.
                 </p>
               </div>
             </header>
             <article
               class="project-article project-article--detail"
-              aria-label="Happy Bird project documentation"
+              aria-label="Chattroom project documentation"
             >
-              <HappyBirdContent />
+              <ChattroomContent />
             </article>
           </section>
           <aside class="project-sidebar" aria-label="On this page">

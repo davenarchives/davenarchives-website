@@ -67,6 +67,7 @@ export const featuredProjects: FeaturedProject[] = [
       "A full-stack application that matches players in a live lobby with multi-round modes to choose from.",
     image: ticTacToeImage,
     tags: ["nodejs", "express", "socketio", "html", "css", "javascript"],
+    href: "/projects/tictactoe",
   },
   {
     id: "chattroom",
@@ -76,6 +77,7 @@ export const featuredProjects: FeaturedProject[] = [
       "Real-time group chat app using React + Firebase with Google sign-in, and profanity filtering.",
     image: chattRoomImage,
     tags: ["react", "firebase", "jest"],
+    href: "/projects/chattroom",
   },
   {
     id: "devcheatsheets",
