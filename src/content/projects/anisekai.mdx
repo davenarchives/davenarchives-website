@@ -1,0 +1,342 @@
+# Anisekai
+
+A mobile application Expo app that helps anime and manga fans discover titles, track progress, and explore AI-assisted recommendations through connected tabs, tools, and Convex-backed data.
+
+---
+
+## Overview
+
+
+Anisekai is a React Native application built with Expo Router (SDK 53 / React Native 0.79 / React 19) that helps anime and manga fans discover titles, track progress, and explore AI-assisted recommendations. The app combines:
+
+- **Client rendering** with Expo Router, linear gradients, masked typography, and custom theming across iOS, Android, and web.
+- **State orchestration** via `AuthContext` and `LibraryContext` (see `app/context`).
+- **Convex backend** functions for registration, login, profile updates, and persistent library entries (`convex/functions/*.js` with schema in `convex/schema.ts`).
+- **External APIs** for discovery (Jikan), AI concierge (Google Gemini), reverse image lookup (Trace.moe), waifu art (Waifu.pics), and streaming episodes.
+- **Feature-rich surfaces**: onboarding, authentication, tab navigation, detail overlays, progress controls, and experimental utilities such as Scene Finder and Waifu Generator.
+
+---
+
+## Features
+
+### Authentication & Onboarding (`app/index.jsx`, `app/login/*`)
+- Hero landing (`app/index.jsx`) uses `MaskedView` + gradients to set the brand tone and route to `/login/login`.
+- Login form integrates `FontAwesome` icons, "Remember me" toggles, password reveal, Convex `login` mutation, and a celebratory `WelcomeBanner` animation before redirecting to `/(tabs)/home`.
+- Registration validates unique usernames/emails via Convex `register` mutation then routes to login.
+- Forgot password is currently a UI placeholder that surfaces alerts; link wiring is ready for future backend integration.
+
+### Personalized Home Hub (`app/(tabs)/home/index.jsx`)
+- Hero block showcases the stack logo (`app/login/assets/anisekai.png`), accent gradients, and CTA copy.
+- **AnisekAI concierge** uses Google Gemini 2.5 Flash via `src/data/geminiRecommendations.js`, prompt chips, abortable requests, loading/error banners, and `Clear` actions. Requests are gated on `EXPO_PUBLIC_GEMINI_API_KEY`.
+- **Latest Episodes carousel** pulls aggregated data from Jikan via `src/data/latestEpisodes.js`, applies metadata caching + rate-limit handling, and links to `/latest-episodes` for full-screen browsing.
+- All asynchronous flows expose meaningful empty/error states so the screen remains actionable offline.
+
+### Explore & Deep Search (`app/(tabs)/explore/index.jsx`, `src/explore/*`)
+- Scope selector (`SCOPE_OPTIONS`) toggles Anime, Manga, Characters, and Users. Every scope is cached in `scopeDataCache` so returning is instant.
+- Section layouts are defined in `src/explore/scopeConfig.js` and rendered through specialized components with `View All` expansion, rank badges, and optional genre chips.
+- Search is powered by `useExploreSearch` (debounced, cache-aware, abortable requests). Prefix hydration keeps short queries instant.
+- Detail overlay (`src/explore/components/ExploreDetailView.jsx`) surfaces metadata, streaming links, and full synopses, and exposes add/update/remove actions wired to `useLibrary`.
+- Back handling cancels pending fetches, resets local state, and prevents stale detail modals.
+
+### Library Management (`app/(tabs)/library/index.jsx`, `app/context/LibraryContext.jsx`)
+- Dual-scope (Anime/Manga) filtering, status chips, and search combine to surface the right entries quickly.
+- Preview carousels expand into "View All" lists once a status bucket exceeds `VIEW_ALL_BUTTON_THRESHOLD`.
+- Detail modals let users change status, increment/decrement watched episodes or read chapters, set ratings, toggle favorites, and remove entries. Inputs are validated before hitting Convex.
+- Storage is centralized through `LibraryContext`, which streams entries via `convex/functions/library.list` and exposes helper mutations (`save`, `updateStatus`, `updateProgress`, `updateRating`, `remove`, `updateFavorites`).
+
+### Profile & Activity (`app/(tabs)/profile/index.jsx`, `app/(tabs)/profile/edit.jsx`)
+- Overview tab summarizes stats (mean score, progress), favorites (capped at six per scope), and an activity feed derived from the five most recent library updates.
+- Anime/Manga tabs display stacked stats bars, favorites carousels, and full entry lists with progress indicators. Empty states adapt to signed-in vs guest contexts.
+- Avatar tap navigates to `/profile/edit`, where users can adjust username/email/avatar and preview uploads with fallbacks. Unsigned visitors are prompted to log in.
+- Logout button calls `useAuth().signOut` and is automatically disabled for guests.
+
+### Streaming Surfaces (`app/latest-episodes.jsx`)
+- Full-screen list fetches up to 20 episodes, shows load/error empty states, formats release dates, and opens external streaming URLs via `Linking`.
+- Pressable rows feature thumbnails, fallback initials, and dynamic badges for episode numbers and release timing.
+
+### Tools & Experiments (`app/(tabs)/miscellaneous/index.jsx`, `app/tools/*`)
+- Misc tab renders a two-column `FlatList` of utilities with icons from Ionicons/MaterialCommunityIcons. Implemented actions route to `/tools/waifu-generator` and `/tools/scene-finder`; other entries currently log placeholders to ease future rollouts.
+- **Scene Finder** (`app/tools/scene-finder.jsx`) wraps Trace.moe. Users upload a screenshot through `expo-document-picker`, the app posts a multipart request with Axios, and results stream back with confidence badges, video previews (`expo-video`), timestamps, and AniList IDs. Errors, cancellations, and retries are handled gracefully.
+- **Waifu Generator** (`app/tools/waifu-generator.jsx`) calls the Waifu.pics API, preserves a history of up to ten images, and can save results to the device via `expo-file-system` + `expo-media-library` (permission-aware).
+
+### Resilience & UX Patterns
+- Every async flow provides `ActivityIndicator` feedback, explanatory copy, and safe fallbacks for missing art or metadata.
+- AbortControllers clean up network work when leaving screens (Gemini prompts, Explore sections, Scene Finder uploads, etc.).
+- Safe-area and tab-bar heights are considered across scroll containers to avoid clipped content.
+
+---
+
+## Project Structure
+
+```
+.
+├─ app/
+│  ├─ _layout.jsx               # Root providers (Convex + Auth) and Stack
+│  ├─ index.jsx                 # Landing hero
+│  ├─ latest-episodes.jsx       # Modal stack screen for streaming feed
+│  ├─ context/                  # Auth + Library providers
+│  ├─ login/                    # Login, register, forgot-password screens
+│  ├─ tools/                    # Scene Finder & Waifu Generator routes
+│  └─ (tabs)/                   # Protected tab group (Explore, Library, Home, Misc, Profile, Edit)
+├─ components/                  # Shared UI (e.g., WelcomeBanner)
+├─ convex/                      # Convex schema, functions, and generated clients
+├─ src/
+│  ├─ config/                   # Env + API endpoint helpers
+│  ├─ data/                     # Fetchers (Gemini, latest episodes)
+│  ├─ explore/                  # Explore constants, components, hooks, utilities
+│  └─ utils/                    # Cross-cutting helpers (e.g., resolveTitle)
+├─ styles/                      # Theme tokens and per-screen StyleSheets
+├─ assets/                      # Images, icons, splash art
+├─ android/                     # Native project generated by Expo prebuild
+├─ .env.local                   # Local environment overrides
+├─ app.json                     # Expo configuration (name, icons, Convex URLs)
+└─ package.json                 # Scripts and dependency manifest
+```
+
+> Note: `package.json` refers to `npm run reset-project`, but `scripts/reset-project.js` has not been committed yet. Add it or remove the script before relying on it.
+
+---
+
+## Tech Stack
+
+| Area | Details |
+| --- | --- |
+| Core runtime | Expo SDK 53, React Native 0.79.5, React 19, expo-router typed routes |
+| Navigation | Expo Router `Stack` + `Tabs`, `@react-navigation/bottom-tabs` for measurements |
+| Backend & data | Convex client (`convex/react`), Convex functions for auth/library, Axios for HTTP helpers |
+| UI & media | `expo-linear-gradient`, `MaskedView`, `expo-image`, `expo-video`, `expo-blur`, `expo-status-bar`, `expo-symbols` |
+| State & context | Custom React Contexts (`AuthContext`, `LibraryContext`), local reducers, cached lookups, React hooks |
+| External services | Google Gemini (generateContent), Jikan API, Trace.moe, Waifu.pics SFW endpoints |
+| Tooling | ESLint 9 + `eslint-config-expo`, TypeScript 5.8 (types only), Convex CLI (`npx convex dev`), Expo CLI commands |
+
+---
+
+## Getting Started
+
+1. **Prerequisites**
+   - Node.js ≥ 18 and npm ≥ 10.
+   - Expo CLI (`npx expo install` handled via package scripts).
+   - Convex CLI (`npm install -g convex`) if you plan to run functions locally.
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+3. **Configure environment**
+   - Copy `.env.local` or create your own (see Environment Configuration).
+   - Ensure `app.json` → `expo.extra` contains valid Convex dev/prod URLs if `EXPO_PUBLIC_CONVEX_URL` is absent.
+4. **Start Convex dev server**
+   ```bash
+   npx convex dev
+   ```
+5. **Run the client**
+   ```bash
+   npm start          # Expo start (interactive)
+   npm run android    # Device/emulator build
+   npm run ios        # Simulator build
+   npm run web        # Expo web preview
+   ```
+6. **Lint**
+   ```bash
+   npm run lint
+   ```
+
+---
+
+## Environment Configuration (`src/config/env.js`, `.env.local`)
+
+| Variable | Required | Default / Notes |
+| --- | --- | --- |
+| `CONVEX_DEPLOYMENT` | Optional | Used by Convex CLI to target deployments. |
+| `EXPO_PUBLIC_CONVEX_URL` | ✅ for production builds | Direct Convex URL. When omitted, `app/_layout.jsx` falls back to `expo.extra.convexDevUrl`/`convexProdUrl`. |
+| `EXPO_PUBLIC_CONVEX_ENV` | Optional | `development`/`production` toggle to pick the right `expo.extra` URL. |
+| `EXPO_PUBLIC_JIKAN_API_URL` | Optional | Defaults to `https://api.jikan.moe/v4`. Powers Explore + Latest Episodes. |
+| `EXPO_PUBLIC_TRACE_API_URL` | Optional | Defaults to `https://api.trace.moe/search`. Used by Scene Finder. |
+| `EXPO_PUBLIC_WAIFU_API_BASE` | Optional | Defaults to `https://api.waifu.pics/sfw`. Used by Waifu Generator. |
+| `EXPO_PUBLIC_GEMINI_API_KEY` | ✅ for AI concierge | Google Generative Language API key. Required for Home → Ask AnisekAI. |
+
+Guidelines:
+- Store secrets in `.env.local` (ignored by git) and restart `npm start` whenever values change so Expo can re-read them.
+- When shipping to devices, prefer `EXPO_PUBLIC_CONVEX_URL`; `expo.extra.convexDevUrl` is only bundled in dev clients.
+
+---
+
+## Navigation & Screen Flows
+
+### Root Layout (`app/_layout.jsx`)
+- Resolves Convex URL from env or `app.json`, instantiates `ConvexReactClient`, and wraps the entire stack with `ConvexProvider` and `AuthProvider`.
+- Throws clear errors when Convex URLs are missing to avoid silent failures.
+
+### Public Stack
+- `/` (`app/index.jsx`): marketing hero leading to login.
+- `/login/login`, `/login/register`, `/login/forgot-password`: authentication flows described above.
+
+### Tab Group (`app/(tabs)/_layout.jsx`)
+- Wrapped by `LibraryProvider` so all tab screens can access library data.
+- Tabs: Explore, Library, Home, Misc, Profile (each with Ionicons icons). Active color `#fcbf49` matches theme tokens.
+- Scene container padding + custom background keep content above the floating tab bar even on devices with large home indicators.
+
+### Key Screens
+- **Explore** (`app/(tabs)/explore/index.jsx`): dynamic sections, search, detail overlay, library integration, abort controllers, and genre chips.
+- **Library** (`app/(tabs)/library/index.jsx`): dual scopes, search bar, status filters, modals for status/progress/rating, favorites.
+- **Home** (`app/(tabs)/home/index.jsx`): hero, AI concierge, latest episodes carousel + CTA to `/latest-episodes`.
+- **Misc** (`app/(tabs)/miscellaneous/index.jsx`): grid of experimental tools.
+- **Profile** (`app/(tabs)/profile/index.jsx`): overview, anime, manga tabs, favorites, activity, logout, and route to `/profile/edit`.
+- **Profile Edit** (`app/(tabs)/profile/edit.jsx`): update username/email/avatar, guard guests, show loading states.
+
+### Modal / Auxiliary Routes
+- `/latest-episodes` (Stack screen) for expanded streaming list.
+- `/tools/scene-finder` and `/tools/waifu-generator` for standalone utilities.
+
+---
+
+## Data & API Integrations
+
+1. **Convex**
+   - Schema: `users` and `libraryEntries` tables with indexes for efficient lookups (`convex/schema.ts`).
+   - Auth functions (`convex/functions/auth.js`): `register`, `login`, `updateProfile`. Password hashing is not yet implemented—use only in trusted dev environments.
+   - Library functions (`convex/functions/library.js`): list/save/update/remove entries, update favorites, and normalize progress/ratings server-side.
+   - Sample `message` functions exist but require adding a `messages` table before use.
+
+2. **Google Gemini (`src/data/geminiRecommendations.js`)**
+   - Uses `gemini-2.5-flash:generateContent` with JSON-only responses.
+   - Input prompts describe user mood; output is normalized, slugged, and sanitized before rendering.
+   - Errors differentiate between missing API keys, permission issues, and rate limits to provide actionable copy.
+
+3. **Jikan API**
+   - Explore sections call `/anime`, `/manga`, `/characters`, and `/users` endpoints with `fetchJsonWithRetry` (automatic retry/backoff).
+   - Latest Episodes uses `/watch/episodes`, caches metadata per MAL ID (`metadataCache`), detects HTTP 429s, and cools down for one minute to respect rate limits.
+
+4. **Trace.moe**
+   - Scene Finder posts multipart/form-data using Axios. Responses include AniList IDs, timestamps, similarity scores, and signed video URLs previewed with `expo-video`.
+   - Permission/picker errors show friendly toasts.
+
+5. **Waifu.pics**
+   - Simple GET endpoints per category. History prevents duplicates and a download button streams files to `FileSystem.documentDirectory` before creating assets via `expo-media-library`.
+
+6. **Other integrations**
+   - Expo's `Linking` API opens external streaming URLs.
+   - `expo-media-library` permissions gating ensures downloads respect user consent.
+
+---
+
+## State Management & Data Flow
+
+- **AuthContext (`app/context/AuthContext.jsx`)**
+  - Stores the current user, provides `signIn`, `signOut`, `updateProfile`, and `syncFavorites`.
+  - Normalizes avatars/favorites to avoid duplicates and stray whitespace.
+
+- **LibraryContext (`app/context/LibraryContext.jsx`)**
+  - Streams entries with `useQuery(api["functions/library"].list)` whenever a user is logged in.
+  - Wraps Convex mutations for saves, status/progress/rating updates, removal, and favorite synchronization.
+  - Maintains `entriesById`, `favoriteEntryIds`, helper selectors, and guard rails (e.g., ignoring invalid MAL IDs).
+
+- **Explore caches**
+  - `scopeDataCache` stores previously loaded sections per scope.
+  - `useExploreSearch` caches responses per query/prefix and deduplicates in-flight requests via `pendingSearches`.
+
+- **Latest episodes metadata cache**
+  - `metadataCache` avoids redundant metadata fetches and gracefully backs off when hitting rate limits.
+
+- **Abort controllers & cleanup**
+  - AI prompts, Explore details, Scene Finder uploads, and latest episode fetches attach controllers and call `abort()` on unmount/back navigation to prevent memory leaks.
+
+---
+
+## Styling & Theming
+
+- Central palette, spacing, typography, radius, and shadow tokens live in `styles/theme.js` and feed into per-screen StyleSheets (e.g., `styles/homeStyles.js`, `styles/profileStyles.js`, `styles/tools/waifuGeneratorStyles.js`).
+- Gradients rely on `expo-linear-gradient` for hero text, CTA buttons, and overlays.
+- Images and cover art use `expo-image` (`LibraryMediaCard`, Explore details) with caching + transitions.
+- Vector icons (`@expo/vector-icons` Ionicons and `MaterialCommunityIcons`) communicate scope, actions, and statuses.
+- Safe areas: `useSafeAreaInsets` and `useBottomTabBarHeight` keep content visible on devices with notches/gestures.
+
+---
+
+## Development Workflow
+
+| Command | Description |
+| --- | --- |
+| `npm start` | Launch Expo CLI with interactive platform chooser. |
+| `npm run android` / `npm run ios` | Build & run on a connected device/emulator (requires native toolchains). |
+| `npm run web` | Serve the app via React Native Web. |
+| `npm run lint` | Run ESLint with Expo config. |
+| `npx convex dev` | Start Convex function server locally. |
+
+Notes:
+- Configure `.env.local` before running `npm start`; Expo only loads env vars at launch.
+- If you create the missing `scripts/reset-project.js`, document its behavior and ensure it is idempotent.
+- Keep Convex dev server running while exercising any screen that hits backend mutations (login, library updates, profile edits).
+
+---
+
+## Testing & Quality
+
+Current status:
+- No automated unit or E2E tests exist yet. Manual regression is required for feature work.
+- ESLint enforces many correctness issues; run `npm run lint` before committing.
+
+Recommended next steps:
+1. Add Jest and @testing-library/react-native for critical components (e.g., Library modals, Explore detail view).
+2. Introduce lightweight contract tests for Convex functions using the Convex testing harness.
+3. Provide end-to-end smoke coverage via Detox or Maestro for login → add to library → view profile flows.
+
+---
+
+## Accessibility & Performance Considerations
+
+- Buttons and chips use generous hit slop and `activeOpacity` for tactile feedback.
+- `ScrollView`/`FlatList` padding accounts for safe areas to prevent hidden content.
+- All destructive actions (removing library entries, resetting Scene Finder) require explicit taps, reducing accidental loss.
+- Loading states rely on `ActivityIndicator` plus descriptive text for screen reader clarity.
+- Heavy requests (Jikan sections, Gemini prompts, Trace uploads) are debounced or cached to minimize rate-limit hits and keep UI responsive.
+- Media downloads request permissions at runtime and surface alerts when denied.
+
+---
+
+## Deployment & Build Notes
+
+- `app.json` defines app metadata (icons, adaptive icons, splash screens, bundle identifiers, runtime version policy, typed routes, `expo-video` plugin).
+- Switch between Convex environments by updating `EXPO_PUBLIC_CONVEX_ENV` **or** editing `expo.extra.convexDevUrl/convexProdUrl`.
+- For production builds, use `eas build` or `expo run:ios|android` to produce distributable binaries. Ensure secrets are provided via `eas secret` or environment variables on CI.
+- OTA updates respect Expo's `runtimeVersion` policy tied to the SDK version; ensure clients are upgraded when bumping SDKs.
+
+---
+
+## Troubleshooting
+
+- **"Convex backend URL is not configured"**: Set `EXPO_PUBLIC_CONVEX_URL` or ensure `expo.extra.convexDevUrl/convexProdUrl` exist. See `app/_layout.jsx`.
+- **AI concierge disabled**: Confirm `EXPO_PUBLIC_GEMINI_API_KEY` exists and that the Generative Language API is enabled for your project. Restart Expo after editing `.env.local`.
+- **Jikan API 429 errors**: The latest episodes fetcher backs off for 60 seconds. Wait or reduce `limit` before retrying.
+- **Scene Finder upload fails**: Verify `EXPO_PUBLIC_TRACE_API_URL`, check that the selected document is an image, and confirm device network access.
+- **Waifu download errors**: Ensure media library permissions are granted; the UI will prompt but users can also enable access in system settings.
+- **Library changes not persisting**: Confirm Convex dev server (`npx convex dev`) is running and that your `.env` points to it. Check logs for schema mismatches.
+- **Missing `reset-project.js`**: Either add the script under `scripts/` or remove the npm command to avoid confusion.
+
+---
+
+## Roadmap & Future Enhancements
+
+Derived from design discussions and `docs.md` reflection:
+1. Implement secure password hashing and production-ready auth flows (including email validation and password reset).
+2. Expand library filters (sorting, tags, shared lists) and support social features (view other users, follow friends).
+3. Complete the forgot-password backend flow and add email notifications.
+4. Add offline caching plus background sync for Explore sections and latest episodes.
+5. Surface push notifications when new tracked episodes drop.
+6. Enrich Explore with more scopes (studios, staff) and community data.
+7. Build out the placeholder tools (Anime Quotes, Meme Feed, AI News) currently stubbing `console.log`.
+
+---
+
+## Contributing
+
+1. Fork or branch from `main`.
+2. Create/update `.env.local` with your own API keys—never commit secrets.
+3. Run `npm run lint` and exercise critical flows (login, Explore → add to library, Home AI prompts, tools).
+4. Update this documentation when adding/removing screens, APIs, or environment requirements.
+5. Open a pull request describing changes, testing performed, and any migrations (Convex schema, env variables, assets).
+
+---
+
+## License
+
+This project is released under the [MIT License](LICENSE). Review the license before redistributing or incorporating the code into other projects.

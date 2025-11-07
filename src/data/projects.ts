@@ -1,4 +1,5 @@
 import type { ImageMetadata } from "astro";
+import anisekaiImage from "../assets/project-card/anisekai.png";
 import pptxGeneratorImage from "../assets/project-card/pptxgenerator.png";
 import pdFlashgenImage from "../assets/project-card/pdflashgen.png";
 import happyBirdImage from "../assets/project-card/happybird.png";
@@ -29,6 +30,16 @@ export type Project = FeaturedProject | PlaceholderProject;
 export const projectsPerPage = 9;
 
 export const featuredProjects: FeaturedProject[] = [
+  {
+    id: "anisekai",
+    type: "featured",
+    title: "ANISEKAI",
+    description:
+      "A mobile app to track, collect, and discover your favorite anime and manga.",
+    image: anisekaiImage,
+    tags: ["reactnative", "expo", "convex", "gemini"],
+    href: "/projects/anisekai",
+  },
   {
     id: "pptx-generator",
     type: "featured",
@@ -121,8 +132,15 @@ export const featuredProjects: FeaturedProject[] = [
   },
 ];
 
+const minimumTotalProjects = projectsPerPage * 2;
+const totalSlots = Math.max(
+  minimumTotalProjects,
+  Math.ceil(featuredProjects.length / projectsPerPage) * projectsPerPage
+);
+const placeholderCount = Math.max(0, totalSlots - featuredProjects.length);
+
 export const placeholderProjects: PlaceholderProject[] = Array.from(
-  { length: projectsPerPage },
+  { length: placeholderCount },
   (_, index) => ({
     id: `placeholder-${index + 1}`,
     type: "placeholder",
