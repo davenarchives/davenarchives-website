@@ -87,6 +87,7 @@ export const featuredProjects: FeaturedProject[] = [
       "A collection of cheatsheets for programming languages and dev tools.",
     image: devCheatSheetsImage,
     tags: ["html", "css", "javascript"],
+    href: "/projects/devcheatsheets",
   },
   {
     id: "drafted",
@@ -96,6 +97,7 @@ export const featuredProjects: FeaturedProject[] = [
       "Anonymous message-sharing web app embedded with Spotify music link.",
     image: draftedImage,
     tags: ["php", "mysql", "html", "css", "javascript"],
+    href: "/projects/drafted",
   },
   {
     id: "live-age-clock",
@@ -105,6 +107,7 @@ export const featuredProjects: FeaturedProject[] = [
       "A web tool that calculates and continuously displays a person's age based on their birthdate.",
     image: liveAgeClockImage,
     tags: ["html", "css", "javascript"],
+    href: "/projects/live-age-clock",
   },
   {
     id: "img-background-remover",
@@ -114,6 +117,7 @@ export const featuredProjects: FeaturedProject[] = [
       "A single-page web application that removes image backgrounds using the remove.bg REST API.",
     image: imgBackgroundRemoverImage,
     tags: ["html", "css", "javascript"],
+    href: "/projects/img-background-remover",
   },
 ];
 

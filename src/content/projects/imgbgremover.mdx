@@ -1,0 +1,110 @@
+# Image Background Remover
+
+## Overview
+Image Background Remover is a single-page web application that lets users upload or link to an image and instantly remove its background via the [remove.bg](https://www.remove.bg/api) service. The project is intentionally lightweight (pure HTML, CSS, and vanilla JavaScript), so it can open locally in a browser or be deployed to any static hosting provider with no build step. This document expands on the README to capture the full feature set, architecture, operational requirements, and governance artifacts that ship with the repository.
+
+## Key Features
+- **Multi-input uploads** - drag-and-drop, the system file picker, and an optional URL paste box all feed into the same processing pipeline in `script.js`.
+- **remove.bg integration** - images are posted as `FormData` to `https://api.remove.bg/v1.0/removebg`, with robust error propagation when the API rejects a request.
+- **Real-time before/after preview** - `originalImage` and `processedImage` elements are populated with object URLs so users can compare results without extra downloads.
+- **Instant downloads** - the processed blob is written to an `<a download>` element so users can save the transparent PNG immediately.
+- **Reset and clearing helpers** - dedicated Reset and "clear URL" controls wipe prior inputs without reloading the page.
+- **Responsive UI** - `style.css` defines desktop and mobile layouts, Boxicons for icons, and subtle drag-area highlights so the app stays usable on tablets and phones.
+- **Community scaffolding** - `.github/ISSUE_TEMPLATE` plus `CODE_OF_CONDUCT.md` codify how bug reports and feature requests should be filed.
+
+## Tech Stack
+- **HTML5** (`index.html`) - semantic structure for the layout and I/O controls.
+- **CSS3** (`style.css`) - custom styling, responsive breakpoints, and reusable utility classes (`.hidden`, `.highlight`).
+- **Vanilla JavaScript (ES6)** (`script.js`) - event binding, drag-and-drop handling, network requests, and DOM state management.
+- **remove.bg REST API** - third-party AI service that performs the background removal.
+- **Boxicons CDN** - delivers the vector icons used by utility buttons.
+
+## Project Structure
+```
+.
+|-- index.html               # Entry point and DOM scaffolding
+|-- style.css                # Layout, typography, and responsive rules
+|-- script.js                # Client-side logic and API integration
+|-- README.md                # Quick-start overview
+|-- documentation.md         # This comprehensive guide
+|-- CODE_OF_CONDUCT.md       # Community standards
+|-- LICENSE                  # MIT License text
+|-- images/
+|   |-- imgbgremover.png     # Favicon
+|   `-- Imgbgremoverlogo.svg # Linked banner/logo
+`-- .github/
+    `-- ISSUE_TEMPLATE/
+        |-- bug_report.md
+        `-- feature_request.md
+```
+
+## Application Flow
+1. **User input** - users drop files on `#drop-area`, click the "Choose Image" button, or paste a URL into `#imageUrlInput`. `script.js` normalizes all three paths into a `File` or `Blob`.
+2. **Local preview** - `URL.createObjectURL` shows the Before image immediately, even before the remote call completes.
+3. **API submission** - `uploadFile` (for File objects) and `uploadFileFromBlob` (for URL fetches) build a `FormData` payload, attach the `X-Api-Key` header, and send a POST request to remove.bg.
+4. **Response handling** - the blob returned by remove.bg is streamed into another object URL, populating the After preview and the download anchor. Errors bubble up with descriptive alerts so users know if the key, quota, or file is invalid.
+5. **State management** - `showOutput`, `enableDownload`, and the Reset button toggle `.hidden`, adjust flex layouts, and clear DOM nodes to keep the UI tidy between runs.
+
+<blockquote style="border-left-color: #ffca28;">
+**Note:** `script.js` currently contains duplicated `showOutput` definitions. Only the last definition (which scrolls to the comparison area) is effective at runtime. If you extend the codebase, consolidate those definitions to avoid confusion.
+</blockquote>
+
+## Setup and Local Development
+1. **Clone** - `git clone https://github.com/davenarchives/img-bg-remover.git`
+2. **Install dependencies** - none required; ensure you have a modern browser (Chrome, Edge, Firefox, Safari).
+3. **Configure the API key** - open `script.js`, replace the placeholder `X-Api-Key` value with your remove.bg key, and avoid committing secrets. For production, inject the key at deploy time or proxy requests through a lightweight server to keep the key private.
+4. **Serve the files** - open `index.html` directly in a browser or run a static server (for example, `npx serve .`) so relative asset paths resolve correctly.
+5. **Test uploads** - drag images under 12MB or 25 megapixels (remove.bg limits) to verify the round-trip flow.
+
+## remove.bg Integration Details
+- **Endpoint**: `POST https://api.remove.bg/v1.0/removebg`
+- **Payload**: `FormData` containing `image_file` (binary). Optional fields such as `size`, `bg_color`, and `channels` can be added if the API plan allows.
+- **Headers**: `X-Api-Key` is required; no other auth headers are used.
+- **Response**: On success, the API returns the processed image as a binary blob. On failure it returns JSON with error metadata that the current implementation surfaces via `alert()`.
+- **Quotas and limits**: The remove.bg free tier restricts monthly calls and file sizes; communicate these limitations if you expect heavy usage.
+- **Security**: Because the API key is currently hardcoded client-side, anyone can read it in DevTools. To protect paid credits, proxy requests through a server-side function or serverless runtime where the key lives as an environment variable.
+
+## Usage Workflow
+1. Launch the page and choose an image source (drag and drop, file picker, or paste an image URL).
+2. Wait for the After preview to populate; the appearance of the download button signals success.
+3. Click **Download Image** to save the transparent PNG, or **Reset** to start a new job.
+4. If an error appears, confirm your network connection, API quota, and that the file format is supported (PNG, JPG, JPEG, etc.).
+
+## Profanity Filtering Strategy
+The UI is image-focused, but there are two user-controlled text surfaces: the `imageUrlInput` field and any filenames you may decide to display or log. To keep the experience family-friendly and to comply with content policies wherever this app is embedded:
+
+- **Validate before display**: The base implementation never re-renders the pasted URL, which passively prevents profanity from showing on screen. Keep it that way or sanitize aggressively before echoing user text into the DOM.
+- **Filter text inputs**: If you plan to show filenames, captions, or user comments, run the text through a profanity filter library (for example, `bad-words`, `leo-profanity`) or your own banned-word list.
+- **Sample hook**:
+  ```js
+  import Filter from 'bad-words';
+  const profanityFilter = new Filter();
+
+  imageUrlInput.addEventListener('input', event => {
+    const value = event.target.value;
+    if (profanityFilter.isProfane(value)) {
+      event.target.setCustomValidity('Please remove offensive language.');
+      event.target.reportValidity();
+    } else {
+      event.target.setCustomValidity('');
+    }
+  });
+  ```
+- **Server-side logging**: If you proxy requests or log metadata, scrub profanity there as well so dashboards and log files remain safe to share.
+- **Testing**: Maintain a list of profane strings and verify the filter blocks them before each release.
+
+Even if you do not expose user text today, documenting this strategy clarifies how profanity filtering will be enforced once textual metadata is introduced.
+
+## Error Handling and Known Limitations
+- **Duplicate `showOutput` definitions** - the last declaration wins; refactor to a single function to avoid confusion.
+- **API dependency** - if remove.bg is unreachable or your key exceeds quota, the app cannot process images. Consider queueing requests or caching previous results.
+- **Key exposure** - because the API key lives in client code, do not deploy the repository as-is to public production environments without rotating the key or adding a proxy.
+- **Large assets** - browsers may revoke object URLs to conserve memory. Call `URL.revokeObjectURL` if you add long-lived galleries.
+
+## Contribution Guidelines
+- Follow the expectations in `CODE_OF_CONDUCT.md`.
+- Use the templates in `.github/ISSUE_TEMPLATE` when filing bugs or feature requests so maintainers receive consistent reproduction steps.
+- Keep changes small and document UI or API adjustments in both `README.md` and `documentation.md` to preserve parity.
+
+## License
+This project is distributed under the MIT License (`LICENSE`). You are free to use, modify, and distribute the code as long as the copyright notice and license text are included in derivative works.

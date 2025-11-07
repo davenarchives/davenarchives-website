@@ -1,0 +1,59 @@
+# Drafted
+
+## Overview
+Drafted is a single-page style PHP application that gives people a safe space to publish anonymous, music-backed notes addressed to someone meaningful (or to themselves). Visitors can skim curated examples on the landing view, dive into the live message board, or submit their own entry complete with a Spotify track that captures the mood. The app is intentionally lightweight so it can be dropped onto inexpensive shared hosts (InfinityFree, cPanel, etc.) without additional tooling—just upload the PHP files, point them at a MySQL database, and the experience is live.
+
+The user journey is simple:
+1. `index.php` bootstraps the shared header/footer shell, loads all `notes` records, and routes between the home, browse, and submit experiences.
+2. Drafted renders messages as cards that summarize the recipient, a teaser of the message body, and the date it was written. Selecting a card opens an immersive popup with the full text and music link.
+3. The submission form posts to `process.php`, which validates the Spotify track link, persists the note, and redirects back to the board.
+
+## Features
+- **Curated landing content (`home.php`)** – Highlights what the platform is about and seeds the grid with evergreen sample notes so first-time visitors understand the tone immediately.
+- **Dynamic note browsing (`browse.php`, `script.js`)** – Server-side fetched notes display inside a responsive grid; quick filters let users search recipients on the fly, and clicking a card reveals a modal with expanded text plus link/embed metadata.
+- **Music-integrated storytelling (`process.php`)** – Server validation only accepts canonical Spotify track URLs, extracts the track ID, and stores both the original link and embeddable iframe HTML so readers can listen without leaving the page.
+- **Safe data handling (`process.php`, `browse.php`)** – PDO prepared statements shield database writes, while every rendered field is passed through `htmlspecialchars` to neutralize XSS attempts.
+- **Lightweight admin tooling (`process.php`)** – Includes a delete action hook so authenticated back-end tools (for example, a cPanel form or CLI call) can prune abusive entries without touching the database manually.
+- **Responsive, tactile UI (`styles.css`)** – Gradients, card hover states, and mobile-first grid breakpoints keep Drafted presentable on phones through desktops; fonts (Inter, Caveat/Reenie Beanie) reinforce the handwritten theme.
+
+## Structure
+```
+drafted/
+├── index.php          # Entry point: routes between pages, shares DB handle, loads all notes
+├── header.php         # Global navigation with brand mark and section links
+├── footer.php         # Simple site footer copy
+├── home.php           # Landing view with welcome copy and curated demo messages
+├── browse.php         # Grid that lists real notes, search bar, and popup markup
+├── submit.php         # Message + Spotify submission form
+├── process.php        # POST handler for add/delete actions, Spotify validation, DB inserts
+├── db.php             # PDO connection bootstrap (credentials placeholder)
+├── functions.php      # Helper utilities (currently `formatDate`)
+├── script.js          # Client interactivity (card modal, overlay controls, recipient search)
+├── styles.css         # Visual system: layout, cards, modal, responsive tweaks
+├── README.md          # Setup/usage quickstart
+├── LICENSE            # MIT license text
+└── images/
+    └── drafted.svg    # Favicon / branding asset referenced by `index.php`
+```
+
+### Data Model
+`process.php` and `browse.php` expect a `notes` table with at least:
+
+| Column            | Type           | Purpose |
+| ----------------- | -------------- | ------- |
+| `id` (PK)         | INT AUTO_INC   | Unique row identifier |
+| `to_person`       | VARCHAR        | Recipient label displayed on cards |
+| `note`            | TEXT           | Body of the anonymous message |
+| `music_link`      | VARCHAR        | Original Spotify track URL |
+| `is_spotify_link` | TINYINT(1)     | Flag to determine whether to embed |
+| `spotify_embed_code` | TEXT       | Stored iframe snippet for inline playback |
+| `created_at`      | TIMESTAMP      | Default `CURRENT_TIMESTAMP` for ordering |
+
+## Tech Stack
+- **Runtime:** PHP 7.4+ with PDO extension enabled; MySQL 5.7+ (or MariaDB equivalent) for persistence.
+- **Frontend:** Semantic HTML5 templates, modern CSS3 (Grid/Flexbox, gradients), and vanilla ES6 JavaScript for search + modal behavior.
+- **Styling assets:** Google Fonts (`Inter`, `Caveat`, `Reenie Beanie`) and Boxicons for lightweight iconography.
+- **Hosting profile:** Designed for zero-build shared environments (InfinityFree, cPanel, etc.); deploy by uploading the repo and updating `db.php`.
+
+## License
+Drafted is distributed under the MIT License. You are free to use, modify, distribute, and even commercialize the project as long as the original copyright and permission notice contained in `LICENSE` remain intact. The software is provided “as is,” without warranty of any kind, so please review and understand the terms before redistribution.

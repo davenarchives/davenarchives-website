@@ -1,0 +1,40 @@
+# Dev Cheatsheets
+
+## Overview
+Dev Cheatsheets is a lightweight, front-end-only knowledge hub that consolidates quick-reference material for developers, DevOps practitioners, and students. The site ships as static HTML/CSS/JavaScript and showcases curated cheat sheets for major programming languages, frameworks, databases, DevOps tooling, and downloadable PDFs/resources. It is meant to act as a public-facing portfolio project: visitors can explore the information architecture, interact with the UI, and immediately launch into the cheat sheets they care about without needing any backend services.
+
+## Features
+- **Curated content across domains** - Dedicated pages for languages, frameworks, databases, DevOps tooling, and resource libraries expose links to syntax guides, command references, and PDF downloads in a consistent layout.
+- **Search-first navigation** - The landing page (`search.js`) filters category tiles by alt text while every cheat sheet page (`script.js`) includes an inline search/highlight experience that automatically scrolls to the first match.
+- **Sticky navigation with scroll feedback** - `headerscroller.js` keeps the header accessible, updates the active nav link as visitors move through sections, and reveals a back-to-top control once the user scrolls past the hero.
+- **Responsive visual system** - `style.css`, `cheatsheet.css`, and `about.css` define CSS variables, fluid spacing, and grid utilities so the tiles, cards, and overview blocks render cleanly from widescreen monitors down to sub-375px devices.
+- **Single-click external handoff** - Each tile and list item links directly to vetted external cheatsheets or documentation, making the site a launch pad rather than a walled garden.
+- **Portfolio-ready branding** - Cohesive typography (Josefin Sans), iconography (Boxicons), and bespoke illustrations (`images/`) reinforce the project's identity for showcase purposes.
+
+## Structure
+- `index.html` - Landing page with hero messaging, search bar, categorized tile grid, and outbound GitHub button.
+- `about.html` - Mission statement, category descriptions, and "why choose" narrative tailored for portfolio storytelling.
+- `style.css` - Global styling for the landing page (sticky header, hero layout, feature cards, responsive grid, back-to-top control).
+- `about.css` - Variant styling for the about page while reusing the same markup primitives.
+- `cheatsheet.css` - Shared layout, typography, and card rules for every detail page under `languages/`, `frameworks/`, `databases/`, `devops/`, and `resources/`.
+- `script.js` - Client-side search/highlight script used inside cheat sheet pages (targets `#searchInput`).
+- `search.js` - Landing-page search that filters `.box` tiles by their icon `alt` text and auto-scrolls visitors into `#categories`.
+- `headerscroller.js` - Scroll listener that toggles header blur, synchronizes nav link states, and powers the back-to-top button.
+- `images/` - PNG/SVG assets for logos and icons that visually label each category entry.
+- `languages/` - Eleven HTML files (Python, Java, C, C++, C#, HTML, CSS, JavaScript, Markdown, PHP, Ruby) with overview text plus categorized external resource lists.
+- `frameworks/` - Angular, Bootstrap, React, and Vue cheat sheet pages following the same template.
+- `databases/` - SQL, PostgreSQL, MongoDB, and DBMS primers.
+- `devops/` - Docker, Git, and Linux command cheatsheets for operations-focused visitors.
+- `resources/` - Aggregated links to PDF bundles and meta-cheatsheet collections for quick downloads.
+- `databases/`, `devops/`, `frameworks/`, `languages/`, and `resources/` all load `../cheatsheet.css`, `headerscroller.js`, and `script.js`, ensuring UX parity regardless of topic.
+- `.vscode/` - Editor settings/snippets (optional, not required for deployment).
+
+## Tech Stack
+- **HTML5** - Semantic sections and cards; every cheat sheet page is a standalone HTML document for easy static hosting.
+- **CSS3** - Custom properties, media queries, and flex/grid layouts provide the responsive UI with zero dependency on front-end frameworks.
+- **Vanilla JavaScript (ES6)** - Progressive enhancement for search, scroll behavior, and focus/visibility management without bundlers.
+- **3rd-party CDNs** - Boxicons for iconography and Google Fonts (Josefin Sans) for typography; no heavyweight framework imports.
+- **Static assets** - Locally served PNG/SVG logos that double as visual navigation cues.
+
+## License
+The project is distributed under the MIT License (`LICENSE`). You are free to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of Dev Cheatsheets, provided that the copyright notice and permission notice remain in all copies. The software is supplied "as is" without warranty; the author bears no liability for damages arising from its use.

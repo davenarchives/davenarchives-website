@@ -1,0 +1,51 @@
+# LIVE AGE CLOCK 
+
+## OVERVIEW
+Live Age Clock is a lightweight, client-side experience for visualizing the passage of time since a user's birth. Visitors enter their birth month, day, year, and optionally the exact time, and the interface immediately begins streaming a live age readout that updates every second. The UI collapses the form once the clock starts, highlighting the animated counters while keeping a fixed reset action available so users can experiment with multiple inputs. The project ships as static HTML/CSS/JavaScript, making it easy to deploy on any static host or embed inside a larger showcase site. An about page extends the app with instructions and a short narrative you can link to from portfolio pages.
+
+### Usage At A Glance
+- Clone or download the repository.
+- Open `index.html` in any modern browser (no build step required).
+- Provide a birthdate (and optional time), then tap **Start** to see the age counters animate in real time.
+- Use **Reset** to return to the input form or set a new timestamp.
+
+## FEATURES
+- **Precise, real-time age streaming** - Calculates the elapsed years, remaining days, hours, minutes, and seconds from the captured birth moment with one-second granularity using vanilla JavaScript timers.
+- **Optional time-of-birth accuracy** - Accepts exact birth times to eliminate rounding caused by midnight-only calculations, ensuring high-fidelity storytelling for life-event demos.
+- **Guided data entry** - Segmented month/day selectors paired with a bounded numeric year input, plus basic validation feedback, reduce invalid states before the timer begins.
+- **Responsive layout & mobile nav toggle** - Fixed header navigation, typography, and flexbox-based counters adapt to narrow screens; tapping the title on mobile toggles the navigation list (`nav-active` class) so the experience stays usable on touch devices.
+- **Instant reset workflow** - A floating `Reset` button restores the form, clears all counters, and allows users to test multiple dates without a page refresh.
+- **Dedicated About page** - `about.html` reuses the visual system to provide step-by-step usage instructions, making the project self-documenting when embedded elsewhere.
+- **Custom favicon & imagery hooks** - `images/lifespanclock.webp` is ready for showcasing on landing pages, and the header nav includes placeholders for future theme switching or social links.
+
+## STRUCTURE
+```
+live-age-clock/
+|-- index.html           # Landing page with the live age form & timer UI
+|-- about.html           # Secondary page describing how to use the tool
+|-- style.css            # Global styling for the main experience (layout, nav, counters)
+|-- about.css            # Tweaks tailored for the About page flow
+|-- script.js            # Birthdate parsing, live counter loop, reset & nav toggle logic
+|-- images/
+|   `-- lifespanclock.webp  # Favicon/branding asset referenced by index.html
+|-- README.md            # Quickstart summary and screenshots for the repository
+|-- documentation.md     # Project showcase documentation (this file)
+|-- LICENSE              # MIT license text
+`-- .vscode/
+    `-- settings.json    # Local dev convenience (Live Server port)
+```
+
+### Key Flows
+- **Form lifecycle (`index.html`, `script.js`)** - `startClock()` validates the birth date, constructs a `Date` object, hides the form, reveals the counters, and spawns an interval that drives `updateAge()`.
+- **Age math (`script.js`)** - Uses millisecond differences between `now` and `birthDate`, breaking them into Gregorian approximations (years via `365.25` days) and padded strings for hours/minutes/seconds to keep the UI aligned.
+- **Reset experience (`script.js`)** - Restores default select indices/inputs, hides the counter panel, and zeroes all displayed values so the UI mirrors the initial load state.
+- **Responsiveness (`style.css`, `about.css`)** - Media queries collapse the nav into a tap-to-expand list, tighten typography, and reposition counters so the timer remains legible on phones.
+
+## TECH STACK
+- **HTML5** - Semantic layout for the form fields, header navigation, and counter presentation.
+- **CSS3 / Flexbox** - Responsive layout, custom typography via Google Fonts (Kanit family), fixed-position reset control, and consistent dark theme shared across pages.
+- **Vanilla JavaScript (ES6+)** - Handles DOM querying, interval-based updates, date calculations, and navigation toggle interactions without external dependencies.
+- **Tooling** - No build tooling required; optional Live Server configuration (`.vscode/settings.json`) streamlines local previewing but is not mandatory for deployment.
+
+## LICENSE
+This project ships under the MIT License (`LICENSE`). You are free to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software as long as the copyright and permission notice remain intact in derivative works. The software is provided "as is" without warranty; review the license file for the full legal text before redistribution.
