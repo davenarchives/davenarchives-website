@@ -830,3 +830,32 @@
         padding: 0;
       }
     }
+
+    .project-detail-page--anisekai {
+      --anisekai-gradient: linear-gradient(
+        120deg,
+        #00cfff 0%,
+        #6f63ff 52%,
+        #ff4fd8 100%
+      );
+    }
+
+    .project-detail-page--anisekai .project-writeup__title {
+      color: #ff6bc3;
+    }
+
+    @supports ((-webkit-background-clip: text) or (background-clip: text)) {
+      .project-detail-page--anisekai .project-writeup__title {
+        background-image: var(--anisekai-gradient);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        -webkit-text-fill-color: transparent;
+      }
+    }
+
+    .project-detail-page--anisekai .project-writeup__subtitle-card {
+      border-left: 6px solid transparent;
+      border-image-slice: 1;
+      border-image-source: var(--anisekai-gradient);
+    }
