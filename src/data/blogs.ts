@@ -18,7 +18,7 @@ type BlogMedia = {
 };
 
 const blogMediaBySlug: Record<string, BlogMedia> = {
-  imparadoxical: {
+  paradoxical: {
     image: paradoxicalCover,
     fallbackAlt: "Pink neon collage of intersecting geometric panels",
   },
@@ -42,8 +42,8 @@ export type BlogEntry = {
   Content: BlogContentModule["default"];
 };
 
-const parsedBlogEntries = Object.entries(blogContentModules)
-  .map(([, module]) => {
+const parsedBlogEntries: BlogEntry[] = Object.entries(blogContentModules)
+  .map(([, module]): BlogEntry | undefined => {
     const normalizedPath = module.file.replace(/\\/g, "/");
     const slug = normalizedPath
       .split("/")
@@ -81,7 +81,7 @@ const parsedBlogEntries = Object.entries(blogContentModules)
       Content: module.default,
     } satisfies BlogEntry;
   })
-  .filter((entry): entry is BlogEntry => Boolean(entry))
+  .filter((entry): entry is BlogEntry => entry !== undefined)
   .sort(
     (a, b) => b.publishDate.getTime() - a.publishDate.getTime()
   );
