@@ -1,0 +1,48 @@
+---
+import BlogsPageLayout from "../components/BlogsPageLayout.astro";
+import { getBlogsPage } from "../data/blogs";
+
+const baseBlogsPath = "/blogs";
+const buildPageHref = (pageNumber: number) =>
+  pageNumber <= 1
+    ? baseBlogsPath
+    : `${baseBlogsPath}/page/${pageNumber}`;
+
+const currentPageParam = Astro.url.searchParams.get("page");
+const requestedPage = currentPageParam
+  ? Number.parseInt(currentPageParam, 10)
+  : 1;
+const pageData = getBlogsPage(requestedPage);
+
+if (requestedPage > 1) {
+  return Astro.redirect(buildPageHref(pageData.currentPage));
+}
+
+const paginationLinks = pageData.pageNumbers.map((pageNumber) => ({
+  pageNumber,
+  href: buildPageHref(pageNumber),
+  isActive: pageNumber === pageData.currentPage,
+}));
+
+const isFirstPage = pageData.currentPage === 1;
+const isLastPage = pageData.currentPage === pageData.totalPages;
+const firstHref = buildPageHref(1);
+const prevHref = buildPageHref(
+  Math.max(1, pageData.currentPage - 1)
+);
+const nextHref = buildPageHref(
+  Math.min(pageData.totalPages, pageData.currentPage + 1)
+);
+const lastHref = buildPageHref(pageData.totalPages);
+---
+
+<BlogsPageLayout
+  pageData={pageData}
+  paginationLinks={paginationLinks}
+  firstHref={firstHref}
+  prevHref={prevHref}
+  nextHref={nextHref}
+  lastHref={lastHref}
+  isFirstPage={isFirstPage}
+  isLastPage={isLastPage}
+/>

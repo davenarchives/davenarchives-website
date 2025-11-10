@@ -1,0 +1,59 @@
+---
+import BlogsPageLayout from "../../../components/BlogsPageLayout.astro";
+import {
+  getBlogsPage,
+  blogPageNumbers,
+} from "../../../data/blogs";
+
+export function getStaticPaths() {
+  return blogPageNumbers.map((pageNumber) => ({
+    params: { page: pageNumber.toString() },
+  }));
+}
+
+const baseBlogsPath = "/blogs";
+const buildPageHref = (pageNumber: number) =>
+  pageNumber <= 1
+    ? baseBlogsPath
+    : `${baseBlogsPath}/page/${pageNumber}`;
+
+const requestedPageParam = Astro.params.page ?? "1";
+const requestedPage = Number.parseInt(requestedPageParam, 10);
+const pageData = getBlogsPage(requestedPage);
+
+if (!Number.isFinite(requestedPage) || requestedPage < 1) {
+  return Astro.redirect(buildPageHref(pageData.currentPage));
+}
+
+if (pageData.currentPage !== requestedPage) {
+  return Astro.redirect(buildPageHref(pageData.currentPage));
+}
+
+const paginationLinks = pageData.pageNumbers.map((pageNumber) => ({
+  pageNumber,
+  href: buildPageHref(pageNumber),
+  isActive: pageNumber === pageData.currentPage,
+}));
+
+const isFirstPage = pageData.currentPage === 1;
+const isLastPage = pageData.currentPage === pageData.totalPages;
+const firstHref = buildPageHref(1);
+const prevHref = buildPageHref(
+  Math.max(1, pageData.currentPage - 1)
+);
+const nextHref = buildPageHref(
+  Math.min(pageData.totalPages, pageData.currentPage + 1)
+);
+const lastHref = buildPageHref(pageData.totalPages);
+---
+
+<BlogsPageLayout
+  pageData={pageData}
+  paginationLinks={paginationLinks}
+  firstHref={firstHref}
+  prevHref={prevHref}
+  nextHref={nextHref}
+  lastHref={lastHref}
+  isFirstPage={isFirstPage}
+  isLastPage={isLastPage}
+/>

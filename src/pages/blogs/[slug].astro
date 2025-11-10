@@ -1,0 +1,96 @@
+---
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import BackToTop from "../../components/BackToTop.astro";
+import { getBlogBySlug, getAllBlogs } from "../../data/blogs";
+import "../../styles/landing.css";
+import "../../styles/blogs.css";
+
+export async function getStaticPaths() {
+  return getAllBlogs().map((entry) => ({
+    params: { slug: entry.slug },
+  }));
+}
+
+const blogEntry = getBlogBySlug(Astro.params.slug);
+
+if (!blogEntry) {
+  return Astro.redirect("/blogs");
+}
+
+const dateFormatter = new Intl.DateTimeFormat("en-US", {
+  month: "long",
+  day: "numeric",
+  year: "numeric",
+});
+const formattedDate = dateFormatter.format(
+  new Date(blogEntry.publishDate)
+);
+const authorName = "deyben";
+
+const imageMeta = blogEntry.image;
+const BlogContent = blogEntry.Content;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{blogEntry.title} | davenarchives</title>
+    <meta name="description" content={blogEntry.description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Montserrat:wght@400;500;600;700;800&family=Palanquin+Dark:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <div class="page blog-detail-page">
+      <Header active="blogs" />
+      <main class="blog-detail blog-detail--centered">
+        <figure class="blog-detail__hero" aria-label={`${blogEntry.title} artwork`}>
+          <img
+            src={imageMeta.src}
+            width={imageMeta.width}
+            height={imageMeta.height}
+            alt={blogEntry.coverAlt}
+            loading="eager"
+          />
+        </figure>
+        <h1 class="blog-detail__title">{blogEntry.title}</h1>
+        <p class="blog-detail__meta-byline">
+          written by <span>{authorName}</span>
+          <span aria-hidden="true" class="blog-detail__meta-separator">•</span>
+          <time datetime={blogEntry.publishDate.toISOString()}>
+            {formattedDate}
+          </time>
+        </p>
+        <p class="blog-detail__subtitle">{blogEntry.description}</p>
+        <article class="blog-detail__content blog-detail__content--centered">
+          <BlogContent />
+        </article>
+        <ul class="blog-detail__tag-list blog-detail__tag-list--centered">
+          {blogEntry.tags.map((tag) => (
+            <li>
+              <span>#{tag}</span>
+            </li>
+          ))}
+        </ul>
+        <a class="blog-detail__back" href="/blogs">
+          <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+          <span>Back to blogs</span>
+        </a>
+      </main>
+      <Footer />
+      <BackToTop />
+    </div>
+  </body>
+</html>

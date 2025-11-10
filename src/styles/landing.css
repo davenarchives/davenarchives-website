@@ -122,10 +122,19 @@
       color: #1ED760;
     }
 
-    .site-nav a[href="#blogs"]:hover,
-    .site-nav a[href="#blogs"]:focus-visible {
+    .site-nav a[href="/blogs"]:hover,
+    .site-nav a[href="/blogs"]:focus-visible {
       color: #f04786;
       opacity: 1;
+    }
+
+    .site-nav a[href="/blogs"].is-active {
+      color: var(--off-white);
+    }
+
+    .site-nav a[href="/blogs"].is-active:hover,
+    .site-nav a[href="/blogs"].is-active:focus-visible {
+      color: #f04786;
     }
 
     .back-to-top {
