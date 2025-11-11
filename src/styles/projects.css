@@ -1,3 +1,94 @@
+    :root {
+      --project-card-bg: linear-gradient(
+        180deg,
+        rgba(14, 30, 65, 0.95) 0%,
+        rgba(11, 24, 53, 0.98) 58%,
+        rgba(8, 19, 43, 0.98) 100%
+      );
+      --project-card-media-bg: radial-gradient(
+          circle at 20% 20%,
+          rgba(37, 73, 133, 0.65),
+          transparent 55%
+        ),
+        radial-gradient(
+          circle at 80% 35%,
+          rgba(66, 123, 228, 0.55),
+          transparent 70%
+        ),
+        rgba(7, 18, 40, 0.95);
+      --project-card-inner-bg: rgba(5, 13, 30, 0.88);
+      --project-card-foreground: var(--off-white);
+      --project-card-title-color: #d1daff;
+      --project-card-body-color: rgba(var(--off-white-rgb), 0.68);
+      --project-tag-bg: rgba(16, 36, 75, 0.8);
+      --project-tag-color: rgba(var(--off-white-rgb), 0.78);
+      --project-card-border: rgba(24, 50, 121, 0.12);
+      --project-card-shadow: none;
+      --project-panel-bg: radial-gradient(
+          circle at 20% 20%,
+          rgba(58, 112, 209, 0.4),
+          transparent 55%
+        ),
+        radial-gradient(
+          circle at 80% 35%,
+          rgba(183, 96, 211, 0.35),
+          transparent 70%
+        ),
+        rgba(5, 11, 24, 0.95);
+      --project-meta-bg: linear-gradient(
+        145deg,
+        rgba(7, 17, 38, 0.92) 0%,
+        rgba(3, 10, 24, 0.92) 100%
+      );
+      --project-detail-block-bg: #121a23;
+      --project-detail-chip-bg: rgba(13, 28, 60, 0.85);
+      --project-detail-chip-color: rgba(var(--off-white-rgb), 0.82);
+      --project-detail-heading: #d5e5ff;
+      --project-detail-body: rgba(var(--off-white-rgb), 0.78);
+      --project-resource-dropdown-bg: rgba(7, 18, 40, 0.97);
+      --project-resource-icon-color: rgba(var(--off-white-rgb), 0.8);
+      --project-inline-chip-bg: rgba(5, 12, 28, 0.6);
+      --project-inline-chip-color: rgba(var(--off-white-rgb), 0.85);
+    }
+
+    :root[data-theme="light"] {
+      --project-card-bg: linear-gradient(
+        180deg,
+        #1f2a48 0%,
+        #131c33 65%,
+        #0b1426 100%
+      );
+      --project-card-media-bg: linear-gradient(
+          140deg,
+          rgba(41, 57, 104, 0.8),
+          rgba(19, 29, 55, 0.95)
+        ),
+        rgba(11, 19, 39, 0.95);
+      --project-card-inner-bg: #47c0d3;
+      --project-card-foreground: #ffffff;
+      --project-card-title-color: #ffffff;
+      --project-card-body-color: rgba(255, 255, 255, 0.9);
+      --project-tag-bg: rgba(255, 255, 255, 0.28);
+      --project-tag-color: #000000;
+      --project-card-border: rgba(13, 24, 53, 0.08);
+      --project-card-shadow: 0 30px 60px rgba(13, 24, 53, 0.15);
+      --project-panel-bg: linear-gradient(
+        135deg,
+        rgba(32, 45, 86, 0.95),
+        rgba(16, 23, 44, 0.95)
+      );
+      --project-meta-bg: #47c0d3;
+      --project-detail-block-bg: rgba(0, 0, 0, 0.08);
+      --project-detail-chip-bg: rgba(255, 255, 255, 0.25);
+      --project-detail-chip-color: #000000;
+      --project-detail-heading: #14213d;
+      --project-detail-body: #14213d;
+      --project-resource-dropdown-bg: rgba(20, 28, 54, 0.97);
+      --project-resource-icon-color: #000000;
+      --project-inline-chip-bg: rgba(85, 97, 122, 0.4);
+      --project-inline-chip-color: #0b1426;
+    }
+
     .projects-page {
       display: flex;
       flex-direction: column;
@@ -29,7 +120,7 @@
 
     .projects-header p {
       margin: 0;
-      color: rgba(244, 246, 250, 0.65);
+      color: rgba(var(--off-white-rgb), 0.65);
       font-weight: 600;
       font-size: 1.1rem;
     }
@@ -74,7 +165,7 @@
     }
 
     .project-card--placeholder {
-      background: rgba(244, 246, 250, 0.05);
+      background: rgba(var(--off-white-rgb), 0.05);
       align-items: center;
       justify-content: center;
     }
@@ -89,26 +180,20 @@
       text-transform: uppercase;
       letter-spacing: 0.12em;
       font-weight: 700;
-      color: rgba(244, 246, 250, 0.35);
+      color: rgba(var(--off-white-rgb), 0.35);
       font-family: "Lilita One", "Montserrat", system-ui, -apple-system,
         BlinkMacSystemFont, "Segoe UI", sans-serif;
       font-size: 1.1rem;
     }
 
     .project-card--featured {
-      background: linear-gradient(
-        180deg,
-        rgba(14, 30, 65, 0.95) 0%,
-        rgba(11, 24, 53, 0.98) 58%,
-        rgba(8, 19, 43, 0.98) 100%
-      );
-      color: var(--off-white);
+      background: var(--project-card-bg);
+      color: var(--project-card-foreground);
+      box-shadow: var(--project-card-shadow);
     }
 
     .project-card__media {
-      background: radial-gradient(circle at 20% 20%, rgba(37, 73, 133, 0.65), transparent 55%),
-        radial-gradient(circle at 80% 35%, rgba(66, 123, 228, 0.55), transparent 70%),
-        rgba(7, 18, 40, 0.95);
+      background: var(--project-card-media-bg);
       position: relative;
       display: flex;
       align-items: center;
@@ -131,7 +216,7 @@
       flex-direction: column;
       gap: 0.9rem;
       padding: 1.75rem;
-      background: rgba(5, 13, 30, 0.88);
+      background: var(--project-card-inner-bg);
       flex: 1;
     }
 
@@ -139,14 +224,14 @@
       margin: 0;
       font-size: 1.25rem;
       letter-spacing: 0.06em;
-      color: rgba(209, 218, 255, 0.94);
+      color: var(--project-card-title-color);
       font-family: "Lilita One", "Montserrat", system-ui, -apple-system,
         BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     .project-card__body p {
       margin: 0;
-      color: rgba(244, 246, 250, 0.68);
+      color: var(--project-card-body-color);
       line-height: 1.5;
       font-size: 0.88rem;
       font-weight: 500;
@@ -170,8 +255,8 @@
       justify-content: center;
       padding: 0.3rem 0.75rem;
       border-radius: 10px;
-      background: rgba(16, 36, 75, 0.8);
-      color: rgba(244, 246, 250, 0.78);
+      background: var(--project-tag-bg);
+      color: var(--project-tag-color, rgba(var(--off-white-rgb), 0.78));
       font-size: 0.75rem;
       letter-spacing: 0.03em;
       font-weight: 600;
@@ -201,8 +286,8 @@
       width: 3.25rem;
       height: 3.25rem;
       border-radius: 0.75rem;
-      background: rgba(6, 14, 27, 0.88);
-      color: rgba(209, 218, 255, 0.55);
+      background: #47c0d3;
+      color: #000000;
       text-decoration: none;
       font-weight: 700;
       letter-spacing: 0.08em;
@@ -211,8 +296,8 @@
     }
 
     .projects-pagination__link:hover {
-      background: rgba(12, 26, 52, 0.95);
-      color: rgba(244, 246, 250, 0.85);
+      background: #2a9cb0;
+      color: #000000;
       transform: translateY(-2px);
     }
 
@@ -222,8 +307,8 @@
     }
 
     .projects-pagination__link--active {
-      background: rgba(18, 36, 68, 0.98);
-      color: rgba(244, 246, 250, 0.95);
+      background: #209ab3;
+      color: #ffffff;
       pointer-events: none;
     }
 
@@ -256,17 +341,7 @@
       position: relative;
       overflow: hidden;
       border-radius: 18px;
-      background: radial-gradient(
-          circle at 20% 20%,
-          rgba(58, 112, 209, 0.4),
-          transparent 55%
-        ),
-        radial-gradient(
-          circle at 80% 35%,
-        rgba(183, 96, 211, 0.35),
-        transparent 70%
-      ),
-        rgba(5, 11, 24, 0.95);
+      background: var(--project-panel-bg);
       aspect-ratio: 16 / 9;
       width: clamp(340px, 72vw, 720px);
       max-width: 100%;
@@ -290,11 +365,7 @@
       justify-content: space-between;
       gap: 1.2rem;
       flex-wrap: wrap;
-      background: linear-gradient(
-        145deg,
-        rgba(7, 17, 38, 0.92) 0%,
-        rgba(3, 10, 24, 0.92) 100%
-      );
+      background: var(--project-meta-bg);
       border-radius: 16px;
       padding: 1.15rem 1.35rem;
       align-self: flex-start;
@@ -319,8 +390,8 @@
       justify-content: center;
       padding: 0.38rem 0.82rem;
       border-radius: 999px;
-      background: rgba(13, 28, 60, 0.85);
-      color: rgba(244, 246, 250, 0.82);
+      background: var(--project-detail-chip-bg);
+      color: var(--project-detail-chip-color);
       font-size: 0.78rem;
       letter-spacing: 0.02em;
       text-transform: none;
@@ -337,7 +408,7 @@
 
     .project-resource-links__item {
       font-size: 1.2rem;
-      color: rgba(244, 246, 250, 0.8);
+      color: var(--project-resource-icon-color);
       transition: transform 0.2s ease, color 0.2s ease;
       display: inline-flex;
       align-items: center;
@@ -378,7 +449,7 @@
       position: absolute;
       top: calc(100% + 0.5rem);
       right: 0;
-      background: rgba(7, 18, 40, 0.97);
+      background: var(--project-resource-dropdown-bg);
       border-radius: 10px;
       padding: 0.6rem 0;
       margin: 0;
@@ -394,7 +465,7 @@
     .project-resource-dropdown__list a {
       display: block;
       padding: 0.5rem 1.1rem 0.5rem 1.2rem;
-      color: rgba(244, 246, 250, 0.85);
+      color: var(--project-detail-body);
       font-weight: 600;
       font-size: 0.9rem;
       letter-spacing: 0.01em;
@@ -433,7 +504,7 @@
       letter-spacing: 0.32em;
       font-weight: 700;
       font-size: 0.85rem;
-      color: rgba(244, 246, 250, 0.55);
+      color: rgba(var(--off-white-rgb), 0.55);
     }
 
     .project-writeup__title {
@@ -447,7 +518,7 @@
     }
 
     .project-writeup__subtitle-card {
-      background: #121a23;
+      background: var(--project-detail-block-bg);
       border-radius: 0;
       border-left: 6px solid #f15a24;
       padding: clamp(1.1rem, 3vw, 1.5rem) clamp(1.3rem, 3.5vw, 1.9rem);
@@ -458,7 +529,7 @@
     .project-writeup__subtitle {
       margin: 0;
       font-size: 1.04rem;
-      color: rgba(244, 246, 250, 0.78);
+      color: var(--project-detail-body);
       max-width: none;
     }
 
@@ -477,7 +548,7 @@
       font-family: "Lilita One", "Montserrat", system-ui, -apple-system,
         BlinkMacSystemFont, "Segoe UI", sans-serif;
       letter-spacing: 0.02em;
-      color: #d5e5ff;
+      color: var(--project-detail-heading);
     }
 
     .project-article--detail :where(h2) {
@@ -498,7 +569,7 @@
     .project-article--detail :where(p, li) {
       font-size: 1.04rem;
       line-height: 1.75;
-      color: rgba(244, 246, 250, 0.78);
+      color: var(--project-detail-body);
     }
 
     .project-article--detail a {
@@ -562,7 +633,7 @@
       border-collapse: collapse;
       margin: 1.75rem 0;
       font-size: 0.98rem;
-      color: rgba(244, 246, 250, 0.82);
+      color: rgba(var(--off-white-rgb), 0.82);
     }
 
     .project-article--detail table th,
@@ -570,6 +641,7 @@
       text-align: left;
       padding: 0.9rem 1rem;
       background: rgba(6, 14, 30, 0.6);
+      color: #ffffff;
     }
 
     .project-article--detail blockquote {
@@ -577,7 +649,7 @@
       padding: 1.4rem 1.8rem;
       border-left: 4px solid #f15a24;
       background: rgba(10, 22, 48, 0.75);
-      color: rgba(244, 246, 250, 0.75);
+      color: rgba(var(--off-white-rgb), 0.75);
       font-style: italic;
     }
 
@@ -585,7 +657,7 @@
       margin: 1.8rem 0;
       padding: 1.35rem 1.5rem;
       background: var(--astro-code-background, rgba(5, 12, 28, 0.85));
-      color: var(--astro-code-color, rgba(244, 246, 250, 0.88));
+      color: var(--astro-code-color, rgba(var(--off-white-rgb), 0.88));
       border-radius: 12px;
       overflow-x: auto;
       font-family: "Fira Code", "Source Code Pro", Menlo, Monaco, Consolas,
@@ -620,11 +692,11 @@
     .project-article--detail :not(pre) > code {
       font-family: "Fira Code", "Source Code Pro", Menlo, Monaco, Consolas,
         "Courier New", monospace;
-      background: rgba(5, 12, 28, 0.6);
+      background: var(--project-inline-chip-bg);
       padding: 0.15rem 0.35rem;
       border-radius: 0.35rem;
       font-size: 0.92rem;
-      color: rgba(244, 246, 250, 0.85);
+      color: var(--project-inline-chip-color);
     }
 
     .project-article--detail pre.astro-code {

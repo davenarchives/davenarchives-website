@@ -1,0 +1,127 @@
+<script is:inline>
+  (() => {
+    const key = "davenarchives-theme";
+    const root = document.documentElement;
+    try {
+      if (root.hasAttribute("data-theme")) return;
+      const stored = localStorage.getItem(key);
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const resolved =
+        stored === "light" || stored === "dark"
+          ? stored
+          : prefersDark
+            ? "dark"
+            : "light";
+      root.setAttribute("data-theme", resolved);
+    } catch {
+      root.setAttribute("data-theme", "dark");
+    }
+  })();
+</script>
+
+<button
+  class="theme-toggle is-dark"
+  type="button"
+  aria-label="Toggle color theme"
+  aria-pressed="true"
+  data-theme-toggle
+>
+  <span class="theme-toggle__thumb" aria-hidden="true">
+    <svg
+      class="theme-toggle__icon theme-toggle__icon--sun"
+      viewBox="0 0 24 24"
+      role="img"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="4.5" fill="currentColor" />
+      <g
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        fill="none"
+      >
+        <line x1="12" y1="1" x2="12" y2="4" />
+        <line x1="12" y1="20" x2="12" y2="23" />
+        <line x1="4.22" y1="4.22" x2="6.34" y2="6.34" />
+        <line x1="17.66" y1="17.66" x2="19.78" y2="19.78" />
+        <line x1="1" y1="12" x2="4" y2="12" />
+        <line x1="20" y1="12" x2="23" y2="12" />
+        <line x1="4.22" y1="19.78" x2="6.34" y2="17.66" />
+        <line x1="17.66" y1="6.34" x2="19.78" y2="4.22" />
+      </g>
+    </svg>
+    <svg
+      class="theme-toggle__icon theme-toggle__icon--moon"
+      viewBox="0 0 24 24"
+      role="img"
+      aria-hidden="true"
+    >
+      <path
+        d="M21 14.5A8.5 8.5 0 0 1 9.5 3 7 7 0 1 0 21 14.5Z"
+        fill="currentColor"
+      />
+    </svg>
+  </span>
+</button>
+
+<script is:inline>
+  (() => {
+    const key = "davenarchives-theme";
+    const root = document.documentElement;
+    const toggle = document.querySelector("[data-theme-toggle]");
+    if (!toggle) return;
+
+    const readStored = () => {
+      try {
+        return localStorage.getItem(key);
+      } catch {
+        return null;
+      }
+    };
+
+    const updateUI = (theme) => {
+      toggle.classList.toggle("is-light", theme === "light");
+      toggle.classList.toggle("is-dark", theme === "dark");
+      toggle.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+    };
+
+    const applyTheme = (theme, persist = true) => {
+      root.setAttribute("data-theme", theme);
+      if (persist) {
+        try {
+          localStorage.setItem(key, theme);
+        } catch {
+          /* ignore write errors */
+        }
+      }
+      updateUI(theme);
+    };
+
+    const resolvedInitial = (() => {
+      const stored = readStored();
+      if (stored === "light" || stored === "dark") return stored;
+      return window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    })();
+
+    updateUI(resolvedInitial);
+
+    toggle.addEventListener("click", () => {
+      const current = root.getAttribute("data-theme") === "light" ? "light" : "dark";
+      const next = current === "dark" ? "light" : "dark";
+      applyTheme(next);
+    });
+
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleMediaChange = (event) => {
+      if (readStored()) return;
+      applyTheme(event.matches ? "dark" : "light", false);
+    };
+    if (typeof media.addEventListener === "function") {
+      media.addEventListener("change", handleMediaChange);
+    } else {
+      media.addListener(handleMediaChange);
+    }
+  })();
+</script>
