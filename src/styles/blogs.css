@@ -1,5 +1,10 @@
 :root {
   --blog-accent: #f25497;
+  --blog-detail-title-color: #cfd9ff;
+}
+
+:root[data-theme="light"] {
+  --blog-detail-title-color: #0b1426;
 }
 
 .blogs-page {
@@ -111,7 +116,7 @@
   font-size: clamp(2.4rem, 5vw, 3.25rem);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #cfd9ff;
+  color: var(--blog-detail-title-color);
   font-family: "Lilita One", "Montserrat", system-ui, -apple-system,
     BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
