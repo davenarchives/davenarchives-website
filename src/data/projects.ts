@@ -1,4 +1,5 @@
 import type { ImageMetadata } from "astro";
+import anisauceImage from "../assets/project-card/anisauce.png";
 import anisekaiImage from "../assets/project-card/anisekai.png";
 import pptxGeneratorImage from "../assets/project-card/pptxgenerator.png";
 import pdFlashgenImage from "../assets/project-card/pdflashgen.png";
@@ -31,13 +32,23 @@ export const projectsPerPage = 9;
 
 export const featuredProjects: FeaturedProject[] = [
   {
+    id: "anisauce",
+    type: "featured",
+    title: "ANISAUCE",
+    description:
+      "A reverse-image search web app for anime screenshots",
+    image: anisauceImage,
+    tags: ["nextjs", "react", "typescript", "css", "tracemoe", "anilist"],
+    href: "/projects/anisauce",
+  },
+  {
     id: "anisekai",
     type: "featured",
     title: "ANISEKAI",
     description:
       "A mobile app to track, collect, and discover your favorite anime and manga.",
     image: anisekaiImage,
-    tags: ["reactnative", "expo", "convex", "gemini"],
+    tags: ["reactnative", "expo", "convex", "jikan","gemini"],
     href: "/projects/anisekai",
   },
   {
@@ -127,7 +138,7 @@ export const featuredProjects: FeaturedProject[] = [
     description:
       "A single-page web application that removes image backgrounds using the remove.bg REST API.",
     image: imgBackgroundRemoverImage,
-    tags: ["html", "css", "javascript"],
+    tags: ["html", "css", "javascript", "removebg"],
     href: "/projects/img-background-remover",
   },
 ];
