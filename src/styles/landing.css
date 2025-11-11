@@ -153,6 +153,14 @@
       color: #f04786;
     }
 
+    :root {
+      --back-to-top-color: #0b1835;
+    }
+
+    :root[data-theme="light"] {
+      --back-to-top-color: #ffffff;
+    }
+
     .back-to-top {
       position: fixed;
       right: clamp(1.5rem, 4vw, 2.5rem);
@@ -162,7 +170,7 @@
       border-radius: 999px;
       border: none;
       background: #ffcc35;
-      color: #ffffff;
+      color: var(--back-to-top-color);
       font-size: 1.5rem;
       font-weight: 700;
       display: flex;

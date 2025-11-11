@@ -279,6 +279,24 @@
       padding: 0;
     }
 
+    :root {
+      --pagination-bg: rgba(6, 14, 27, 0.88);
+      --pagination-color: rgba(209, 218, 255, 0.55);
+      --pagination-hover-bg: rgba(12, 26, 52, 0.95);
+      --pagination-hover-color: rgba(var(--off-white-rgb), 0.85);
+      --pagination-active-bg: rgba(18, 36, 68, 0.98);
+      --pagination-active-color: rgba(var(--off-white-rgb), 0.95);
+    }
+
+    :root[data-theme="light"] {
+      --pagination-bg: #47c0d3;
+      --pagination-color: #000000;
+      --pagination-hover-bg: #2a9cb0;
+      --pagination-hover-color: #000000;
+      --pagination-active-bg: #209ab3;
+      --pagination-active-color: #ffffff;
+    }
+
     .projects-pagination__link {
       display: inline-flex;
       align-items: center;
@@ -286,8 +304,8 @@
       width: 3.25rem;
       height: 3.25rem;
       border-radius: 0.75rem;
-      background: #47c0d3;
-      color: #000000;
+      background: var(--pagination-bg);
+      color: var(--pagination-color);
       text-decoration: none;
       font-weight: 700;
       letter-spacing: 0.08em;
@@ -296,8 +314,8 @@
     }
 
     .projects-pagination__link:hover {
-      background: #2a9cb0;
-      color: #000000;
+      background: var(--pagination-hover-bg);
+      color: var(--pagination-hover-color);
       transform: translateY(-2px);
     }
 
@@ -307,8 +325,8 @@
     }
 
     .projects-pagination__link--active {
-      background: #209ab3;
-      color: #ffffff;
+      background: var(--pagination-active-bg);
+      color: var(--pagination-active-color);
       pointer-events: none;
     }
 
