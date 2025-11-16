@@ -72,7 +72,7 @@ const { currentPage, projects } = pageData;
                   <ul class="project-card__tags" aria-label="Technology tags">
                     {project.tags.map((tag) => (
                       <li>
-                        <span>#{tag}</span>
+                        <span data-project-tag={tag}>#{tag}</span>
                       </li>
                     ))}
                   </ul>
@@ -206,6 +206,7 @@ const { currentPage, projects } = pageData;
           "[data-project-search-results-empty]"
         );
 
+        const grid = document.querySelector(".projects-grid");
         const featuredCards = Array.from(
           document.querySelectorAll(".project-card--featured")
         ).map((card) => {
@@ -224,6 +225,22 @@ const { currentPage, projects } = pageData;
         const placeholderCards = Array.from(
           document.querySelectorAll(".project-card--placeholder")
         );
+        const tagElements = Array.from(
+          document.querySelectorAll("[data-project-tag]")
+        ).map((element) => ({
+          element,
+          value: (element.dataset.projectTag || "").toLowerCase(),
+        }));
+
+        const updateTagHighlights = (trimmedValue = "") => {
+          const normalized = trimmedValue.replace(/^#/, "").toLowerCase();
+          tagElements.forEach(({ element, value }) => {
+            element.classList.toggle(
+              "project-tag--highlight",
+              Boolean(normalized) && value.includes(normalized)
+            );
+          });
+        };
 
         const applyFilter = (rawValue = "") => {
           const trimmed = rawValue.trim();
@@ -233,6 +250,8 @@ const { currentPage, projects } = pageData;
             : trimmed.toLowerCase();
           const isFiltering = Boolean(normalized);
           let visibleCount = 0;
+
+          updateTagHighlights(trimmed);
 
           featuredCards.forEach((project) => {
             let matches = true;
@@ -259,6 +278,8 @@ const { currentPage, projects } = pageData;
           placeholderCards.forEach((card) => {
             card.classList.toggle("project-card--hidden", isFiltering);
           });
+
+          grid?.classList.toggle("projects-grid--searching", isFiltering);
 
           if (emptyResults) {
             emptyResults.hidden = !isFiltering || visibleCount > 0;

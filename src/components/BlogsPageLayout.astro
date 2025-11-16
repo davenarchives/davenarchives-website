@@ -95,7 +95,7 @@ const placeholderCount = Math.max(
                         <ul class="project-card__tags blog-card__tags" aria-label="Tags">
                           {post.tags.map((tag) => (
                             <li>
-                              <span>#{tag}</span>
+                              <span data-blog-tag={tag}>#{tag}</span>
                             </li>
                           ))}
                         </ul>
@@ -200,6 +200,7 @@ const placeholderCount = Math.max(
     </div>
     <script>
       (() => {
+        const grid = document.querySelector(".blogs-grid");
         const blogCards = Array.from(
           document.querySelectorAll("[data-blog-entry]")
         ).map((card) => {
@@ -220,9 +221,25 @@ const placeholderCount = Math.max(
         const placeholderCards = Array.from(
           document.querySelectorAll("[data-blog-placeholder]")
         );
+        const tagElements = Array.from(
+          document.querySelectorAll("[data-blog-tag]")
+        ).map((element) => ({
+          element,
+          value: (element.dataset.blogTag || "").toLowerCase(),
+        }));
         const emptyResults = document.querySelector(
           "[data-blog-search-results-empty]"
         );
+
+        const updateTagHighlights = (trimmedValue = "") => {
+          const normalized = trimmedValue.replace(/^#/, "").toLowerCase();
+          tagElements.forEach(({ element, value }) => {
+            element.classList.toggle(
+              "project-tag--highlight",
+              Boolean(normalized) && value.includes(normalized)
+            );
+          });
+        };
 
         const applyFilter = (rawValue = "") => {
           const trimmed = rawValue.trim();
@@ -232,6 +249,8 @@ const placeholderCount = Math.max(
             : trimmed.toLowerCase();
           const isFiltering = Boolean(normalized);
           let visibleCount = 0;
+
+          updateTagHighlights(trimmed);
 
           blogCards.forEach((post) => {
             let matches = true;
@@ -255,6 +274,8 @@ const placeholderCount = Math.max(
           placeholderCards.forEach((card) => {
             card.classList.toggle("project-card--hidden", isFiltering);
           });
+
+          grid?.classList.toggle("projects-grid--searching", isFiltering);
 
           if (emptyResults) {
             emptyResults.hidden = !isFiltering || visibleCount > 0;
