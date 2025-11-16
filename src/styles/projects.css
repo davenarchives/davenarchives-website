@@ -289,9 +289,9 @@
     }
 
     .project-tag--highlight {
-      background: #61dafb !important;
-      color: #051221 !important;
-      box-shadow: 0 0 15px rgba(97, 218, 251, 0.35);
+      background: #ffcc35 !important;
+      color: #0b1020 !important;
+      box-shadow: 0 0 15px rgba(255, 204, 53, 0.45);
     }
 
     .projects-pagination {

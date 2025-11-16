@@ -236,7 +236,7 @@ const placeholderCount = Math.max(
           tagElements.forEach(({ element, value }) => {
             element.classList.toggle(
               "project-tag--highlight",
-              Boolean(normalized) && value.includes(normalized)
+              Boolean(normalized) && value === normalized
             );
           });
         };
