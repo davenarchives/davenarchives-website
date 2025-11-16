@@ -125,6 +125,15 @@
       font-size: 1.1rem;
     }
 
+
+    .projects-search__no-results {
+      text-align: center;
+      font-weight: 600;
+      color: rgba(var(--off-white-rgb), 0.7);
+      margin: -0.5rem auto 0;
+      max-width: 560px;
+    }
+
     .projects-grid {
       display: grid;
       gap: 2rem;
@@ -143,6 +152,10 @@
       transition: transform 0.25s ease;
       height: 100%;
       width: 100%;
+    }
+
+    .project-card--hidden {
+      display: none !important;
     }
 
     .project-card__link {

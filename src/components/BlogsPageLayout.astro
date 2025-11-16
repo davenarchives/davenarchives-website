@@ -68,6 +68,10 @@ const placeholderCount = Math.max(
                   <article
                     class="project-card project-card--featured blog-card"
                     aria-labelledby={`${post.slug}-title`}
+                    data-blog-entry
+                    data-blog-title={post.title}
+                    data-blog-description={post.description}
+                    data-blog-tags={post.tags.join("|")}
                   >
                     <a
                       class="project-card__link"
@@ -104,6 +108,7 @@ const placeholderCount = Math.max(
                 <article
                   class="project-card project-card--placeholder blog-card blog-card--placeholder"
                   aria-label={`Blog placeholder ${index + 1}`}
+                  data-blog-placeholder
                 >
                   <div class="project-card__placeholder">
                     <span>coming soon</span>
@@ -113,6 +118,13 @@ const placeholderCount = Math.max(
             </section>
           )
         }
+        <p
+          class="projects-search__no-results"
+          data-blog-search-results-empty
+          hidden
+        >
+          No blogs match that search. Try another keyword or tag.
+        </p>
         <nav class="projects-pagination blogs-pagination" aria-label="Blogs pages">
           <ul>
             <li>
@@ -186,5 +198,93 @@ const placeholderCount = Math.max(
       <Footer />
       <BackToTop />
     </div>
+    <script>
+      (() => {
+        const blogCards = Array.from(
+          document.querySelectorAll("[data-blog-entry]")
+        ).map((card) => {
+          const tags = (card.dataset.blogTags || "")
+            .split("|")
+            .map((tag) => tag.trim().toLowerCase())
+            .filter(Boolean);
+          return {
+            element: card,
+            title: (card.dataset.blogTitle || "").toLowerCase(),
+            description: (card.dataset.blogDescription || "").toLowerCase(),
+            tags,
+          };
+        });
+
+        if (!blogCards.length) return;
+
+        const placeholderCards = Array.from(
+          document.querySelectorAll("[data-blog-placeholder]")
+        );
+        const emptyResults = document.querySelector(
+          "[data-blog-search-results-empty]"
+        );
+
+        const applyFilter = (rawValue = "") => {
+          const trimmed = rawValue.trim();
+          const isTagMode = trimmed.startsWith("#");
+          const normalized = isTagMode
+            ? trimmed.slice(1).toLowerCase()
+            : trimmed.toLowerCase();
+          const isFiltering = Boolean(normalized);
+          let visibleCount = 0;
+
+          blogCards.forEach((post) => {
+            let matches = true;
+            if (isFiltering) {
+              if (isTagMode) {
+                matches = post.tags.some((tag) =>
+                  tag.includes(normalized)
+                );
+              } else {
+                matches =
+                  post.title.includes(normalized) ||
+                  post.description.includes(normalized) ||
+                  post.tags.some((tag) => tag.includes(normalized));
+              }
+            }
+
+            post.element.classList.toggle("project-card--hidden", !matches);
+            if (matches) visibleCount++;
+          });
+
+          placeholderCards.forEach((card) => {
+            card.classList.toggle("project-card--hidden", isFiltering);
+          });
+
+          if (emptyResults) {
+            emptyResults.hidden = !isFiltering || visibleCount > 0;
+          }
+        };
+
+        const STORAGE_KEY = "globalSearchQuery";
+        const readStored = () => {
+          try {
+            return localStorage.getItem(STORAGE_KEY) || "";
+          } catch {
+            return "";
+          }
+        };
+
+        const handleSearchChange = (event) => {
+          const value =
+            typeof event?.detail?.value === "string"
+              ? event.detail.value
+              : readStored();
+          if (value?.trim() === "#") {
+            applyFilter("");
+            return;
+          }
+          applyFilter(value || "");
+        };
+
+        window.addEventListener("global-search-change", handleSearchChange);
+        handleSearchChange({ detail: { value: readStored() } });
+      })();
+    </script>
   </body>
 </html>

@@ -84,6 +84,10 @@ const { currentPage, projects } = pageData;
               <article
                 class="project-card project-card--featured"
                 aria-labelledby={`${project.id}-title`}
+                data-project-id={project.id}
+                data-project-title={project.title}
+                data-project-description={project.description}
+                data-project-tags={project.tags.join("|")}
               >
                 {project.href ? (
                   <a
@@ -115,6 +119,14 @@ const { currentPage, projects } = pageData;
             );
           })}
         </section>
+        <p
+          class="projects-search__no-results"
+          data-project-search-results-empty
+          hidden
+        >
+          No projects match that search. Try a different keyword or clear the
+          search bar.
+        </p>
         <nav class="projects-pagination" aria-label="Projects pages">
           <ul>
             <li>
@@ -188,5 +200,95 @@ const { currentPage, projects } = pageData;
       <Footer />
       <BackToTop />
     </div>
+    <script>
+      (() => {
+        const emptyResults = document.querySelector(
+          "[data-project-search-results-empty]"
+        );
+
+        const featuredCards = Array.from(
+          document.querySelectorAll(".project-card--featured")
+        ).map((card) => {
+          const tags = (card.dataset.projectTags || "")
+            .split("|")
+            .map((tag) => tag.trim().toLowerCase())
+            .filter(Boolean);
+          return {
+            element: card,
+            title: (card.dataset.projectTitle || "").toLowerCase(),
+            description: (card.dataset.projectDescription || "").toLowerCase(),
+            tags,
+          };
+        });
+
+        const placeholderCards = Array.from(
+          document.querySelectorAll(".project-card--placeholder")
+        );
+
+        const applyFilter = (rawValue = "") => {
+          const trimmed = rawValue.trim();
+          const isTagMode = trimmed.startsWith("#");
+          const normalized = isTagMode
+            ? trimmed.slice(1).toLowerCase()
+            : trimmed.toLowerCase();
+          const isFiltering = Boolean(normalized);
+          let visibleCount = 0;
+
+          featuredCards.forEach((project) => {
+            let matches = true;
+            if (isFiltering) {
+              if (isTagMode) {
+                matches = project.tags.some((tag) =>
+                  tag.includes(normalized)
+                );
+              } else {
+                matches =
+                  project.title.includes(normalized) ||
+                  project.description.includes(normalized) ||
+                  project.tags.some((tag) => tag.includes(normalized));
+              }
+            }
+
+            project.element.classList.toggle(
+              "project-card--hidden",
+              !matches
+            );
+            if (matches) visibleCount++;
+          });
+
+          placeholderCards.forEach((card) => {
+            card.classList.toggle("project-card--hidden", isFiltering);
+          });
+
+          if (emptyResults) {
+            emptyResults.hidden = !isFiltering || visibleCount > 0;
+          }
+        };
+
+        const STORAGE_KEY = "globalSearchQuery";
+        const readStored = () => {
+          try {
+            return localStorage.getItem(STORAGE_KEY) || "";
+          } catch {
+            return "";
+          }
+        };
+
+        const handleSearchChange = (event) => {
+          const value =
+            typeof event?.detail?.value === "string"
+              ? event.detail.value
+              : readStored();
+          if (value?.trim() === "#") {
+            applyFilter("");
+            return;
+          }
+          applyFilter(value || "");
+        };
+
+        window.addEventListener("global-search-change", handleSearchChange);
+        handleSearchChange({ detail: { value: readStored() } });
+      })();
+    </script>
   </body>
 </html>

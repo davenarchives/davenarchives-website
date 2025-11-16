@@ -34,7 +34,7 @@ const { active } = Astro.props ?? {};
       blogs
     </a>
     <div class="site-nav__actions">
-      <label class="search">
+      <label class="search" data-global-search-panel>
         <svg
           width="18"
           height="18"
@@ -51,9 +51,76 @@ const { active } = Astro.props ?? {};
           />
           <circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="2" />
         </svg>
-        <input type="search" placeholder="Search" />
+        <input
+          type="search"
+          placeholder="Search"
+          data-global-search-input
+          autocomplete="off"
+          spellcheck="false"
+        />
       </label>
       <ThemeToggle />
     </div>
   </nav>
 </header>
+<script>
+  (() => {
+    const searchPanel = document.querySelector("[data-global-search-panel]");
+    const searchInput = searchPanel?.querySelector("[data-global-search-input]");
+    if (!searchInput) return;
+
+    const STORAGE_KEY = "globalSearchQuery";
+    const dispatchQuery = (value) => {
+      window.dispatchEvent(
+        new CustomEvent("global-search-change", {
+          detail: { value },
+        })
+      );
+    };
+
+    const readStored = () => {
+      try {
+        return localStorage.getItem(STORAGE_KEY) || "";
+      } catch {
+        return "";
+      }
+    };
+
+    const writeStored = (value) => {
+      try {
+        localStorage.setItem(STORAGE_KEY, value);
+      } catch {
+        /* ignore */
+      }
+    };
+
+    const syncFromStorage = () => {
+      const saved = readStored();
+      if (saved && searchInput.value !== saved) {
+        searchInput.value = saved;
+      }
+      dispatchQuery(searchInput.value);
+    };
+
+    const handleInput = () => {
+      const value = searchInput.value;
+      writeStored(value);
+      dispatchQuery(value);
+    };
+
+    searchInput.addEventListener("input", handleInput);
+    searchInput.addEventListener("search", handleInput);
+    searchInput.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        if (searchInput.value.trim().length > 0) {
+          searchInput.value = "";
+          handleInput();
+        } else {
+          searchInput.blur();
+        }
+      }
+    });
+
+    syncFromStorage();
+  })();
+</script>
