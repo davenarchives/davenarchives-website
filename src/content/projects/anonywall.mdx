@@ -1,0 +1,63 @@
+# The Anonymous Wall 
+
+The Anonymous Wall (AnonyWall) is a modern, privacy-focused community app built with React and Vite. It offers an anonymous Freedom Wall for short notes, a multi-board forum for longer discussions, and admin-led moderation so conversations stay safe and constructive.
+
+## Overview
+- Anonymous posting with themed “Freedom Wall” cards and mood indicators.
+- Forum with topic-specific boards, likes, comments, and reporting tools.
+- Google Sign-In and guest access; pseudonymous profiles with generated avatars.
+- Admin dashboard to review reports, delete or keep content, and view moderation logs.
+- Responsive UI with reusable cards, modals, and stats blocks for a consistent experience.
+
+## Architecture
+- **Frontend**: React 19 + Vite with React Router v7 for client-side routing (`src/App.jsx`). Global UI pieces (header, footer, back-to-top) wrap routed pages.
+- **State & Context**: `AuthContext` handles Firebase auth (Google + anonymous) and profile syncing; `MessageContext` seeds sample Freedom Wall posts when Firestore is empty.
+- **Pages & Routing**: Key routes include Home (landing), Browse/Freedom Wall, Forum (board grid + feeds), ForumPost (post detail), Profile, Admin Dashboard, and policy/contact pages.
+- **Backend Services (Firebase)**: Firestore + Auth initialized in `src/backend/config/firebase.js`. Controllers encapsulate reads/writes:
+  - `userController`: profiles, role resolution (admin via `VITE_ADMIN_EMAILS`), and username generation.
+  - `postController`: CRUD for forum posts (`posts` collection), likes, board filtering, and author backfill.
+  - `replyController`: nested replies (`posts/{id}/replies`), like toggles, and author updates.
+  - `messageController`: Freedom Wall messages (`messages` collection).
+  - `reportController`: reporting for posts/messages (`reports` collection) with status transitions.
+  - `moderationController`: audit trail for admin actions (`moderation_logs` collection).
+- **Data Models**: Typed model builders in `src/backend/models` (Post, Reply, Message) enforce consistent fields, timestamps, and avatar seeds.
+- **UI Components**: Modals for login/reporting/submission, stats blocks, board badges, forum post modal, and dicebear-based avatars (`src/backend/api/avatar.js`).
+- **Configs & Data**: `src/data/boardConfig.js` defines available boards, icons, colors, and rules; `src/utils/constants.js` centralizes hero/button copy and typing animation settings.
+
+## Tech Stack
+- React 19, React Router v7
+- Vite (rolldown-vite) build tooling
+- Firebase (Auth, Firestore)
+- Vanilla CSS with CSS variables; FontAwesome icons
+- ESLint for linting; TypeScript types available for editor support
+
+## Usage
+1) **Prerequisites**: Node.js 16+ and npm.  
+2) **Install**:
+```bash
+npm install
+```
+3) **Configure environment**: create `.env` in the project root:
+```env
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+VITE_ADMIN_EMAILS=admin1@example.com,admin2@example.com  # optional, comma-separated
+```
+4) **Run dev server**:
+```bash
+npm run dev
+# app defaults to http://localhost:5173
+```
+5) **Quality & builds**:
+```bash
+npm run lint     # static analysis
+npm run build    # production bundle -> dist/
+npm run preview  # serve the built bundle locally
+```
+
+## License
+MIT License (see `LICENSE`).
