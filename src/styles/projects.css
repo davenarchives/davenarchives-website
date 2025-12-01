@@ -973,6 +973,14 @@
       }
     }
 
+    .project-detail-page--anonywall .project-writeup__title {
+      color: #50589c;
+    }
+
+    .project-detail-page--anonywall .project-writeup__subtitle-card {
+      border-left-color: #50589c;
+    }
+
     .project-detail-page--anisekai {
       --anisekai-gradient: linear-gradient(
         120deg,
