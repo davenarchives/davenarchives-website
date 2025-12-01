@@ -1,0 +1,182 @@
+---
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import BackToTop from "../../components/BackToTop.astro";
+import SiteHead from "../../components/SiteHead.astro";
+import AnonywallContent from "../../content/projects/anonywall.mdx";
+import heroImage from "../../assets/project-card/anonywall.png";
+import "../../styles/landing.css";
+import "../../styles/projects.css";
+
+const imageMeta = heroImage;
+const heroImageSrc =
+  typeof imageMeta === "string" ? imageMeta : imageMeta?.src ?? imageMeta;
+const heroImageWidth =
+  typeof imageMeta === "object" && "width" in imageMeta
+    ? imageMeta.width
+    : undefined;
+const heroImageHeight =
+  typeof imageMeta === "object" && "height" in imageMeta
+    ? imageMeta.height
+    : undefined;
+
+const techTags = ["react", "vite", "firebase", "css", "typescript"];
+
+type ResourceLink = {
+  icon: string;
+  label: string;
+  href?: string;
+};
+
+const resourceLinks: ResourceLink[] = [
+  {
+    icon: "fa-solid fa-globe",
+    label: "Project website",
+    href: "https://anonywall-ph.vercel.app",
+  },
+];
+
+type RepoLink = {
+  label: string;
+  href: string;
+};
+
+const repoLinks: RepoLink[] = [
+  {
+    label: "source code",
+    href: "https://github.com/SoftEng2025/The-Anonymous-Wall",
+  },
+];
+
+const tableOfContents = [
+  {
+    title: "Project Overview",
+    items: [
+      { label: "Overview", href: "#overview" },
+      { label: "Architecture", href: "#architecture" },
+    ],
+  },
+  {
+    title: "Build & Ops",
+    items: [
+      { label: "Tech Stack", href: "#tech-stack" },
+      { label: "Usage", href: "#usage" },
+      { label: "License", href: "#license" },
+    ],
+  },
+];
+---
+
+<html lang="en">
+  <head>
+    <SiteHead title="ANONYWALL | davenarchives" />
+  </head>
+  <body>
+    <div class="page project-detail-page project-detail-page--anonywall">
+      <Header active="projects" />
+      <main class="project-detail-layout">
+        <section
+          class="project-showcase"
+          aria-label="Highlighted preview of the ANONYWALL project"
+        >
+          <div class="project-showcase__frame">
+            <img
+              src={heroImageSrc}
+              width={heroImageWidth}
+              height={heroImageHeight}
+              alt="Preview of the Anonywall anonymous wall and forum app"
+              loading="lazy"
+            />
+          </div>
+          <footer class="project-showcase__meta">
+            <ul class="project-tag-list" aria-label="Technology stack">
+              {techTags.map((tag) => (
+                <li>
+                  <span>#{tag}</span>
+                </li>
+              ))}
+            </ul>
+            <div class="project-resource-links" aria-label="Project resources">
+              {resourceLinks.map((link) => (
+                link.href ? (
+                  <a
+                    class="project-resource-links__item"
+                    title={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <i class={link.icon} aria-hidden="true"></i>
+                    <span class="sr-only">{link.label}</span>
+                  </a>
+                ) : (
+                  <span class="project-resource-links__item" title={link.label}>
+                    <i class={link.icon} aria-hidden="true"></i>
+                    <span class="sr-only">{link.label}</span>
+                  </span>
+                )
+              ))}
+              {repoLinks.map((repo) => (
+                <a
+                  class="project-resource-links__item"
+                  title={repo.label}
+                  href={repo.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <i class="fa-brands fa-github" aria-hidden="true"></i>
+                  <span class="sr-only">{repo.label}</span>
+                </a>
+              ))}
+            </div>
+          </footer>
+        </section>
+
+        <div class="project-detail__grid">
+          <section class="project-writeup">
+            <header class="project-writeup__header">
+              <h1 class="project-writeup__title">
+                ANONYWALL
+              </h1>
+              <div class="project-writeup__subtitle-card">
+                <p class="project-writeup__subtitle">
+                  An anonymous wall and multi-board forum with Firebase auth,
+                  reporting, and admin moderation.
+                </p>
+              </div>
+            </header>
+            <article
+              class="project-article project-article--detail"
+              aria-label="ANONYWALL project documentation"
+            >
+              <AnonywallContent />
+            </article>
+          </section>
+          <aside class="project-sidebar" aria-label="On this page">
+            <div class="project-sidebar__card">
+              <p class="project-sidebar__label">On this page</p>
+              <nav aria-label="Table of contents">
+                <ul class="project-toc">
+                  {tableOfContents.map((group) => (
+                    <li class="project-toc__group">
+                      <h2>{group.title}</h2>
+                      <ul>
+                        {group.items.map((item) => (
+                          <li>
+                            <a href={item.href}>{item.label}</a>
+                          </li>
+                        ))}
+                      </ul>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
+          </aside>
+        </div>
+      </main>
+      <Footer />
+      <BackToTop />
+    </div>
+  </body>
+</html>
