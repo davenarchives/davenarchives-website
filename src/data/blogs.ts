@@ -1,4 +1,7 @@
 import type { MarkdownInstance, ImageMetadata } from "astro";
+import deathCover from "../assets/blog-post/death.jpg";
+import fearCover from "../assets/blog-post/fear.avif";
+import prayerCover from "../assets/blog-post/prayer.jpg";
 import paradoxicalCover from "../assets/blog-post/paradoxical.jpg";
 
 export type BlogFrontmatter = {
@@ -18,6 +21,18 @@ type BlogMedia = {
 };
 
 const blogMediaBySlug: Record<string, BlogMedia> = {
+  death: {
+    image: deathCover,
+    fallbackAlt: "Silhouette facing a starry night sky with a soft glow",
+  },
+  fear: {
+    image: fearCover,
+    fallbackAlt: "Abstract dark gradient with the word fear",
+  },
+  prayer: {
+    image: prayerCover,
+    fallbackAlt: "Hands held in prayer over soft light",
+  },
   paradoxical: {
     image: paradoxicalCover,
     fallbackAlt: "Pink neon collage of intersecting geometric panels",
