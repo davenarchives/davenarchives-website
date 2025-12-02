@@ -38,7 +38,7 @@ export const featuredProjects: FeaturedProject[] = [
     type: "featured",
     title: "FILE ORGANIZER",
     description:
-      "A desktop/CLI tool that sorts your files into category subfolders (Images, Documents, Videos, etc.) with preview mode, collision-safe renaming, and cleanup of empty folders.",
+      "Desktop/CLI sorter with preview mode, collision-safe renames, and empty-folder cleanup.",
     image: fileOrganizerImage,
     tags: ["python", "tkinter", "cli", "pyinstaller"],
     href: "/projects/file-organizer",
