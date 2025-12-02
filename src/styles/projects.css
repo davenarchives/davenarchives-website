@@ -1,45 +1,16 @@
     :root {
-      --project-card-bg: linear-gradient(
-        180deg,
-        rgba(14, 30, 65, 0.95) 0%,
-        rgba(11, 24, 53, 0.98) 58%,
-        rgba(8, 19, 43, 0.98) 100%
-      );
-      --project-card-media-bg: radial-gradient(
-          circle at 20% 20%,
-          rgba(37, 73, 133, 0.65),
-          transparent 55%
-        ),
-        radial-gradient(
-          circle at 80% 35%,
-          rgba(66, 123, 228, 0.55),
-          transparent 70%
-        ),
-        rgba(7, 18, 40, 0.95);
-      --project-card-inner-bg: rgba(5, 13, 30, 0.88);
+      --project-card-bg: #0f1823;
+      --project-card-media-bg: #121a23;
+      --project-card-inner-bg: rgba(6, 14, 27, 0.88);
       --project-card-foreground: var(--off-white);
-      --project-card-title-color: #d1daff;
-      --project-card-body-color: rgba(var(--off-white-rgb), 0.68);
-      --project-tag-bg: rgba(16, 36, 75, 0.8);
-      --project-tag-color: rgba(var(--off-white-rgb), 0.78);
-      --project-card-border: rgba(24, 50, 121, 0.12);
+      --project-card-title-color: #cfd2ff;
+      --project-card-body-color: rgba(201, 217, 243, 0.88);
+      --project-tag-bg: #17263a;
+      --project-tag-color: #c9d9f3;
+      --project-card-border: rgba(255, 255, 255, 0.04);
       --project-card-shadow: none;
-      --project-panel-bg: radial-gradient(
-          circle at 20% 20%,
-          rgba(58, 112, 209, 0.4),
-          transparent 55%
-        ),
-        radial-gradient(
-          circle at 80% 35%,
-          rgba(183, 96, 211, 0.35),
-          transparent 70%
-        ),
-        rgba(5, 11, 24, 0.95);
-      --project-meta-bg: linear-gradient(
-        145deg,
-        rgba(7, 17, 38, 0.92) 0%,
-        rgba(3, 10, 24, 0.92) 100%
-      );
+      --project-panel-bg: #121a23;
+      --project-meta-bg: #121a23;
       --project-detail-block-bg: #121a23;
       --project-detail-chip-bg: rgba(13, 28, 60, 0.85);
       --project-detail-chip-color: rgba(var(--off-white-rgb), 0.82);
@@ -52,19 +23,9 @@
     }
 
     :root[data-theme="light"] {
-      --project-card-bg: linear-gradient(
-        180deg,
-        #1f2a48 0%,
-        #131c33 65%,
-        #0b1426 100%
-      );
-      --project-card-media-bg: linear-gradient(
-          140deg,
-          rgba(41, 57, 104, 0.8),
-          rgba(19, 29, 55, 0.95)
-        ),
-        rgba(11, 19, 39, 0.95);
-      --project-card-inner-bg: #47c0d3;
+      --project-card-bg: #d6b86d;
+      --project-card-media-bg: #d6b86d;
+      --project-card-inner-bg: #b88d47;
       --project-card-foreground: #ffffff;
       --project-card-title-color: #ffffff;
       --project-card-body-color: rgba(255, 255, 255, 0.9);
@@ -77,7 +38,7 @@
         rgba(32, 45, 86, 0.95),
         rgba(16, 23, 44, 0.95)
       );
-      --project-meta-bg: #47c0d3;
+      --project-meta-bg: #d6b86d;
       --project-detail-block-bg: rgba(0, 0, 0, 0.08);
       --project-detail-chip-bg: rgba(255, 255, 255, 0.25);
       --project-detail-chip-color: #000000;
@@ -319,11 +280,11 @@
     }
 
     :root[data-theme="light"] {
-      --pagination-bg: #47c0d3;
+      --pagination-bg: #d6b86d;
       --pagination-color: #000000;
-      --pagination-hover-bg: #2a9cb0;
+      --pagination-hover-bg: #c19d52;
       --pagination-hover-color: #000000;
-      --pagination-active-bg: #209ab3;
+      --pagination-active-bg: #b08a3b;
       --pagination-active-color: #ffffff;
     }
 
