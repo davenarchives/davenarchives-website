@@ -33,11 +33,7 @@
       --project-tag-color: #000000;
       --project-card-border: rgba(13, 24, 53, 0.08);
       --project-card-shadow: 0 30px 60px rgba(13, 24, 53, 0.15);
-      --project-panel-bg: linear-gradient(
-        135deg,
-        rgba(32, 45, 86, 0.95),
-        rgba(16, 23, 44, 0.95)
-      );
+      --project-panel-bg: #d6b86d;
       --project-meta-bg: #d6b86d;
       --project-detail-block-bg: rgba(0, 0, 0, 0.08);
       --project-detail-chip-bg: rgba(255, 255, 255, 0.25);
