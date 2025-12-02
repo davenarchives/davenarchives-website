@@ -1,6 +1,6 @@
 ---
 title: "PRAYER"
-description: "Prayer as honest, constant conversation with God—listening, thanking, turning back, and trusting His guidance."
+description: "Honest conversation with God—listening, thanking, returning, trusting His guidance."
 publishDate: "2020-04-16"
 tags:
   - poetry
