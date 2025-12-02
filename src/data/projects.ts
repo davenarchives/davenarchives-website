@@ -2,6 +2,7 @@ import type { ImageMetadata } from "astro";
 import anisauceImage from "../assets/project-card/anisauce.png";
 import anisekaiImage from "../assets/project-card/anisekai.png";
 import anonywallImage from "../assets/project-card/anonywall.png";
+import fileOrganizerImage from "../assets/project-card/fileorganizer.png";
 import pptxGeneratorImage from "../assets/project-card/pptxgenerator.png";
 import pdFlashgenImage from "../assets/project-card/pdflashgen.png";
 import happyBirdImage from "../assets/project-card/happybird.png";
@@ -32,6 +33,16 @@ export type Project = FeaturedProject | PlaceholderProject;
 export const projectsPerPage = 9;
 
 export const featuredProjects: FeaturedProject[] = [
+  {
+    id: "file-organizer",
+    type: "featured",
+    title: "FILE ORGANIZER",
+    description:
+      "A desktop/CLI tool that sorts your files into category subfolders (Images, Documents, Videos, etc.) with preview mode, collision-safe renaming, and cleanup of empty folders.",
+    image: fileOrganizerImage,
+    tags: ["python", "tkinter", "cli", "pyinstaller"],
+    href: "/projects/file-organizer",
+  },
   {
     id: "anonywall",
     type: "featured",

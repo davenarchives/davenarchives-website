@@ -1,0 +1,69 @@
+# File Organizer
+
+Organizes files from a source folder into categorized subfolders by extension (Images, Documents, Videos, etc.). By default it sorts your `Downloads` into new subfolders inside `Downloads`, adding `_1`, `_2`, etc. to avoid name collisions.
+
+---
+
+## Project Overview
+### Overview
+Desktop file organizer with both CLI and Tkinter GUI. Sorts files by extension into category folders.
+
+### Core Features
+- One-click GUI (or CLI) to sort files into Images/Documents/Videos/etc.
+- Preview mode (`--dry-run` or GUI Preview) to show moves before applying.
+- Safe renaming on collisions (`_1`, `_2`, ...).
+- Cleans up empty category folders created during a run.
+
+### Architecture at a Glance
+- `organizer.py`: core logic + CLI.
+- `organizer_gui.py`: Tkinter GUI calling `organize()`.
+- No external services or dependencies beyond Python stdlib.
+
+---
+
+## Tech & Build
+### External Services & Data Handling
+- None. Operates on local file system only. No network calls, no data sent out.
+
+### Tech Stack
+- Python 3 (tested with 3.13)
+- Standard library: `argparse`, `pathlib`, `shutil`, `tkinter`, `collections`
+
+### Local Development
+- Clone repo, ensure Python 3 is installed.
+- Run CLI: `py -3 organizer.py --dry-run`
+- Run GUI: `py -3 organizer_gui.py`
+
+### Prerequisites
+- Python 3.x on Windows. (Tkinter ships with standard Windows Python.)
+
+### Setup & Scripts
+- Install: no deps needed beyond Python.
+- Build exe: `py -3 -m PyInstaller --clean --onefile --windowed --add-binary "C:\\Python313\\python313.dll;." organizer_gui.py`
+- Outputs land in `dist/` (ignored by git).
+
+### Environment Variables
+- None required.
+
+---
+
+## Usage & Ops
+### Usage Workflow
+1) Launch GUI (`organizer_gui.py` or the exe). Pick source and target folders.
+2) Click Preview to see planned moves, or Organize now to apply.
+3) Review the log and per-category summary.
+
+CLI examples:
+```
+py -3 organizer.py --dry-run
+py -3 organizer.py --source "C:\\Path\\To\\Files" --target-root "D:\\Sorted"
+```
+
+### Accessibility & UX Notes
+- Clear step labels, big action buttons, high-contrast theme.
+- Log panel shows exactly what changed and counts per category.
+
+### License
+- This project is released under the MIT License. Review the license before redistributing or incorporating the code into other projects.
+
+---
