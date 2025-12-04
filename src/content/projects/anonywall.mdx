@@ -1,5 +1,7 @@
 # The Anonymous Wall (AnonyWall)
 
+---
+
 ## Project Overview
 
 ### Overview
@@ -13,7 +15,7 @@ AnonyWall is a privacy-first community app that blends an anonymous Freedom Wall
 - Profiles: Firestore-backed profiles; username changes backfill authored content.
 - Seed data: demo Freedom Wall messages populate when Firestore is empty for first-load UX.
 
-### Project Structure (high level)
+### Project Structure
 - `src/App.jsx` - routing shell (header, footer, back-to-top, auth wrapper).
 - `src/pages/` - Home, About, Browse/Freedom Wall, Forum, ForumPost, Profile, AdminDashboard, policy/contact.
 - `src/components/` - submit/report/login modals, forum UI, footer/header, helpers.
@@ -21,6 +23,8 @@ AnonyWall is a privacy-first community app that blends an anonymous Freedom Wall
 - `src/backend/` - Firebase config, controllers, Firestore models.
 - `src/data/` - board definitions and metadata.
 - `src/utils/` - constants, name generator, avatar helpers, formatting utilities.
+
+---
 
 ## Tech & Architecture
 
@@ -79,6 +83,8 @@ Routing lives in `src/App.jsx`.
 - Theme and mood pickers tint Freedom Wall cards and composer backgrounds.
 - Responsive layout; modals adapt to mobile with slide-up behavior.
 
+---
+
 ## Build & Ops
 
 ### Getting Started
@@ -118,12 +124,16 @@ npm run dev      # http://localhost:5173
 - Auth failures: verify Firebase Auth providers (Google + anonymous) are enabled and env keys match the Firebase project.
 - Firestore permission errors: check security rules for `messages`, `posts`, `reports`, `users`, and `moderation_logs`.
 
+---
+
 ## Roadmap
 - Future enhancements:
   - Add richer moderation tooling (bulk resolve, filters, exports).
   - Offline-friendly caching for read flows.
   - Additional auth providers and optional email verification for Google accounts.
   - Improved analytics on board engagement and report resolution.
+
+---
 
 ## License
 MIT License (see `LICENSE`).
