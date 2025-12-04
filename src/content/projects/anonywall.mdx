@@ -11,7 +11,7 @@ AnonyWall is a privacy-first community app that blends an anonymous Freedom Wall
 - Freedom Wall: themed, mood-tagged shoutouts with instant UI updates.
 - Forum: board-based feeds, likes, replies (with optional reply-to), and post detail pages.
 - Auth: Google Sign-In and anonymous login; admin role via `VITE_ADMIN_EMAILS`.
-- Reporting & moderation: users report posts/messages; admins resolve/dismiss with logs.
+- Reporting and moderation: users report posts/messages; admins resolve/dismiss with logs.
 - Profiles: Firestore-backed profiles; username changes backfill authored content.
 - Seed data: demo Freedom Wall messages populate when Firestore is empty for first-load UX.
 
@@ -24,7 +24,13 @@ AnonyWall is a privacy-first community app that blends an anonymous Freedom Wall
 - `src/data/` - board definitions and metadata.
 - `src/utils/` - constants, name generator, avatar helpers, formatting utilities.
 
----
+### Architecture
+- Routing: React Router v7 in `src/App.jsx` covers Home, Freedom Wall (`/browse` or `/freedom-wall`), Forum, ForumPost detail, Profile, Admin, and policy/contact pages.
+- State: `AuthContext` manages Firebase auth (Google + anonymous), profiles, and roles; `MessageContext` seeds demo Freedom Wall posts when Firestore is empty and mirrors new submissions for instant UI updates.
+- Backend services (`src/backend/controllers`): `messageController`, `postController`, `replyController`, `reportController`, `moderationController`, `userController`.
+- Models (`src/backend/models`): builders for Message, Post, Reply enforce consistent fields, timestamps, and avatar seeds.
+- Config/data: `src/backend/config/firebase.js` bootstraps Auth/Firestore; `src/data/boardConfig.js` defines boards, colors, icons, rules; `src/utils` contains copy, name generation, and helper APIs.
+- UI components: submit/report/login modals, forum post modal, stats blocks, theme/mood pickers, dicebear avatars, back-to-top, footer, and header navigation.
 
 ## Tech & Architecture
 
@@ -99,6 +105,10 @@ npm run dev      # http://localhost:5173
 - `npm run lint` to run ESLint.
 - `npm run build` to produce `dist/`.
 - `npm run preview` to serve the built bundle locally.
+
+- Quality checks: run `npm run lint`; smoke-test Google + anonymous auth, admin link visibility, Freedom Wall submit/report, Forum create/like/reply/report, Profile update/backfill, Admin report resolution.
+- Deployment: `npm run build` outputs `dist/`; `vercel.json` rewrites `/*` -> `index.html` for SPA hosting (Vercel-ready). Set all `VITE_*` env vars (including `VITE_ADMIN_EMAILS`) in hosting.
+- Troubleshooting: admin link missing (check `VITE_ADMIN_EMAILS`), empty Freedom Wall on first load (ensure `MessageContext` seeding + Firestore reads), auth issues (verify Firebase providers/env), permission errors (check rules for `messages`, `posts`, `reports`, `users`, `moderation_logs`).
 
 ### Testing & Quality
 - ESLint for static analysis.
