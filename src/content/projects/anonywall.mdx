@@ -7,20 +7,26 @@
 ### Overview
 AnonyWall is a privacy-first community app that blends an anonymous Freedom Wall with a multi-board forum. Users can browse or post anonymously, sign in with Google for a persistent profile, and report content for moderation. Admins review reports, resolve issues, and keep an audit trail.
 
-### Architecture
-- **Routing**: React Router v7 in `src/App.jsx` covers Home, Freedom Wall (`/browse` or `/freedom-wall`), Forum, ForumPost detail, Profile, Admin, and policy/contact pages.
-- **State**:
-  - `AuthContext` manages Firebase auth (Google + anonymous), profiles, and roles (admin via `VITE_ADMIN_EMAILS`).
-  - `MessageContext` seeds demo Freedom Wall posts when Firestore is empty.
-- **Backend services** (`src/backend/controllers`):
-  - `messageController`, `postController`, `replyController`, `reportController`, `moderationController`, `userController`.
-- **Models** (`src/backend/models`): builders for Message, Post, Reply enforce consistent fields, timestamps, and avatar seeds.
-- **Config/data**: `src/backend/config/firebase.js` bootstraps Auth/Firestore; `src/data/boardConfig.js` defines forum boards, colors, icons, and rules.
-- **UI components**: submit/report/login modals, forum post modal, stats blocks, theme/mood pickers, dicebear avatars, back-to-top, footer, and header navigation.
+### Features
+- Freedom Wall: themed, mood-tagged shoutouts with instant UI updates.
+- Forum: board-based feeds, likes, replies (with optional reply-to), and post detail pages.
+- Auth: Google Sign-In and anonymous login; admin role via `VITE_ADMIN_EMAILS`.
+- Reporting & moderation: users report posts/messages; admins resolve/dismiss with logs.
+- Profiles: Firestore-backed profiles; username changes backfill authored content.
+- Seed data: demo Freedom Wall messages populate when Firestore is empty for first-load UX.
+
+### Project Structure
+- `src/App.jsx` - routing shell (header, footer, back-to-top, auth wrapper).
+- `src/pages/` - Home, About, Browse/Freedom Wall, Forum, ForumPost, Profile, AdminDashboard, policy/contact.
+- `src/components/` - submit/report/login modals, forum UI, footer/header, helpers.
+- `src/contexts/` - `AuthContext`, `MessageContext`.
+- `src/backend/` - Firebase config, controllers, Firestore models.
+- `src/data/` - board definitions and metadata.
+- `src/utils/` - constants, name generator, avatar helpers, formatting utilities.
 
 ---
 
-## Build & Ops
+## Tech & Architecture
 
 ### Tech Stack
 - React 19 + Vite (rolldown-vite) + React Router v7.
@@ -28,8 +34,8 @@ AnonyWall is a privacy-first community app that blends an anonymous Freedom Wall
 - Vanilla CSS with CSS variables; FontAwesome icons.
 - ESLint for linting; TypeScript typings for editor support.
 
-### Usage
-Environment variables (`.env` in project root):
+### Environment Configuration
+Create `.env` in the project root:
 ```env
 VITE_FIREBASE_API_KEY=your_api_key
 VITE_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
@@ -39,19 +45,95 @@ VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 VITE_FIREBASE_APP_ID=your_app_id
 VITE_ADMIN_EMAILS=admin1@example.com,admin2@example.com
 ```
-Scripts:
+Firebase is initialized in `src/backend/config/firebase.js`. Admins are recognized when their email appears in `VITE_ADMIN_EMAILS`.
+
+### Navigation & Screen Flows
+- Home landing.
+- Freedom Wall browse/submit: `/browse` or `/freedom-wall`.
+- Forum list + board filters; post detail at `/forum/:postId`.
+- Profile: view/update profile data.
+- Admin Dashboard: review/resolve reports; view moderation logs.
+- Policy/Contact pages.
+Routing lives in `src/App.jsx`.
+
+### Data & API Integrations
+- Firestore collections:
+  - `messages`: Freedom Wall entries.
+  - `posts`: forum posts; subcollection `replies`.
+  - `reports`: content reports.
+  - `moderation_logs`: admin actions.
+  - `users`: profiles/roles.
+- Controllers (`src/backend/controllers`):
+  - `messageController`: CRUD for messages.
+  - `postController`: CRUD, likes, board filtering.
+  - `replyController`: CRUD, like toggles, reply-to support.
+  - `reportController`: create/resolve reports on posts or messages.
+  - `moderationController`: audit logging.
+  - `userController`: profile CRUD, role resolution, username generation.
+- Models (`src/backend/models`): builders for Message, Post, Reply enforce fields, timestamps, avatar seeds.
+- Config/data: `src/data/boardConfig.js` defines boards, colors, icons, rules.
+
+### State Management & Data Flow
+- `AuthContext`: wraps Firebase Auth (Google + anonymous), syncs profile/role, exposes auth actions.
+- `MessageContext`: hydrates Freedom Wall feed and seeds demo data if Firestore is empty to improve first-load experience.
+- UI consumes context and subscribes to Firestore reads; submit/report modals write via controllers and update local state for instant feedback.
+
+### Styling & Theming
+- Vanilla CSS with variables for theme colors.
+- Theme and mood pickers tint Freedom Wall cards and composer backgrounds.
+- Responsive layout; modals adapt to mobile with slide-up behavior.
+
+---
+
+## Build & Ops
+
+### Getting Started
+Prerequisites: Node.js 16+ and npm.
 ```bash
 npm install
 npm run dev      # http://localhost:5173
-npm run lint
-npm run build
-npm run preview
 ```
-Troubleshooting:
-- Admin link missing: ensure email is listed in `VITE_ADMIN_EMAILS`.
-- Empty Freedom Wall on first load: confirm `MessageContext` seeding and Firestore read rules.
-- Auth issues: verify Firebase providers and env values match your Firebase project.
-- Firestore permission errors: check rules for `messages`, `posts`, `reports`, `users`, `moderation_logs`.
 
-### License
+### Development Workflow
+- `npm run dev` for Vite dev server.
+- `npm run lint` to run ESLint.
+- `npm run build` to produce `dist/`.
+- `npm run preview` to serve the built bundle locally.
+
+### Testing & Quality
+- ESLint for static analysis.
+- Manual verification flows:
+  - Auth (Google + anonymous) and admin role visibility.
+  - Freedom Wall submit/report.
+  - Forum create/like/reply/report.
+  - Profile update and username backfill.
+
+### Accessibility & Performance
+- Semantic headings on pages and cards.
+- Alt text on cover and avatar imagery.
+- Lightweight client bundle via Vite; Firestore reads batched through controllers.
+
+### Deployment & Build Notes
+- Static build in `dist/`.
+- `vercel.json` rewrites `/*` to `index.html` for SPA routing; deploy-ready for Vercel.
+- Ensure `.env` variables are set in the hosting environment (Firebase keys + `VITE_ADMIN_EMAILS`).
+
+### Troubleshooting
+- Missing admin link: confirm email is listed in `VITE_ADMIN_EMAILS`.
+- Empty Freedom Wall on first load: ensure `MessageContext` seeding is active and Firestore rules allow reads.
+- Auth failures: verify Firebase Auth providers (Google + anonymous) are enabled and env keys match the Firebase project.
+- Firestore permission errors: check security rules for `messages`, `posts`, `reports`, `users`, and `moderation_logs`.
+
+---
+
+## Roadmap
+- Future enhancements:
+  - Add richer moderation tooling (bulk resolve, filters, exports).
+  - Offline-friendly caching for read flows.
+  - Additional auth providers and optional email verification for Google accounts.
+  - Improved analytics on board engagement and report resolution.
+
+---
+
+## License
 MIT License (see `LICENSE`).
