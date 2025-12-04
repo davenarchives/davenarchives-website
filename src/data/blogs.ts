@@ -1,8 +1,10 @@
 import type { MarkdownInstance, ImageMetadata } from "astro";
 import deathCover from "../assets/blog-post/death.jpg";
 import fearCover from "../assets/blog-post/fear.avif";
+import manCover from "../assets/blog-post/man.jpg";
 import prayerCover from "../assets/blog-post/prayer.jpg";
 import paradoxicalCover from "../assets/blog-post/paradoxical.jpg";
+import rainCover from "../assets/blog-post/rain.jpg";
 
 export type BlogFrontmatter = {
   title: string;
@@ -29,6 +31,10 @@ const blogMediaBySlug: Record<string, BlogMedia> = {
     image: fearCover,
     fallbackAlt: "Abstract dark gradient with the word fear",
   },
+  man: {
+    image: manCover,
+    fallbackAlt: "Silhouette of a man under starlight representing body, mind, and spirit",
+  },
   prayer: {
     image: prayerCover,
     fallbackAlt: "Hands held in prayer over soft light",
@@ -36,6 +42,10 @@ const blogMediaBySlug: Record<string, BlogMedia> = {
   paradoxical: {
     image: paradoxicalCover,
     fallbackAlt: "Pink neon collage of intersecting geometric panels",
+  },
+  rain: {
+    image: rainCover,
+    fallbackAlt: "Rain falling over a field with a faint rainbow",
   },
 };
 
