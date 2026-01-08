@@ -605,7 +605,7 @@
       inset: 0;
       pointer-events: none;
       transform: translate3d(-9999px, -9999px, 0);
-      transition: opacity 0.2s ease;
+      transition: opacity 0.1s ease;
       opacity: 0;
       z-index: 30;
     }
@@ -618,6 +618,8 @@
       width: var(--hover-gif-width, 240px);
       height: auto;
       filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.35));
+      transition: opacity 0.15s ease;
+      opacity: 0;
     }
 
     .cta {
