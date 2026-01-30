@@ -197,6 +197,7 @@ const haveFunGifSrc =
         havefun: hoverGif.dataset.gifHavefun || hoverGifImage.src,
       };
 
+      let currentLoadId = 0;
       let gifWidth = 0;
       let gifHeight = 0;
       let lastTrigger = null;
@@ -263,17 +264,24 @@ const haveFunGifSrc =
 
         const gifKey = trigger.dataset.gif;
         const nextSrc = gifKey ? gifSources[gifKey] : null;
+
         if (nextSrc && hoverGifImage.src !== nextSrc) {
+          hoverGifImage.style.opacity = "0";
+          const loadId = ++currentLoadId;
+
           const handleLoad = () => {
+            if (loadId !== currentLoadId) return;
             measureGif();
             if (hoverGif.classList.contains("visible")) {
               positionAboveHighlight(null);
+              hoverGifImage.style.opacity = "1";
             }
           };
           hoverGifImage.addEventListener("load", handleLoad, { once: true });
           hoverGifImage.src = nextSrc;
-        } else {
+        } else if (nextSrc) {
           measureGif();
+          hoverGifImage.style.opacity = "1";
         }
       };
 
@@ -302,6 +310,7 @@ const haveFunGifSrc =
         currentOffset = defaultOffset;
         hoverGif.classList.remove("visible");
         hoverGif.setAttribute("aria-hidden", "true");
+        hoverGifImage.style.opacity = "0";
       };
 
       const handleMouseMove = (event) => {
