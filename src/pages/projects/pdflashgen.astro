@@ -10,7 +10,7 @@ import "../../styles/projects.css";
 
 const imageMeta = heroImage;
 const heroImageSrc =
-  typeof imageMeta === "string" ? imageMeta : imageMeta?.src ?? imageMeta;
+  typeof imageMeta === "string" ? imageMeta : (imageMeta?.src ?? imageMeta);
 const heroImageWidth =
   typeof imageMeta === "object" && "width" in imageMeta
     ? imageMeta.width
@@ -135,32 +135,39 @@ const tableOfContents = [
           </div>
           <footer class="project-showcase__meta">
             <ul class="project-tag-list" aria-label="Technology stack">
-              {techTags.map((tag) => (
-                <li>
-                  <span>#{tag}</span>
-                </li>
-              ))}
+              {
+                techTags.map((tag) => (
+                  <li>
+                    <span data-tag={tag.toLowerCase()}>#{tag}</span>
+                  </li>
+                ))
+              }
             </ul>
             <div class="project-resource-links" aria-label="Project resources">
-              {resourceLinks.map((link) => (
-                link.href ? (
-                  <a
-                    class="project-resource-links__item"
-                    title={link.label}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <i class={link.icon} aria-hidden="true"></i>
-                    <span class="sr-only">{link.label}</span>
-                  </a>
-                ) : (
-                  <span class="project-resource-links__item" title={link.label}>
-                    <i class={link.icon} aria-hidden="true"></i>
-                    <span class="sr-only">{link.label}</span>
-                  </span>
+              {
+                resourceLinks.map((link) =>
+                  link.href ? (
+                    <a
+                      class="project-resource-links__item"
+                      title={link.label}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <i class={link.icon} aria-hidden="true" />
+                      <span class="sr-only">{link.label}</span>
+                    </a>
+                  ) : (
+                    <span
+                      class="project-resource-links__item"
+                      title={link.label}
+                    >
+                      <i class={link.icon} aria-hidden="true" />
+                      <span class="sr-only">{link.label}</span>
+                    </span>
+                  ),
                 )
-              ))}
+              }
               <details class="project-resource-links__dropdown">
                 <summary
                   class="project-resource-links__item project-resource-links__item--dropdown"
@@ -170,18 +177,20 @@ const tableOfContents = [
                   <span class="sr-only">GitHub repositories</span>
                 </summary>
                 <ul class="project-resource-dropdown__list">
-                  {repoLinks.map((repo) => (
-                    <li>
-                      <a
-                        href={repo.href}
-                        title={repo.label}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {repo.label}
-                      </a>
-                    </li>
-                  ))}
+                  {
+                    repoLinks.map((repo) => (
+                      <li>
+                        <a
+                          href={repo.href}
+                          title={repo.label}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {repo.label}
+                        </a>
+                      </li>
+                    ))
+                  }
                 </ul>
               </details>
             </div>
@@ -217,18 +226,20 @@ const tableOfContents = [
               <p class="project-sidebar__label">On this page</p>
               <nav aria-label="Table of contents">
                 <ul class="project-toc">
-                  {tableOfContents.map((group) => (
-                    <li class="project-toc__group">
-                      <h2>{group.title}</h2>
-                      <ul>
-                        {group.items.map((item) => (
-                          <li>
-                            <a href={item.href}>{item.label}</a>
-                          </li>
-                        ))}
-                      </ul>
-                    </li>
-                  ))}
+                  {
+                    tableOfContents.map((group) => (
+                      <li class="project-toc__group">
+                        <h2>{group.title}</h2>
+                        <ul>
+                          {group.items.map((item) => (
+                            <li>
+                              <a href={item.href}>{item.label}</a>
+                            </li>
+                          ))}
+                        </ul>
+                      </li>
+                    ))
+                  }
                 </ul>
               </nav>
             </div>

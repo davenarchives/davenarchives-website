@@ -333,6 +333,8 @@
       flex-direction: column;
       gap: clamp(2.75rem, 4.5vw, 3.75rem);
       flex: 1;
+      overflow-x: hidden;
+      max-width: 100%;
     }
 
     .project-showcase {
@@ -404,6 +406,161 @@
       font-weight: 600;
     }
 
+    /* Programming Language & Technology Tag Colors */
+    /* Python - Blue/Yellow */
+    .project-tag-list span[data-tag="python"] {
+      background: rgba(55, 118, 171, 0.25);
+      color: #3776ab;
+    }
+
+    /* JavaScript - Yellow */
+    .project-tag-list span[data-tag="javascript"] {
+      background: rgba(247, 223, 30, 0.2);
+      color: #f7df1e;
+    }
+
+    /* TypeScript - Blue */
+    .project-tag-list span[data-tag="typescript"] {
+      background: rgba(49, 120, 198, 0.25);
+      color: #3178c6;
+    }
+
+    /* React - Cyan */
+    .project-tag-list span[data-tag="react"] {
+      background: rgba(97, 219, 251, 0.2);
+      color: #61dafb;
+    }
+
+    /* React Native - Cyan */
+    .project-tag-list span[data-tag="reactnative"] {
+      background: rgba(97, 219, 251, 0.2);
+      color: #61dafb;
+    }
+
+    /* Next.js - White/Black */
+    .project-tag-list span[data-tag="nextjs"] {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+    }
+
+    /* Node.js - Green */
+    .project-tag-list span[data-tag="nodejs"] {
+      background: rgba(104, 160, 99, 0.25);
+      color: #68a063;
+    }
+
+    /* Express - Gray */
+    .project-tag-list span[data-tag="express"] {
+      background: rgba(255, 255, 255, 0.12);
+      color: #eeeeee;
+    }
+
+    /* HTML - Orange */
+    .project-tag-list span[data-tag="html"] {
+      background: rgba(227, 79, 38, 0.2);
+      color: #e34f26;
+    }
+
+    /* CSS - Blue */
+    .project-tag-list span[data-tag="css"] {
+      background: rgba(38, 77, 228, 0.2);
+      color: #264de4;
+    }
+
+    /* PHP - Purple */
+    .project-tag-list span[data-tag="php"] {
+      background: rgba(119, 123, 180, 0.25);
+      color: #777bb4;
+    }
+
+    /* MySQL - Blue/Orange */
+    .project-tag-list span[data-tag="mysql"] {
+      background: rgba(0, 117, 143, 0.25);
+      color: #00758f;
+    }
+
+    /* Firebase - Yellow/Orange */
+    .project-tag-list span[data-tag="firebase"] {
+      background: rgba(255, 202, 40, 0.2);
+      color: #ffca28;
+    }
+
+    /* Vite - Purple/Cyan */
+    .project-tag-list span[data-tag="vite"] {
+      background: rgba(189, 52, 254, 0.2);
+      color: #bd34fe;
+    }
+
+    /* FastAPI - Teal */
+    .project-tag-list span[data-tag="fastapi"] {
+      background: rgba(0, 150, 136, 0.25);
+      color: #009688;
+    }
+
+    /* Expo - White */
+    .project-tag-list span[data-tag="expo"] {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+    }
+
+    /* Socket.io - White */
+    .project-tag-list span[data-tag="socketio"] {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+    }
+
+    /* Jest - Red/Brown */
+    .project-tag-list span[data-tag="jest"] {
+      background: rgba(153, 66, 91, 0.25);
+      color: #c21325;
+    }
+
+    /* Gemini - Blue */
+    .project-tag-list span[data-tag="gemini"] {
+      background: rgba(66, 133, 244, 0.2);
+      color: #4285f4;
+    }
+
+    /* Convex - Purple */
+    .project-tag-list span[data-tag="convex"] {
+      background: rgba(238, 49, 67, 0.2);
+      color: #ee3143;
+    }
+
+    /* Tkinter - Python style */
+    .project-tag-list span[data-tag="tkinter"] {
+      background: rgba(55, 118, 171, 0.2);
+      color: #3776ab;
+    }
+
+    /* PyInstaller - Python style */
+    .project-tag-list span[data-tag="pyinstaller"] {
+      background: rgba(255, 214, 0, 0.2);
+      color: #ffd600;
+    }
+
+    /* CLI - Gray */
+    .project-tag-list span[data-tag="cli"] {
+      background: rgba(150, 150, 150, 0.2);
+      color: #aaaaaa;
+    }
+
+    /* pypdf2 - Red */
+    .project-tag-list span[data-tag="pypdf2"] {
+      background: rgba(204, 51, 51, 0.2);
+      color: #cc3333;
+    }
+
+    /* Default white for uncolored tags */
+    .project-tag-list span[data-tag="jikan"],
+    .project-tag-list span[data-tag="tracemoe"],
+    .project-tag-list span[data-tag="anilist"],
+    .project-tag-list span[data-tag="unsplash"],
+    .project-tag-list span[data-tag="removebg"] {
+      background: rgba(255, 255, 255, 0.12);
+      color: rgba(255, 255, 255, 0.9);
+    }
+
     .project-resource-links {
       display: flex;
       align-items: center;
@@ -444,8 +601,7 @@
       display: none;
     }
 
-    .project-resource-links__dropdown[open]
-      .project-resource-links__item--dropdown {
+    .project-resource-links__dropdown[open] .project-resource-links__item--dropdown {
       color: #1fd46b;
       transform: translateY(-2px);
     }
@@ -496,6 +652,10 @@
       display: flex;
       flex-direction: column;
       gap: clamp(2rem, 4vw, 2.75rem);
+      overflow-x: hidden;
+      max-width: 100%;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
     .project-writeup__header {
@@ -543,6 +703,14 @@
       border: none;
       border-radius: 0;
       background: transparent;
+      overflow-x: hidden;
+      max-width: 100%;
+    }
+
+    .project-article--detail {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
     }
 
     .project-article--detail h1:first-of-type {
@@ -575,6 +743,8 @@
       font-size: 1.04rem;
       line-height: 1.75;
       color: var(--project-detail-body);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
     .project-article--detail a {
@@ -600,7 +770,7 @@
       padding-left: 1.4rem;
     }
 
-    .project-article--detail li > p {
+    .project-article--detail li>p {
       margin: 0;
     }
 
@@ -665,10 +835,21 @@
       color: var(--astro-code-color, rgba(var(--off-white-rgb), 0.88));
       border-radius: 12px;
       overflow-x: auto;
+      max-width: 100%;
       font-family: "Fira Code", "Source Code Pro", Menlo, Monaco, Consolas,
         "Courier New", monospace;
       font-size: 0.95rem;
       line-height: 1.55;
+      box-sizing: border-box;
+    }
+
+    .project-article--detail code {
+      word-break: break-all;
+    }
+
+    .project-article--detail img {
+      max-width: 100%;
+      height: auto;
     }
 
     .project-article--detail pre code {
@@ -694,7 +875,7 @@
       margin-left: -0.5rem;
     }
 
-    .project-article--detail :not(pre) > code {
+    .project-article--detail :not(pre)>code {
       font-family: "Fira Code", "Source Code Pro", Menlo, Monaco, Consolas,
         "Courier New", monospace;
       background: var(--project-inline-chip-bg);
@@ -939,12 +1120,10 @@
     }
 
     .project-detail-page--anisekai {
-      --anisekai-gradient: linear-gradient(
-        120deg,
-        #00cfff 0%,
-        #6f63ff 52%,
-        #ff4fd8 100%
-      );
+      --anisekai-gradient: linear-gradient(120deg,
+          #00cfff 0%,
+          #6f63ff 52%,
+          #ff4fd8 100%);
     }
 
     .project-detail-page--anisekai .project-writeup__title {
@@ -965,4 +1144,269 @@
       border-left: 6px solid transparent;
       border-image-slice: 1;
       border-image-source: var(--anisekai-gradient);
+    }
+
+    /* Additional mobile breakpoints */
+    @media (max-width: 480px) {
+      .projects-header h1 {
+        font-size: 1.8rem;
+        letter-spacing: 0.05em;
+      }
+
+      .projects-header p {
+        font-size: 0.9rem;
+      }
+
+      .projects-grid {
+        gap: 1.5rem;
+        grid-template-columns: 1fr;
+      }
+
+      .project-card {
+        min-height: 300px;
+      }
+
+      .project-card__body {
+        padding: 1.25rem;
+        gap: 0.75rem;
+      }
+
+      .project-card__body h2 {
+        font-size: 1.1rem;
+      }
+
+      .project-card__body p {
+        font-size: 0.82rem;
+      }
+
+      .project-card__tags {
+        gap: 0.5rem;
+      }
+
+      .project-card__tags li span {
+        padding: 0.25rem 0.6rem;
+        font-size: 0.7rem;
+      }
+
+      .projects-pagination__link {
+        width: 2.75rem;
+        height: 2.75rem;
+        font-size: 0.9rem;
+      }
+
+      .project-writeup__title {
+        font-size: 2rem;
+      }
+
+      .project-writeup__eyebrow {
+        font-size: 0.75rem;
+        letter-spacing: 0.25em;
+      }
+
+      .project-showcase__frame {
+        width: 100%;
+        border-radius: 12px;
+      }
+
+      .project-showcase__meta {
+        width: 100%;
+        padding: 0.85rem;
+        border-radius: 12px;
+        gap: 0.75rem;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .project-tag-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        width: 100%;
+      }
+
+      .project-tag-list li {
+        display: block;
+      }
+
+      .project-tag-list span {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        font-size: 0.72rem;
+        padding: 0.28rem 0.55rem;
+      }
+
+      .project-resource-links {
+        display: flex;
+        gap: 0.6rem;
+        width: 100%;
+      }
+
+      .project-resource-links__item {
+        font-size: 1.1rem;
+        padding: 0.2rem;
+      }
+
+      .project-writeup__subtitle-card {
+        overflow: visible;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+      }
+
+      .project-writeup__subtitle {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+
+      .project-article--detail :where(p, li) {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+
+      .project-article--detail :where(h2) {
+        font-size: 1.3rem;
+      }
+
+      .project-article--detail :where(h3) {
+        font-size: 1.1rem;
+      }
+
+      .project-article--detail :where(p, li) {
+        font-size: 0.95rem;
+      }
+
+      .project-article--detail pre {
+        padding: 1rem;
+        font-size: 0.85rem;
+        border-radius: 8px;
+      }
+
+      .project-article--detail blockquote {
+        padding: 1rem 1.25rem;
+      }
+    }
+
+    /* Extra small mobile devices */
+    @media (max-width: 360px) {
+      .projects-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .projects-header p {
+        font-size: 0.85rem;
+      }
+
+      .project-card {
+        min-height: 260px;
+      }
+
+      .project-card__body {
+        padding: 1rem;
+        gap: 0.6rem;
+      }
+
+      .project-card__body h2 {
+        font-size: 1rem;
+      }
+
+      .project-card__body p {
+        font-size: 0.78rem;
+        line-height: 1.45;
+      }
+
+      .project-writeup__title {
+        font-size: 1.6rem;
+        letter-spacing: 0.04em;
+      }
+
+      .project-writeup__eyebrow {
+        font-size: 0.7rem;
+        letter-spacing: 0.2em;
+      }
+
+      .project-writeup__subtitle {
+        font-size: 0.92rem;
+      }
+
+      .project-writeup__subtitle-card {
+        padding: 0.9rem 1rem;
+        border-left-width: 4px;
+      }
+
+      .project-article--detail :where(h2) {
+        font-size: 1.15rem;
+        margin: 1.5rem 0 0.75rem;
+      }
+
+      .project-article--detail :where(h3) {
+        font-size: 1rem;
+        margin: 1.25rem 0 0.65rem;
+      }
+
+      .project-article--detail :where(p, li) {
+        font-size: 0.9rem;
+        line-height: 1.65;
+      }
+
+      .project-article--detail pre {
+        padding: 0.85rem;
+        font-size: 0.78rem;
+        border-radius: 6px;
+        margin: 1.25rem 0;
+      }
+
+      .project-article--detail blockquote {
+        padding: 0.85rem 1rem;
+        margin: 1.25rem 0;
+      }
+
+      .project-article--detail ul {
+        margin: 1rem 0;
+        gap: 0.5rem;
+      }
+
+      .project-article--detail ul li {
+        padding-left: 1.2rem;
+      }
+
+      .project-tag-list span {
+        font-size: 0.72rem;
+        padding: 0.3rem 0.65rem;
+      }
+
+      .project-resource-links__item {
+        font-size: 1rem;
+        padding: 0.25rem;
+      }
+
+      .project-showcase__meta {
+        padding: 0.85rem;
+        gap: 0.85rem;
+      }
+
+      .project-sidebar__label {
+        font-size: 0.75rem;
+        letter-spacing: 0.18em;
+      }
+
+      .project-toc__group h2 {
+        font-size: 0.75rem;
+      }
+
+      .project-toc__group a {
+        font-size: 0.85rem;
+      }
+
+      .projects-pagination__link {
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: 0.85rem;
+        border-radius: 0.5rem;
+      }
+
+      .projects-pagination ul {
+        gap: 0.6rem;
+      }
     }

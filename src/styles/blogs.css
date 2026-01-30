@@ -73,6 +73,7 @@
 .blogs-pagination {
   margin-top: 2.5rem;
 }
+
 .blogs-empty-state {
   border: 2px dashed rgba(var(--off-white-rgb), 0.25);
   border-radius: 0;
@@ -163,6 +164,25 @@
 .blog-detail__content--centered {
   max-width: 720px;
   text-align: left;
+  overflow-x: hidden;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.blog-detail__content pre {
+  overflow-x: auto;
+  max-width: 100%;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.blog-detail__content code {
+  word-break: break-all;
+}
+
+.blog-detail__content img {
+  max-width: 100%;
+  height: auto;
 }
 
 .blog-detail__content--centered h2,
@@ -232,8 +252,229 @@
     padding: 2.5rem 1.5rem 3rem;
   }
 
+  .blogs-header h1 {
+    font-size: 2.2rem;
+  }
+
+  .blogs-header p {
+    font-size: 1rem;
+  }
+
   .blog-card__media img {
     height: 180px;
   }
 
+  .blog-detail__title {
+    font-size: clamp(1.8rem, 6vw, 2.4rem);
+  }
+
+  .blog-detail__subtitle {
+    font-size: 1rem;
+  }
+
+  .blog-detail__content {
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+}
+
+@media (max-width: 480px) {
+  .blogs-header {
+    margin-top: 1rem;
+    gap: 0.35rem;
+  }
+
+  .blogs-header h1 {
+    font-size: 1.8rem;
+    letter-spacing: 0.05em;
+  }
+
+  .blogs-header p {
+    font-size: 0.9rem;
+  }
+
+  .blogs-grid {
+    margin-top: 0.5rem;
+  }
+
+  .blog-card {
+    border-radius: 10px;
+  }
+
+  .blog-card__media img {
+    height: 160px;
+  }
+
+  .blog-card__description {
+    font-size: 0.85rem;
+  }
+
+  .blog-card__tags li span {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.75rem;
+  }
+
+  .blog-detail {
+    gap: 1.25rem;
+  }
+
+  .blog-detail__hero {
+    border-radius: 16px;
+  }
+
+  .blog-detail__title {
+    font-size: clamp(1.5rem, 7vw, 2rem);
+    letter-spacing: 0.08em;
+  }
+
+  .blog-detail__meta-byline {
+    font-size: 0.65rem;
+  }
+
+  .blog-detail__subtitle {
+    font-size: 0.95rem;
+  }
+
+  .blog-detail__content {
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .blog-detail__content--centered {
+    max-width: 100%;
+  }
+
+  .blog-detail__content--centered h2,
+  .blog-detail__content--centered h3,
+  .blog-detail__content--centered h4 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .blog-detail__tag-list span {
+    padding: 0.25rem 0.7rem;
+    font-size: 0.8rem;
+  }
+
+  .blog-detail__back {
+    font-size: 0.9rem;
+  }
+
+  .blogs-empty-state {
+    padding: 2rem;
+    font-size: 1rem;
+  }
+
+  .blogs-pagination {
+    margin-top: 1.5rem;
+  }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 360px) {
+  .blogs-header {
+    margin-top: 0.75rem;
+  }
+
+  .blogs-header h1 {
+    font-size: 1.5rem;
+    letter-spacing: 0.04em;
+  }
+
+  .blogs-header p {
+    font-size: 0.85rem;
+  }
+
+  .blog-card {
+    border-radius: 8px;
+  }
+
+  .blog-card__media img {
+    height: 140px;
+  }
+
+  .blog-card__description {
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  .blog-card__tags li span {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.7rem;
+  }
+
+  .blog-detail {
+    gap: 1rem;
+    padding: 0 0.25rem;
+  }
+
+  .blog-detail__hero {
+    border-radius: 12px;
+  }
+
+  .blog-detail__title {
+    font-size: clamp(1.25rem, 6vw, 1.6rem);
+    letter-spacing: 0.06em;
+  }
+
+  .blog-detail__meta-byline {
+    font-size: 0.6rem;
+    gap: 0.25rem;
+  }
+
+  .blog-detail__meta-separator {
+    font-size: 0.85rem;
+  }
+
+  .blog-detail__subtitle {
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+
+  .blog-detail__content {
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+
+  .blog-detail__content--centered {
+    max-width: 100%;
+  }
+
+  .blog-detail__content--centered h2 {
+    font-size: 1.25rem;
+    margin-top: 1.25rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .blog-detail__content--centered h3 {
+    font-size: 1.1rem;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .blog-detail__content--centered h4 {
+    font-size: 1rem;
+    margin-top: 0.85rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .blog-detail__tag-list span {
+    padding: 0.2rem 0.6rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+  }
+
+  .blog-detail__back {
+    font-size: 0.85rem;
+    gap: 0.4rem;
+  }
+
+  .blogs-empty-state {
+    padding: 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .blogs-pagination {
+    margin-top: 1.25rem;
+  }
 }

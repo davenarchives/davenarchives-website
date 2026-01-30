@@ -3,6 +3,7 @@ import ThemeToggle from "./ThemeToggle.astro";
 
 const { active } = Astro.props ?? {};
 ---
+
 <header class="site-header">
   <a class="logo" href="/" aria-label="Go to home">
     <svg
@@ -13,12 +14,11 @@ const { active } = Astro.props ?? {};
     >
       <path
         d="M6 17h36l-18-9-18 9zm6 3v15h6V20h-6zm10 0 v15 h4V20h-4zm8 0 v15 h6V20h-6z M8 38 v-3 h32 v3 H8z"
-        fill="#f8b318"
-      />
+        fill="#f8b318"></path>
     </svg>
     <span class="logo-type">DAVENARCHIVES</span>
   </a>
-  <nav class="site-nav">
+  <nav class="site-nav" id="site-nav">
     <a
       href="/projects"
       class={active === "projects" ? "is-active" : undefined}
@@ -47,9 +47,9 @@ const { active } = Astro.props ?? {};
             d="M15.5 15.5L21 21"
             stroke="currentColor"
             stroke-width="2"
-            stroke-linecap="round"
-          />
-          <circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="2" />
+            stroke-linecap="round"></path>
+          <circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="2"
+          ></circle>
         </svg>
         <input
           type="search"
@@ -62,19 +62,65 @@ const { active } = Astro.props ?? {};
       <ThemeToggle />
     </div>
   </nav>
+  <button
+    class="mobile-menu-toggle"
+    aria-label="Toggle navigation menu"
+    aria-expanded="false"
+    aria-controls="site-nav"
+  >
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
 </header>
 <script>
   (() => {
+    // Mobile menu toggle
+    const mobileMenuToggle = document.querySelector(".mobile-menu-toggle");
+    const siteNav = document.querySelector(".site-nav");
+
+    if (mobileMenuToggle && siteNav) {
+      mobileMenuToggle.addEventListener("click", () => {
+        const isOpen = mobileMenuToggle.classList.toggle("is-open");
+        siteNav.classList.toggle("is-open", isOpen);
+        mobileMenuToggle.setAttribute("aria-expanded", String(isOpen));
+        document.body.style.overflow = isOpen ? "hidden" : "";
+      });
+
+      // Close menu when clicking a nav link
+      siteNav.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+          mobileMenuToggle.classList.remove("is-open");
+          siteNav.classList.remove("is-open");
+          mobileMenuToggle.setAttribute("aria-expanded", "false");
+          document.body.style.overflow = "";
+        });
+      });
+
+      // Close menu on escape key
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && siteNav.classList.contains("is-open")) {
+          mobileMenuToggle.classList.remove("is-open");
+          siteNav.classList.remove("is-open");
+          mobileMenuToggle.setAttribute("aria-expanded", "false");
+          document.body.style.overflow = "";
+        }
+      });
+    }
+
+    // Search functionality
     const searchPanel = document.querySelector("[data-global-search-panel]");
-    const searchInput = searchPanel?.querySelector("[data-global-search-input]");
+    const searchInput = searchPanel?.querySelector(
+      "[data-global-search-input]",
+    ) as HTMLInputElement | null;
     if (!searchInput) return;
 
     const STORAGE_KEY = "globalSearchQuery";
-    const dispatchQuery = (value) => {
+    const dispatchQuery = (value: string) => {
       window.dispatchEvent(
         new CustomEvent("global-search-change", {
           detail: { value },
-        })
+        }),
       );
     };
 
@@ -86,7 +132,7 @@ const { active } = Astro.props ?? {};
       }
     };
 
-    const writeStored = (value) => {
+    const writeStored = (value: string) => {
       try {
         localStorage.setItem(STORAGE_KEY, value);
       } catch {
