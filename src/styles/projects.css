@@ -1,4 +1,10 @@
     :root {
+      /* Scalable sticky sidebar offset — update --header-height to match your
+         actual header height (set dynamically via JS in Header.astro).
+         Override --sidebar-top on any page to customise further. */
+      --header-height: 64px;
+      --sidebar-gap: 1.5rem;
+      --sidebar-top: calc(var(--header-height) + var(--sidebar-gap));
       --project-card-bg: #0f1823;
       --project-card-media-bg: #121a23;
       --project-card-inner-bg: rgba(6, 14, 27, 0.88);
@@ -333,7 +339,7 @@
       flex-direction: column;
       gap: clamp(2.75rem, 4.5vw, 3.75rem);
       flex: 1;
-      overflow-x: hidden;
+      overflow-x: clip;
       max-width: 100%;
     }
 
@@ -931,14 +937,24 @@
 
     .project-sidebar {
       position: sticky;
-      top: clamp(1.5rem, 4vw, 2.5rem);
+      top: var(--sidebar-top);
       align-self: start;
+      max-height: calc(100vh - var(--sidebar-top));
+      overflow-y: auto;
+      scrollbar-width: none;
+      /* Firefox */
+    }
+
+    .project-sidebar::-webkit-scrollbar {
+      display: none;
+      /* Chrome/Safari */
     }
 
     .project-sidebar__card {
-      background: none;
-      border-radius: 0;
-      padding: 0;
+      background: var(--project-detail-block-bg);
+      border-radius: 16px;
+      padding: 1.5rem;
+      border: 1px solid var(--project-card-border);
       display: grid;
       gap: 1.6rem;
     }
@@ -990,6 +1006,12 @@
     .project-toc__group a:hover,
     .project-toc__group a:focus-visible {
       color: #1fd46b;
+      transform: translateX(4px);
+    }
+
+    .project-toc__group a.is-active {
+      color: #1fd46b;
+      font-weight: 700;
       transform: translateX(4px);
     }
 
@@ -1107,7 +1129,7 @@
       }
 
       .project-sidebar__card {
-        padding: 0;
+        padding: 1.25rem;
       }
     }
 

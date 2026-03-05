@@ -75,6 +75,22 @@ const { active } = Astro.props ?? {};
 </header>
 <script>
   (() => {
+    // Sync --header-height CSS variable with the actual header size
+    const header = document.querySelector(".site-header");
+    if (header) {
+      const setHeaderHeight = () => {
+        document.documentElement.style.setProperty(
+          "--header-height",
+          `${header.getBoundingClientRect().height}px`,
+        );
+      };
+      setHeaderHeight();
+      const ro = new ResizeObserver(setHeaderHeight);
+      ro.observe(header);
+    }
+  })();
+
+  (() => {
     // Mobile menu toggle
     const mobileMenuToggle = document.querySelector(".mobile-menu-toggle");
     const siteNav = document.querySelector(".site-nav");
