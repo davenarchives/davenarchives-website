@@ -1,0 +1,83 @@
+<!-- TocScrollSpy.astro
+     Drop this component anywhere inside a project detail page (after the
+     <aside class="project-sidebar"> exists in the DOM).
+     It uses IntersectionObserver to add/remove the `is-active` class on the
+     TOC anchor that matches the heading currently visible in the viewport.
+-->
+<script>
+    (() => {
+        const sidebar = document.querySelector<HTMLElement>(".project-sidebar");
+        const article = document.querySelector<HTMLElement>(
+            ".project-article--detail",
+        );
+        if (!sidebar || !article) return;
+
+        // Collect every anchor in the TOC
+        const tocLinks = Array.from(
+            sidebar.querySelectorAll<HTMLAnchorElement>(
+                ".project-toc__group a[href]",
+            ),
+        );
+        if (!tocLinks.length) return;
+
+        // Build a map: hash → anchor element
+        const linkMap = new Map<string, HTMLAnchorElement>();
+        tocLinks.forEach((a) => {
+            const hash = new URL(a.href, location.href).hash;
+            if (hash) linkMap.set(hash, a);
+        });
+
+        // Headings inside the article that are referenced by the TOC
+        const headings = Array.from(
+            article.querySelectorAll<HTMLElement>("h1, h2, h3, h4"),
+        ).filter((h) => h.id && linkMap.has(`#${h.id}`));
+
+        let activeId = "";
+
+        const setActive = (id: string) => {
+            if (id === activeId) return;
+            activeId = id;
+            tocLinks.forEach((a) => a.classList.remove("is-active"));
+            const target = linkMap.get(`#${id}`);
+            if (target) target.classList.add("is-active");
+        };
+
+        // Use a scroll listener to reliably find the active heading.
+        // We look for the last heading that is above the vertical center
+        // (or within the top ~150px offset).
+        const onScroll = () => {
+            let currentId = "";
+            const offset = 150; // trigger line below the header
+
+            // Because headings are in DOM order, we just find the last one
+            // that has crossed our trigger line (top < offset)
+            headings.forEach((h) => {
+                const rect = h.getBoundingClientRect();
+                if (rect.top <= offset) {
+                    currentId = h.id;
+                }
+            });
+
+            // If we are at the very top, default to the first heading
+            if (!currentId && headings.length > 0 && window.scrollY < 100) {
+                currentId = headings[0].id;
+            }
+
+            if (currentId) {
+                setActive(currentId);
+            }
+        };
+
+        // Run once on load to establish initial state
+        onScroll();
+
+        // Listen to scroll events
+        window.addEventListener("scroll", onScroll, { passive: true });
+
+        // On page load, highlight the section matching the URL hash (if any)
+        if (location.hash) {
+            const id = location.hash.slice(1);
+            if (linkMap.has(`#${id}`)) setActive(id);
+        }
+    })();
+</script>
